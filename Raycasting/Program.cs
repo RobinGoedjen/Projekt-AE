@@ -14,7 +14,6 @@ namespace Raycasting
             {
                 game.Run(60f);
             }
-            
         }
     }
 }

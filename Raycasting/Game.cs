@@ -15,17 +15,10 @@ namespace Raycasting
         Vector2[] vertices =
         {
             new Vector2(-0.2f, 0.2f),
-            new Vector2(1.2f, 0.2f),
+            new Vector2(0.2f, 0.2f),
             new Vector2(0.2f, -0.2f),
             new Vector2(-0.2f, -0.2f)
         };
-
-
-        //float[] vertices = {
-        //    -0.5f, -0.5f, 0.0f, //Bottom-left vertex
-        //     0.5f, -0.5f, 0.0f, //Bottom-right vertex
-        //     0.0f,  0.5f, 0.0f  //Top vertex
-        //};
 
         private Shader shader;
 

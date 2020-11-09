@@ -12,11 +12,20 @@ namespace Raycasting
 {
     class Game : GameWindow
     {
-        float[] vertices = {
-            -0.5f, -0.5f, 0.0f, //Bottom-left vertex
-             0.5f, -0.5f, 0.0f, //Bottom-right vertex
-             0.0f,  0.5f, 0.0f  //Top vertex
+        Vector2[] vertices =
+        {
+            new Vector2(-0.2f, 0.2f),
+            new Vector2(1.2f, 0.2f),
+            new Vector2(0.2f, -0.2f),
+            new Vector2(-0.2f, -0.2f)
         };
+
+
+        //float[] vertices = {
+        //    -0.5f, -0.5f, 0.0f, //Bottom-left vertex
+        //     0.5f, -0.5f, 0.0f, //Bottom-right vertex
+        //     0.0f,  0.5f, 0.0f  //Top vertex
+        //};
 
         private Shader shader;
 
@@ -49,8 +58,8 @@ namespace Raycasting
 
             VertexBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Vector2.SizeInBytes, vertices, BufferUsageHint.StaticDraw);
+            GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, Vector2.SizeInBytes, 0);
             GL.EnableVertexAttribArray(0);
             GL.BindVertexArray(0);
 
@@ -73,7 +82,7 @@ namespace Raycasting
 
             shader.Use();
             GL.BindVertexArray(VertexArrayObject);
-            GL.DrawArrays(PrimitiveType.Triangles, 0, vertices.Length);
+            GL.DrawArrays(PrimitiveType.Quads, 0, vertices.Length);
             
 
             Context.SwapBuffers();

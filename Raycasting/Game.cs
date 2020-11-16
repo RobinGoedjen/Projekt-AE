@@ -34,12 +34,6 @@ namespace Raycasting
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
-            KeyboardState input = Keyboard.GetState();
-            if (input.IsKeyDown(Key.Escape))
-            {
-                Exit();
-            }
-
             int counter = 0; //TODO: Entfernen!
             for (int x = 0; x < this.Width; x++)
             {
@@ -127,17 +121,36 @@ namespace Raycasting
 
                 //TODO: Hier nochma nach Farben schauen und das Array füllen
 
-                //timing for input and FPS counter
-                oldTime = time;
-                time = e.Time;
-                double frameTime = (time - oldTime) / 1000.0; //frameTime is the time this frame has taken, in seconds
-
-                //TODO: in Player Klasse verlagern
-                //speed modifiers
-                double moveSpeed = frameTime * 5.0; //the constant value is in squares/second
-                double rotSpeed = frameTime * 3.0; //the constant value is in radians/second
-
             }
+
+            //timing for input and FPS counter
+            oldTime = time;
+            time = e.Time;
+            double frameTime = (time - oldTime) / 1000.0; //frameTime is the time this frame has taken, in seconds
+            //TODO: in Player Klasse verlagern
+            //speed modifiers
+            double moveSpeed = frameTime * 5.0; //the constant value is in squares/second
+            double rotSpeed = frameTime * 3.0; //the constant value is in radians/second
+
+            KeyboardState input = Keyboard.GetState();
+            if (input.IsKeyDown(Key.Escape))
+            {
+                Exit();
+            }
+            if (input.IsKeyDown(Key.W))
+            {
+                //TODO: Hier passt was nicht
+                float newPlayerX = player.position.X;
+                float newPlayerY = player.position.Y;
+                if (map.worldMap[Convert.ToInt32(player.position.X + player.direction.X * moveSpeed), Convert.ToInt32(player.position.Y)] == 0)
+                    newPlayerX = (float)(newPlayerX + player.direction.X * moveSpeed);
+                if (map.worldMap[Convert.ToInt32(player.position.X), Convert.ToInt32(player.position.Y + player.direction.Y * moveSpeed)] == 0)
+                    newPlayerY = (float)(newPlayerY + player.direction.Y * moveSpeed);
+                player.position = new Vector2(newPlayerX, newPlayerY);
+                Console.WriteLine(newPlayerY);
+            }
+
+
 
             GL.BindVertexArray(VertexArrayObject);
             GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);

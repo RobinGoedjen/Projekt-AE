@@ -34,6 +34,7 @@ namespace Raycasting
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
+            GL.BindVertexArray(0); //TODO: kann vllt weg
             int counter = 0; //TODO: Entfernen!
             for (int x = 0; x < this.Width; x++)
             {
@@ -110,27 +111,28 @@ namespace Raycasting
                     drawEnd = this.Height - 1;
 
                 //TODO: Überarbeiten!!!!
-                float drawXScaled = (float)x / this.Width* 2 - 1f;
-                float drawStartScaled = (float)drawStart / this.Height;
+                float drawXScaled = (float)x / this.Width * 2 - 1f;
+                float drawStartScaled = (float)lineHeight / this.Height / 2;
                 float drawEndScaled = (float)drawEnd / this.Height * -1f;
                 vertices[counter] = new Vector2(drawXScaled, drawStartScaled);
                 counter++;
-                vertices[counter] = new Vector2(drawXScaled, drawEndScaled);
+                vertices[counter] = new Vector2(drawXScaled, -drawStartScaled);
                 counter++;
 
 
                 //TODO: Hier nochma nach Farben schauen und das Array füllen
 
             }
-
             //timing for input and FPS counter
             oldTime = time;
             time = e.Time;
-            double frameTime = (time - oldTime) / 1000.0; //frameTime is the time this frame has taken, in seconds
+            float frameTime = (float)((time - oldTime) / 1000.0f); //frameTime is the time this frame has taken, in seconds
             //TODO: in Player Klasse verlagern
             //speed modifiers
-            double moveSpeed = frameTime * 5.0; //the constant value is in squares/second
-            double rotSpeed = frameTime * 3.0; //the constant value is in radians/second
+            float moveSpeed = frameTime * 5.0f; //the constant value is in squares/second
+            moveSpeed = 0.1f; //TODO: RAUS
+            float rotSpeed = frameTime * 3.0f; //the constant value is in radians/second
+            rotSpeed = 0.02f; //TODO: RAUS
 
             KeyboardState input = Keyboard.GetState();
             if (input.IsKeyDown(Key.Escape))
@@ -139,22 +141,44 @@ namespace Raycasting
             }
             if (input.IsKeyDown(Key.W))
             {
-                //TODO: Hier passt was nicht
-                float newPlayerX = player.position.X;
-                float newPlayerY = player.position.Y;
-                if (map.worldMap[Convert.ToInt32(player.position.X + player.direction.X * moveSpeed), Convert.ToInt32(player.position.Y)] == 0)
-                    newPlayerX = (float)(newPlayerX + player.direction.X * moveSpeed);
-                if (map.worldMap[Convert.ToInt32(player.position.X), Convert.ToInt32(player.position.Y + player.direction.Y * moveSpeed)] == 0)
-                    newPlayerY = (float)(newPlayerY + player.direction.Y * moveSpeed);
-                player.position = new Vector2(newPlayerX, newPlayerY);
-                Console.WriteLine(newPlayerY);
+                if (map.worldMap[(int)(player.position.X + player.direction.X * moveSpeed), (int)player.position.Y] == 0)
+                    player.position += new Vector2(player.direction.X * moveSpeed, 0f);
+                if (map.worldMap[(int)player.position.X, (int)(player.position.Y + player.direction.Y * moveSpeed)] == 0)
+                    player.position += new Vector2(0f, player.direction.Y * moveSpeed);
             }
 
+            if (input.IsKeyDown(Key.S))
+            {
+                if (map.worldMap[(int)(player.position.X - player.direction.X * moveSpeed), (int)player.position.Y] == 0)
+                    player.position -= new Vector2(player.direction.X * moveSpeed, 0f);
+                if (map.worldMap[(int)player.position.X, (int)(player.position.Y - player.direction.Y * moveSpeed)] == 0)
+                    player.position -= new Vector2(0f, player.direction.Y * moveSpeed);
+            }
 
+            if (input.IsKeyDown(Key.D))
+            {
+                float newDirX = (float)(player.direction.X * Math.Cos(-rotSpeed) - player.direction.Y * Math.Sin(-rotSpeed));
+                float newDirY = (float)(player.direction.X * Math.Sin(-rotSpeed) + player.direction.Y * Math.Cos(-rotSpeed));
+                player.direction = new Vector2(newDirX, newDirY);
 
+                float newPlaneX = (float)(player.plane.X * Math.Cos(-rotSpeed) - player.plane.Y * Math.Sin(-rotSpeed));
+                float newPlaneY = (float)(player.plane.X * Math.Sin(-rotSpeed) + player.plane.Y * Math.Cos(-rotSpeed));
+                player.plane = new Vector2(newPlaneX, newPlaneY);
+            }
+
+            if (input.IsKeyDown(Key.A))
+            {
+                float newDirX = (float)(player.direction.X * Math.Cos(rotSpeed) - player.direction.Y * Math.Sin(rotSpeed));
+                float newDirY = (float)(player.direction.X * Math.Sin(rotSpeed) + player.direction.Y * Math.Cos(rotSpeed));
+                player.direction = new Vector2(newDirX, newDirY);
+
+                float newPlaneX = (float)(player.plane.X * Math.Cos(rotSpeed) - player.plane.Y * Math.Sin(rotSpeed));
+                float newPlaneY = (float)(player.plane.X * Math.Sin(rotSpeed) + player.plane.Y * Math.Cos(rotSpeed));
+                player.plane = new Vector2(newPlaneX, newPlaneY);
+            }
             GL.BindVertexArray(VertexArrayObject);
             GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Vector2.SizeInBytes, vertices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Vector2.SizeInBytes, vertices, BufferUsageHint.DynamicDraw);
             GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, Vector2.SizeInBytes, 0);
             GL.EnableVertexAttribArray(0);
             GL.BindVertexArray(0);
@@ -171,7 +195,7 @@ namespace Raycasting
 
             VertexBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Vector2.SizeInBytes, vertices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Vector2.SizeInBytes, vertices, BufferUsageHint.DynamicDraw);
             GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, Vector2.SizeInBytes, 0);
             GL.EnableVertexAttribArray(0);
             GL.BindVertexArray(0);

@@ -11,7 +11,7 @@ namespace Raycasting
         private const uint height = 100;
         private const uint width = 100;
 
-        private readonly uint[,] worldMap;
+        public uint[,] worldMap { get; }
 
         public Map(String fileName)
         {

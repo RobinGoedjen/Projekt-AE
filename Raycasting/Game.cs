@@ -19,11 +19,19 @@ namespace Raycasting
         Map map;
 
         Vector2[] vertices = new Vector2[1250]; //TODO: hier nochma Zahk schauen
+        Vector3[] colors =
+        {
+            new Vector3(1f, 0, 0),
+            new Vector3(0, 1f, 0),
+            new Vector3(0, 0, 1f),
+            new Vector3(1f, 1f, 1f)
+        };
 
         private Shader shader;
 
         int VertexBufferObject;
         int VertexArrayObject;
+        int VertexBufferColor;  
 
 
         public Game(Player player, Map map) : base(500, 300, GraphicsMode.Default, "Raycasting")
@@ -112,15 +120,14 @@ namespace Raycasting
 
                 //TODO: Überarbeiten!!!!
                 float drawXScaled = (float)x / this.Width * 2 - 1f;
-                float drawStartScaled = (float)lineHeight / this.Height / 2;
-                float drawEndScaled = (float)drawEnd / this.Height * -1f;
-                vertices[counter] = new Vector2(drawXScaled, drawStartScaled);
+                float drawYScaled = (float)lineHeight / this.Height / 2;
+                vertices[counter] = new Vector2(drawXScaled, drawYScaled);
                 counter++;
-                vertices[counter] = new Vector2(drawXScaled, -drawStartScaled);
+                vertices[counter] = new Vector2(drawXScaled, -drawYScaled);
                 counter++;
 
-
-                //TODO: Hier nochma nach Farben schauen und das Array füllen
+                //TODO: hier farbwechsel merken + neues ArrayObject anlegen mit farbe :)
+                //TODO: Hier nochma nach Farben schauen
 
             }
             //timing for input and FPS counter
@@ -177,7 +184,6 @@ namespace Raycasting
                 player.plane = new Vector2(newPlaneX, newPlaneY);
             }
             GL.BindVertexArray(VertexArrayObject);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
             GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Vector2.SizeInBytes, vertices, BufferUsageHint.DynamicDraw);
             GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, Vector2.SizeInBytes, 0);
             GL.EnableVertexAttribArray(0);
@@ -192,7 +198,6 @@ namespace Raycasting
 
             VertexArrayObject = GL.GenVertexArray();
             GL.BindVertexArray(VertexArrayObject);
-
             VertexBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
             GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Vector2.SizeInBytes, vertices, BufferUsageHint.DynamicDraw);
@@ -216,11 +221,10 @@ namespace Raycasting
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
-
-            shader.Use();
             GL.BindVertexArray(VertexArrayObject);
+            shader.Use();
+            GL.VertexAttrib3(1, colors[1]);
             GL.DrawArrays(PrimitiveType.Lines, 0, vertices.Length);
-            
 
             Context.SwapBuffers();
             base.OnRenderFrame(e);

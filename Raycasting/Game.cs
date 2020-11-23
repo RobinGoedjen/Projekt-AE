@@ -13,28 +13,25 @@ namespace Raycasting
 {
     class Game : GameWindow
     {
-        double time = 0f;
-        double oldTime = 0f;
         Player player;
         Map map;
 
-        Vector2[] vertices = new Vector2[1250]; //TODO: hier nochma Zahk schauen
-        Vector3[] colors =
+        List<Vector2> verticesRed, verticesGreen, verticesBlue, verticesWhite, verticesShadow, verticesGroundPlane;
+        Vector4[] colors =
         {
-            new Vector3(1f, 0, 0),
-            new Vector3(0, 1f, 0),
-            new Vector3(0, 0, 1f),
-            new Vector3(1f, 1f, 1f)
+            new Vector4(0.75f, 0, 0, 1f),
+            new Vector4(0, 0.75f, 0, 1f),
+            new Vector4(0, 0, 0.75f, 1f),
+            new Vector4(0.75f, 0.75f, 0.75f, 1f)
         };
 
         private Shader shader;
 
-        int VertexBufferObject;
-        int VertexArrayObject;
-        int VertexBufferColor;  
+        int VBORed, VBOGreen, VBOBlue, VBOWhite, VBOShadow, VBOGroundPlane;
+        int VAORed, VAOGreen, VAOBlue, VAOWhite, VAOShadow, VAOGroundPlane;
 
 
-        public Game(Player player, Map map) : base(500, 300, GraphicsMode.Default, "Raycasting")
+        public Game(Player player, Map map) : base(500, 300, GraphicsMode.Default, "Raycasting", GameWindowFlags.Fullscreen)
         {
             this.map = map;
             this.player = player;
@@ -42,11 +39,15 @@ namespace Raycasting
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
-            GL.BindVertexArray(0); //TODO: kann vllt weg
-            int counter = 0; //TODO: Entfernen!
+            verticesRed.Clear();
+            verticesGreen.Clear();
+            verticesBlue.Clear();
+            verticesWhite.Clear();
+            verticesShadow.Clear();
+
             for (int x = 0; x < this.Width; x++)
             {
-                float cameraX = 2 * x / this.Width - 1;
+                float cameraX = 2f * x / this.Width - 1f;
                 Vector2 rayDir = player.direction + player.plane * cameraX;
 
                 Point currentMapPosition = new Point((int)player.position.X, (int)player.position.Y);
@@ -107,7 +108,7 @@ namespace Raycasting
                     perpWallDist = (currentMapPosition.X - player.position.X + (1 - stepX) / 2) / rayDir.X;
                 else 
                     perpWallDist = (currentMapPosition.Y - player.position.Y + (1 - stepY) / 2) / rayDir.Y;
-
+               // Console.WriteLine(perpWallDist);
                 int lineHeight = (int)(this.Height / perpWallDist);
 
                 //calculate lowest and highest pixel to fill in current stripe
@@ -118,28 +119,20 @@ namespace Raycasting
                 if (drawEnd >= this.Height) 
                     drawEnd = this.Height - 1;
 
-                //TODO: Überarbeiten!!!!
                 float drawXScaled = (float)x / this.Width * 2 - 1f;
                 float drawYScaled = (float)lineHeight / this.Height / 2;
-                vertices[counter] = new Vector2(drawXScaled, drawYScaled);
-                counter++;
-                vertices[counter] = new Vector2(drawXScaled, -drawYScaled);
-                counter++;
 
-                //TODO: hier farbwechsel merken + neues ArrayObject anlegen mit farbe :)
-                //TODO: Hier nochma nach Farben schauen
-
+                addVertice(new Vector2(drawXScaled, drawYScaled), map.worldMap[currentMapPosition.X, currentMapPosition.Y]);
+                addVertice(new Vector2(drawXScaled, -drawYScaled), map.worldMap[currentMapPosition.X, currentMapPosition.Y]);
+                if (side == 0)
+                {
+                    addVertice(new Vector2(drawXScaled, drawYScaled), 0);
+                    addVertice(new Vector2(drawXScaled, -drawYScaled), 0);
+                }
             }
-            //timing for input and FPS counter
-            oldTime = time;
-            time = e.Time;
-            float frameTime = (float)((time - oldTime) / 1000.0f); //frameTime is the time this frame has taken, in seconds
-            //TODO: in Player Klasse verlagern
             //speed modifiers
-            float moveSpeed = frameTime * 5.0f; //the constant value is in squares/second
-            moveSpeed = 0.1f; //TODO: RAUS
-            float rotSpeed = frameTime * 3.0f; //the constant value is in radians/second
-            rotSpeed = 0.02f; //TODO: RAUS
+            float moveSpeed = 0.08f;
+            float rotSpeed = 0.03f;
 
             KeyboardState input = Keyboard.GetState();
             if (input.IsKeyDown(Key.Escape))
@@ -183,27 +176,52 @@ namespace Raycasting
                 float newPlaneY = (float)(player.plane.X * Math.Sin(rotSpeed) + player.plane.Y * Math.Cos(rotSpeed));
                 player.plane = new Vector2(newPlaneX, newPlaneY);
             }
-            GL.BindVertexArray(VertexArrayObject);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Vector2.SizeInBytes, vertices, BufferUsageHint.DynamicDraw);
-            GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, Vector2.SizeInBytes, 0);
-            GL.EnableVertexAttribArray(0);
-            GL.BindVertexArray(0);
+            fillVAO(VAORed, VBORed, verticesRed);
+
+            fillVAO(VAOGreen, VBOGreen, verticesGreen);
+
+            fillVAO(VAOBlue, VBOBlue, verticesBlue);
+
+            fillVAO(VAOWhite, VBOWhite, verticesWhite);
+
+            fillVAO(VAOShadow, VBOShadow, verticesShadow);
 
             base.OnUpdateFrame(e);
         }
 
         protected override void OnLoad(EventArgs e)
         {
+            verticesRed = new List<Vector2>();
+            verticesGreen = new List<Vector2>();
+            verticesBlue = new List<Vector2>();
+            verticesWhite = new List<Vector2>();
+            verticesShadow = new List<Vector2>();
+            verticesGroundPlane = new List<Vector2>();
             GL.ClearColor(0.8f, 0.3f, 0.3f, 1f);
 
-            VertexArrayObject = GL.GenVertexArray();
-            GL.BindVertexArray(VertexArrayObject);
-            VertexBufferObject = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Vector2.SizeInBytes, vertices, BufferUsageHint.DynamicDraw);
-            GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, Vector2.SizeInBytes, 0);
-            GL.EnableVertexAttribArray(0);
-            GL.BindVertexArray(0);
+
+            VAORed = GL.GenVertexArray();
+            VBORed = GL.GenBuffer();
+
+            VAOGreen = GL.GenVertexArray();
+            VBOGreen = GL.GenBuffer();
+
+            VAOBlue = GL.GenVertexArray();
+            VBOBlue = GL.GenBuffer();
+
+            VAOWhite = GL.GenVertexArray();
+            VBOWhite = GL.GenBuffer();
+
+            VAOShadow = GL.GenVertexArray();
+            VBOShadow = GL.GenBuffer();
+
+            VAOGroundPlane = GL.GenVertexArray();
+            VBOGroundPlane = GL.GenBuffer();
+            verticesGroundPlane.Add(new Vector2(-1f, 0));
+            verticesGroundPlane.Add(new Vector2(1f, 0));
+            verticesGroundPlane.Add(new Vector2(1f, -1f));
+            verticesGroundPlane.Add(new Vector2(-1f, -1f));
+            fillVAO(VAOGroundPlane, VBOGroundPlane, verticesGroundPlane);
 
 
             shader = new Shader("shader.vert", "shader.frag");
@@ -213,7 +231,10 @@ namespace Raycasting
         protected override void OnUnload(EventArgs e)
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            GL.DeleteBuffer(VertexBufferObject);
+            GL.DeleteBuffer(VBORed);
+            GL.DeleteBuffer(VBOGreen);
+            GL.DeleteBuffer(VBOBlue);
+            GL.DeleteBuffer(VBOWhite);
             shader.Dispose();
             base.OnUnload(e);
         }
@@ -221,14 +242,77 @@ namespace Raycasting
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
-            GL.BindVertexArray(VertexArrayObject);
+            GL.BindVertexArray(VAOGroundPlane);
             shader.Use();
-            GL.VertexAttrib3(1, colors[1]);
-            GL.DrawArrays(PrimitiveType.Lines, 0, vertices.Length);
+            GL.VertexAttrib4(1, new Vector4(0.56f, 0.11f,  0.55f, 1f));
+            GL.DrawArrays(PrimitiveType.Quads, 0, 4);
+
+            GL.BindVertexArray(VAORed);
+            shader.Use();
+            GL.VertexAttrib4(1, colors[0]);
+            GL.DrawArrays(PrimitiveType.Lines, 0, verticesRed.Count);
+
+            GL.BindVertexArray(VAOGreen);
+            shader.Use();
+            GL.VertexAttrib4(1, colors[1]);
+            GL.DrawArrays(PrimitiveType.Lines, 0, verticesGreen.Count);
+
+            GL.BindVertexArray(VAOBlue);
+            shader.Use();
+            GL.VertexAttrib4(1, colors[2]);
+            GL.DrawArrays(PrimitiveType.Lines, 0, verticesBlue.Count);
+
+            GL.BindVertexArray(VAOWhite);
+            shader.Use();
+            GL.VertexAttrib4(1, colors[3]);
+            GL.DrawArrays(PrimitiveType.Lines, 0, verticesWhite.Count);
+
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.One);
+            GL.Enable(EnableCap.Blend);
+
+            GL.BindVertexArray(VAOShadow);
+            shader.Use();
+            GL.VertexAttrib4(1, new Vector4(0.2f, 0.2f, 0.2f, 0.8f));
+            GL.DrawArrays(PrimitiveType.Lines, 0, verticesShadow.Count);
+
+            GL.Disable(EnableCap.Blend);
 
             Context.SwapBuffers();
             base.OnRenderFrame(e);
         }
 
+
+        private void addVertice(Vector2 position, uint colorID)
+        {
+            switch (colorID)
+            {
+                case 0:
+                    verticesShadow.Add(position);
+                    break;
+                case 1: 
+                    verticesRed.Add(position);
+                    break;
+                case 2:
+                    verticesGreen.Add(position);
+                    break;
+                case 3: 
+                    verticesBlue.Add(position);
+                    break;
+                default: 
+                    verticesWhite.Add(position);
+                    break;
+            }
+        }
+
+        private void fillVAO(int VAO, int VBO, List<Vector2> vertices)
+        {
+            GL.BindVertexArray(VAO);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Count * Vector2.SizeInBytes, vertices.ToArray(), BufferUsageHint.DynamicDraw);
+            GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, Vector2.SizeInBytes, 0);
+            GL.EnableVertexAttribArray(0);
+            GL.BindVertexArray(0);
+
+        }
     }
 }

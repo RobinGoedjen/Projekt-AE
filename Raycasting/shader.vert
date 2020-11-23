@@ -13,9 +13,9 @@ void main()
     //    scale = 0.2;
     //}
     double scale = abs(aPosition.y) * 2.5;
-    if(scale > 1.0)
+    if(scale > 0.7)
     {
-        scale = 1.0;
+        scale = 0.7;
     }
     color = vertexColor * vec4(scale, scale, scale, 1.0);
 }

@@ -242,7 +242,7 @@ namespace Raycasting
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
-            shader.Remove();
+
             GL.Begin(BeginMode.Quads);
             GL.Color3(0.2f, 0.2f, 0.2f);
             GL.Vertex2(verticesGroundPlane[0]);
@@ -257,24 +257,21 @@ namespace Raycasting
             //shader.Use();
             //GL.VertexAttrib4(1, new Vector4(0.56f, 0.11f, 0.55f, 1f));
             //GL.DrawArrays(PrimitiveType.Quads, 0, 4);
-
-            GL.BindVertexArray(VAORed);
             shader.Use();
+            
+            GL.BindVertexArray(VAORed);
             GL.VertexAttrib4(1, colors[0]);
             GL.DrawArrays(PrimitiveType.Lines, 0, verticesRed.Count);
 
             GL.BindVertexArray(VAOGreen);
-            shader.Use();
             GL.VertexAttrib4(1, colors[1]);
             GL.DrawArrays(PrimitiveType.Lines, 0, verticesGreen.Count);
 
             GL.BindVertexArray(VAOBlue);
-            shader.Use();
             GL.VertexAttrib4(1, colors[2]);
             GL.DrawArrays(PrimitiveType.Lines, 0, verticesBlue.Count);
 
             GL.BindVertexArray(VAOWhite);
-            shader.Use();
             GL.VertexAttrib4(1, colors[3]);
             GL.DrawArrays(PrimitiveType.Lines, 0, verticesWhite.Count);
 
@@ -282,12 +279,12 @@ namespace Raycasting
             GL.Enable(EnableCap.Blend);
 
             GL.BindVertexArray(VAOShadow);
-            shader.Use();
             GL.VertexAttrib4(1, new Vector4(0.2f, 0.2f, 0.2f, 0.8f));
             GL.DrawArrays(PrimitiveType.Lines, 0, verticesShadow.Count);
 
             GL.Disable(EnableCap.Blend);
 
+            shader.Remove();
             Context.SwapBuffers();
             base.OnRenderFrame(e);
         }

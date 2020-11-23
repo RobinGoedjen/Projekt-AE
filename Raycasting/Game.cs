@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK;
 using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL4;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 
 namespace Raycasting
@@ -242,10 +242,21 @@ namespace Raycasting
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
-            GL.BindVertexArray(VAOGroundPlane);
-            shader.Use();
-            GL.VertexAttrib4(1, new Vector4(0.56f, 0.11f,  0.55f, 1f));
-            GL.DrawArrays(PrimitiveType.Quads, 0, 4);
+            shader.Remove();
+            GL.Begin(BeginMode.Quads);
+            GL.Color3(0.2f, 0.2f, 0.2f);
+            GL.Vertex2(verticesGroundPlane[0]);
+            GL.Vertex2(verticesGroundPlane[1]);
+            GL.Color3(0.25f, 0.07f, 0.30f);
+            GL.Vertex2(verticesGroundPlane[2]);
+            GL.Vertex2(verticesGroundPlane[3]);
+            GL.End();
+
+
+            //GL.BindVertexArray(VAOGroundPlane);
+            //shader.Use();
+            //GL.VertexAttrib4(1, new Vector4(0.56f, 0.11f, 0.55f, 1f));
+            //GL.DrawArrays(PrimitiveType.Quads, 0, 4);
 
             GL.BindVertexArray(VAORed);
             shader.Use();

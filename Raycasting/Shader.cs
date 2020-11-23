@@ -71,6 +71,11 @@ namespace Raycasting
             GL.UseProgram(Handle);
         }
 
+        public void Remove()
+        {
+            GL.UseProgram(0);
+        }
+
 
 
         protected virtual void Dispose(bool disposing)

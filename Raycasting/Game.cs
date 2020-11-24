@@ -31,7 +31,7 @@ namespace Raycasting
         int VAORed, VAOGreen, VAOBlue, VAOWhite, VAOShadow;
 
 
-        public Game(Player player, Map map) : base(500, 300, GraphicsMode.Default, "Raycasting")
+        public Game(Player player, Map map) : base(500, 300, GraphicsMode.Default, "Raycasting", GameWindowFlags.Fullscreen)
         {
             this.map = map;
             this.player = player;
@@ -121,7 +121,6 @@ namespace Raycasting
 
                 float drawXScaled = (float)x / this.Width * 2 - 1f;
                 float drawYScaled = (float)lineHeight / this.Height / 2;
-                Console.WriteLine(new Vector2(drawXScaled, drawYScaled));
                 addVertice(new Vector2(drawXScaled, drawYScaled), map.worldMap[currentMapPosition.X, currentMapPosition.Y]);
                 addVertice(new Vector2(drawXScaled, -drawYScaled), map.worldMap[currentMapPosition.X, currentMapPosition.Y]);
                 if (side == 0)
@@ -130,7 +129,6 @@ namespace Raycasting
                     addVertice(new Vector2(drawXScaled, -drawYScaled), 0);
                 }
             }
-            Console.ReadKey();
             //speed modifiers
             float moveSpeed = 0.08f; //TODO: Konstanten machen????
             float rotSpeed = 0.03f;

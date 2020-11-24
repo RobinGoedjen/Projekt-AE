@@ -27,11 +27,11 @@ namespace Raycasting
 
         private Shader shader;
 
-        int VBORed, VBOGreen, VBOBlue, VBOWhite, VBOShadow, VBOGroundPlane;
-        int VAORed, VAOGreen, VAOBlue, VAOWhite, VAOShadow, VAOGroundPlane;
+        int VBORed, VBOGreen, VBOBlue, VBOWhite, VBOShadow;
+        int VAORed, VAOGreen, VAOBlue, VAOWhite, VAOShadow;
 
 
-        public Game(Player player, Map map) : base(500, 300, GraphicsMode.Default, "Raycasting", GameWindowFlags.Fullscreen)
+        public Game(Player player, Map map) : base(500, 300, GraphicsMode.Default, "Raycasting")
         {
             this.map = map;
             this.player = player;
@@ -121,7 +121,7 @@ namespace Raycasting
 
                 float drawXScaled = (float)x / this.Width * 2 - 1f;
                 float drawYScaled = (float)lineHeight / this.Height / 2;
-
+                Console.WriteLine(new Vector2(drawXScaled, drawYScaled));
                 addVertice(new Vector2(drawXScaled, drawYScaled), map.worldMap[currentMapPosition.X, currentMapPosition.Y]);
                 addVertice(new Vector2(drawXScaled, -drawYScaled), map.worldMap[currentMapPosition.X, currentMapPosition.Y]);
                 if (side == 0)
@@ -130,8 +130,9 @@ namespace Raycasting
                     addVertice(new Vector2(drawXScaled, -drawYScaled), 0);
                 }
             }
+            Console.ReadKey();
             //speed modifiers
-            float moveSpeed = 0.08f;
+            float moveSpeed = 0.08f; //TODO: Konstanten machen????
             float rotSpeed = 0.03f;
 
             KeyboardState input = Keyboard.GetState();
@@ -197,7 +198,8 @@ namespace Raycasting
             verticesWhite = new List<Vector2>();
             verticesShadow = new List<Vector2>();
             verticesGroundPlane = new List<Vector2>();
-            GL.ClearColor(0.8f, 0.3f, 0.3f, 1f);
+
+            GL.ClearColor(0.4f, 0.2f, 0.2f, 1f);
 
 
             VAORed = GL.GenVertexArray();
@@ -215,13 +217,10 @@ namespace Raycasting
             VAOShadow = GL.GenVertexArray();
             VBOShadow = GL.GenBuffer();
 
-            VAOGroundPlane = GL.GenVertexArray();
-            VBOGroundPlane = GL.GenBuffer();
             verticesGroundPlane.Add(new Vector2(-1f, 0));
             verticesGroundPlane.Add(new Vector2(1f, 0));
             verticesGroundPlane.Add(new Vector2(1f, -1f));
             verticesGroundPlane.Add(new Vector2(-1f, -1f));
-            fillVAO(VAOGroundPlane, VBOGroundPlane, verticesGroundPlane);
 
 
             shader = new Shader("shader.vert", "shader.frag");
@@ -252,11 +251,6 @@ namespace Raycasting
             GL.Vertex2(verticesGroundPlane[3]);
             GL.End();
 
-
-            //GL.BindVertexArray(VAOGroundPlane);
-            //shader.Use();
-            //GL.VertexAttrib4(1, new Vector4(0.56f, 0.11f, 0.55f, 1f));
-            //GL.DrawArrays(PrimitiveType.Quads, 0, 4);
             shader.Use();
             
             GL.BindVertexArray(VAORed);

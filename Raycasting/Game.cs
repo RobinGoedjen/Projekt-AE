@@ -30,42 +30,20 @@ namespace Raycasting
         int VBORed, VBOGreen, VBOBlue, VBOWhite, VBOShadow;
         int VAORed, VAOGreen, VAOBlue, VAOWhite, VAOShadow;
 
+        //Fields for Sprites
+        List<float> ZBuffer = new List<float>();
+        List<int> spriteOrder = new List<int>();
+        List<float> spriteDistance = new List<float>();
 
-        public Game(Player player, Map map) : base(500, 300, GraphicsMode.Default, "Raycasting", GameWindowFlags.Fullscreen)
+
+        public Game(Player player, Map map) : base(500, 300, GraphicsMode.Default, "Raycasting")
         {
             this.map = map;
             this.player = player;
             this.CursorVisible = false;
             this.CursorGrabbed = true;
-            this.MouseMove += onMouseMove;
         }
 
-        void onMouseMove(object sender, MouseMoveEventArgs e)
-        {
-            float rotSpeed = 0.00005f * Math.Abs(e.X - Width/2); //TODO: nochma schauen
-            if (e.X < Width / 2)
-            {
-                float newDirX = (float)(player.direction.X * Math.Cos(rotSpeed) - player.direction.Y * Math.Sin(rotSpeed));
-                float newDirY = (float)(player.direction.X * Math.Sin(rotSpeed) + player.direction.Y * Math.Cos(rotSpeed));
-                player.direction = new Vector2(newDirX, newDirY);
-
-                float newPlaneX = (float)(player.plane.X * Math.Cos(rotSpeed) - player.plane.Y * Math.Sin(rotSpeed));
-                float newPlaneY = (float)(player.plane.X * Math.Sin(rotSpeed) + player.plane.Y * Math.Cos(rotSpeed));
-                player.plane = new Vector2(newPlaneX, newPlaneY);
-            }
-            else
-            {
-                float newDirX = (float)(player.direction.X * Math.Cos(-rotSpeed) - player.direction.Y * Math.Sin(-rotSpeed));
-                float newDirY = (float)(player.direction.X * Math.Sin(-rotSpeed) + player.direction.Y * Math.Cos(-rotSpeed));
-                player.direction = new Vector2(newDirX, newDirY);
-
-                float newPlaneX = (float)(player.plane.X * Math.Cos(-rotSpeed) - player.plane.Y * Math.Sin(-rotSpeed));
-                float newPlaneY = (float)(player.plane.X * Math.Sin(-rotSpeed) + player.plane.Y * Math.Cos(-rotSpeed));
-                player.plane = new Vector2(newPlaneX, newPlaneY);
-            }
-            Point center = PointToScreen(new Point(Width / 2, 0));
-            Mouse.SetPosition(center.X, center.Y);
-        }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
@@ -251,6 +229,11 @@ namespace Raycasting
 
 
             shader = new Shader("shader.vert", "shader.frag");
+
+            //Load Textures
+            //TODO
+
+
             base.OnLoad(e);
         }
 

@@ -1,5 +1,6 @@
 ﻿using OpenTK;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace Raycasting
         public readonly static List<Sprite> allSprites = new List<Sprite>();
         private readonly static Dictionary<SpriteName, String> spriteDict = new Dictionary<SpriteName, String>(); //Hier nochma typ ändern?
 
-        public static void registerSprite(SpriteName name, String path)
+        private static void registerSprite(SpriteName name, String path)
         {
             spriteDict.Add(name, path);
         }
@@ -31,6 +32,11 @@ namespace Raycasting
         {
             this.position = position;
             this.texture = texture;
+        }
+
+        static Sprite()
+        {
+            Sprite.registerSprite(SpriteName.barrel, Directory.GetCurrentDirectory() + "/Sprites/barrel.png");
         }
 
          

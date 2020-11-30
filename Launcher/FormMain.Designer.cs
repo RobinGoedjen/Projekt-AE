@@ -1,6 +1,6 @@
 ﻿namespace MapEditor
 {
-    partial class Launcher
+    partial class FormMain
     {
         /// <summary>
         /// Erforderliche Designervariable.
@@ -31,6 +31,7 @@
             this.btnPlayGame = new System.Windows.Forms.Button();
             this.btnMapEditor = new System.Windows.Forms.Button();
             this.lblLogo = new System.Windows.Forms.Label();
+            this.listBoxMaps = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
             // btnPlayGame
@@ -41,6 +42,7 @@
             this.btnPlayGame.TabIndex = 0;
             this.btnPlayGame.Text = "Play Game";
             this.btnPlayGame.UseVisualStyleBackColor = true;
+            this.btnPlayGame.Click += new System.EventHandler(this.btnPlayGame_Click);
             // 
             // btnMapEditor
             // 
@@ -50,6 +52,7 @@
             this.btnMapEditor.TabIndex = 1;
             this.btnMapEditor.Text = "Map Editor";
             this.btnMapEditor.UseVisualStyleBackColor = true;
+            this.btnMapEditor.Click += new System.EventHandler(this.btnMapEditor_Click);
             // 
             // lblLogo
             // 
@@ -63,19 +66,40 @@
             this.lblLogo.TabIndex = 2;
             this.lblLogo.Text = "Krasses Spiel :D";
             // 
-            // Launcher
+            // listBoxMaps
+            // 
+            this.listBoxMaps.BackColor = System.Drawing.SystemColors.Window;
+            this.listBoxMaps.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.listBoxMaps.Font = new System.Drawing.Font("Algerian", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.listBoxMaps.FormattingEnabled = true;
+            this.listBoxMaps.ItemHeight = 54;
+            this.listBoxMaps.Items.AddRange(new object[] {
+            "fjbhwf#awfjio",
+            "fwhafu",
+            "iawhf",
+            "waijpfoa",
+            "oj",
+            "sgs"});
+            this.listBoxMaps.Location = new System.Drawing.Point(540, 189);
+            this.listBoxMaps.Name = "listBoxMaps";
+            this.listBoxMaps.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.listBoxMaps.Size = new System.Drawing.Size(448, 220);
+            this.listBoxMaps.TabIndex = 3;
+            // 
+            // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::MapEditor.Properties.Resources.background;
             this.ClientSize = new System.Drawing.Size(1173, 752);
+            this.Controls.Add(this.listBoxMaps);
             this.Controls.Add(this.lblLogo);
             this.Controls.Add(this.btnMapEditor);
             this.Controls.Add(this.btnPlayGame);
             this.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.Name = "Launcher";
+            this.Name = "FormMain";
             this.Text = "Launcher";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Load += new System.EventHandler(this.FormMain_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -86,6 +110,7 @@
         private System.Windows.Forms.Button btnPlayGame;
         private System.Windows.Forms.Button btnMapEditor;
         private System.Windows.Forms.Label lblLogo;
+        private System.Windows.Forms.ListBox listBoxMaps;
     }
 }
 

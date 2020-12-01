@@ -53,6 +53,7 @@ namespace Raycasting
             verticesWhite.Clear();
             verticesShadow.Clear();
 
+            ZBuffer.Clear();
             for (int x = 0; x < this.Width; x++)
             {
                 float cameraX = 2f * x / this.Width - 1f;
@@ -116,7 +117,7 @@ namespace Raycasting
                     perpWallDist = (currentMapPosition.X - player.position.X + (1 - stepX) / 2) / rayDir.X;
                 else 
                     perpWallDist = (currentMapPosition.Y - player.position.Y + (1 - stepY) / 2) / rayDir.Y;
-               // Console.WriteLine(perpWallDist);
+                ZBuffer.Add(perpWallDist);
                 int lineHeight = (int)(this.Height / perpWallDist);
 
                 //calculate lowest and highest pixel to fill in current stripe
@@ -137,6 +138,18 @@ namespace Raycasting
                     addVertice(new Vector2(drawXScaled, -drawYScaled), 0);
                 }
             }
+
+            //Sprite casting
+            for (int i = 0; i < Sprite.sprites.Count; i++)
+            {
+                Sprite.sprites[i].updateDistanceToPlayer(player.position);
+            }
+            Sprite.sprites.Sort();
+            for (int i = 0; i < Sprite.sprites.Count; i++)
+            {
+                //TODO: Rest machen
+            }
+
             //speed modifiers
             float moveSpeed = 0.08f; //TODO: Konstanten machen????
             float rotSpeed = 0.03f;
@@ -230,8 +243,10 @@ namespace Raycasting
 
             shader = new Shader("shader.vert", "shader.frag");
 
-            //Load Textures
-            //TODO
+            //Textures
+            //TODO: Aus File laden
+            Sprite.sprites.Add(new Sprite(new Vector2(3f, 3f), Sprite.SpriteName.barrel));
+            Sprite.sprites.Add(new Sprite(new Vector2(5f, 3f), Sprite.SpriteName.barrel));
 
 
             base.OnLoad(e);
@@ -252,7 +267,7 @@ namespace Raycasting
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
-            GL.Begin(BeginMode.Quads);
+            GL.Begin(PrimitiveType.Quads);
             GL.Color3(0.2f, 0.2f, 0.2f);
             GL.Vertex2(verticesGroundPlane[0]);
             GL.Vertex2(verticesGroundPlane[1]);

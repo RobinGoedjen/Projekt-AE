@@ -8,15 +8,26 @@ using System.Threading.Tasks;
 
 namespace Raycasting
 {
-    class Sprite
+    class Sprite : IComparable<Sprite>
     {
         public enum SpriteName { barrel }
         private Vector2 position { get; }
-
         private SpriteName texture { get; }
 
-        public readonly static List<Sprite> allSprites = new List<Sprite>();
-        private readonly static Dictionary<SpriteName, String> spriteDict = new Dictionary<SpriteName, String>(); //Hier nochma typ ändern?
+        public readonly static List<Sprite> sprites = new List<Sprite>();
+        private readonly static Dictionary<SpriteName, String> spriteDict = new Dictionary<SpriteName, String>(); //Hier nochma typ ändern? TODO
+
+        private float distanceToPlayer { get; set; }
+        public Sprite(Vector2 position, SpriteName texture)
+        {
+            this.position = position;
+            this.texture = texture;
+        }
+
+        static Sprite()
+        {
+            Sprite.registerSprite(SpriteName.barrel, Directory.GetCurrentDirectory() + "/Sprites/barrel.png");
+        }
 
         private static void registerSprite(SpriteName name, String path)
         {
@@ -28,15 +39,14 @@ namespace Raycasting
             return spriteDict[name];
         }
 
-        public Sprite(Vector2 position, SpriteName texture)
+        public void updateDistanceToPlayer(Vector2 playerPosition)
         {
-            this.position = position;
-            this.texture = texture;
+            distanceToPlayer = (float)(Math.Pow(playerPosition.X - position.X, 2f) + Math.Pow(playerPosition.Y - position.Y, 2f)); 
         }
 
-        static Sprite()
+        public int CompareTo(Sprite other)
         {
-            Sprite.registerSprite(SpriteName.barrel, Directory.GetCurrentDirectory() + "/Sprites/barrel.png");
+            return (int)(this.distanceToPlayer - other.distanceToPlayer);   
         }
 
          

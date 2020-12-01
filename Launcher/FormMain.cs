@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using Newtonsoft.Json;
+using MapLibrary;
 
 namespace MapEditor
 {
@@ -31,7 +33,15 @@ namespace MapEditor
 
         private void btnMapEditor_Click(object sender, EventArgs e)
         {
-            new FormMapEditor().ShowDialog();
+            Map map = new Map("test.json");
+
+            String mapJson = JsonConvert.SerializeObject(map);
+
+            Console.WriteLine(Directory.GetCurrentDirectory() + @"\" + map.filename);
+
+            File.WriteAllText(Directory.GetCurrentDirectory() + @"\Maps\" + map.filename, mapJson);
+         
+            //new FormMapEditor().ShowDialog();
         }
     }
 }

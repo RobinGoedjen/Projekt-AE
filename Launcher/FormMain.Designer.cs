@@ -90,7 +90,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = global::MapEditor.Properties.Resources.background;
+            this.BackgroundImage = global::Launcher.Properties.Resources.background;
             this.ClientSize = new System.Drawing.Size(1173, 752);
             this.Controls.Add(this.listBoxMaps);
             this.Controls.Add(this.lblLogo);

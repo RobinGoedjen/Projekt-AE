@@ -12,7 +12,12 @@ namespace MapLibrary
         private const uint width = 100;
 
         public String filename { get;  }
-        public uint[,] worldMap { get; }
+        public uint[,] worldMap { get; set; }
+
+        public override string ToString()
+        {
+            return filename.Split('.')[0];
+        }
 
         public Map(String fileName)
         {

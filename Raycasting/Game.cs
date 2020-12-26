@@ -36,7 +36,7 @@ namespace Raycasting
         List<float> spriteDistance = new List<float>();
 
 
-        public Game(Player player, Map map) : base(500, 300, GraphicsMode.Default, "Raycasting")
+        public Game(Player player, Map map) : base(500, 300, GraphicsMode.Default, "Raycasting", GameWindowFlags.Fullscreen)
         {
             this.map = map;
             this.player = player;

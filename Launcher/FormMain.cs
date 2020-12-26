@@ -11,11 +11,14 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using Newtonsoft.Json;
 using MapLibrary;
+using Newtonsoft.Json.Linq;
 
 namespace MapEditor
 {
     public partial class FormMain : Form
     {
+        List<Map> maps = new List<Map>();
+        string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.FullName;
         public FormMain()
         {
             InitializeComponent();
@@ -23,7 +26,13 @@ namespace MapEditor
 
         private void FormMain_Load(object sender, EventArgs e)
         {
+            listBoxMaps.Items.Clear();
+            String[] files = Directory.GetFiles(projectDirectory + @"\Maps");
 
+            foreach (var file in files)
+            {
+                listBoxMaps.Items.Add(JsonConvert.DeserializeObject<Map>(File.ReadAllText(file)));
+            }
         }
 
         private void btnPlayGame_Click(object sender, EventArgs e)
@@ -33,15 +42,8 @@ namespace MapEditor
 
         private void btnMapEditor_Click(object sender, EventArgs e)
         {
-            Map map = new Map("test.json");
-
-            String mapJson = JsonConvert.SerializeObject(map);
-
-            Console.WriteLine(Directory.GetCurrentDirectory() + @"\" + map.filename);
-
-            File.WriteAllText(Directory.GetCurrentDirectory() + @"\Maps\" + map.filename, mapJson);
-         
-            //new FormMapEditor().ShowDialog();
+            FormMapEditor mapEditor = new FormMapEditor();
+            mapEditor.ShowDialog();
         }
     }
 }

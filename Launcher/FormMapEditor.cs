@@ -17,9 +17,11 @@ namespace MapEditor
     public partial class FormMapEditor : Form
     {
         List<Button> mainButtons = new List<Button>();
+        List<List<int>> worldMap = new List<List<int>>();
         Button activeButton;
-        int mapDimension;
-        uint[,] worldMap = new uint[,] { };
+        int mapDimensionY;
+        int mapDimensionX;
+        bool mapGenerated = false;
 
         public FormMapEditor()
         {
@@ -28,31 +30,10 @@ namespace MapEditor
 
         private void FormMapEditor_Load(object sender, EventArgs e)
         {
-            int startX = 300;
-            int posX = startX;
-            int posY = 100;
-            mapDimension = 9;
-
-            for(int i = 0; i < mapDimension; i++)
-            {
-                for (int j = 0; j < mapDimension; j++)
-                {
-                    Button button = new Button();
-                    button.Name = i.ToString() + "-" + j.ToString();
-                    button.Size = new Size(50, 50);
-                    button.Location = new Point(posX, posY);
-                    button.BackColor = Color.White;
-                    button.Click += new EventHandler(btn_click);
-                    button.FlatStyle = FlatStyle.Flat;
-                    button.Text = "0";
-                    button.FlatAppearance.MouseOverBackColor = Color.White;
-                    button.ForeColor = Color.White;
-                    this.Controls.Add(button);
-                    posX += 51;
-                }
-                posX = startX;
-                posY += 51;
-            }
+            
+            mapDimensionY = (int) mapDimX.Value;
+            mapDimensionX = (int) mapDimY.Value;
+            generateMap(mapDimensionY, mapDimensionX);
         }
 
         private void btn_click(object sender, EventArgs e)
@@ -63,7 +44,6 @@ namespace MapEditor
             button.ForeColor = activeButton.ForeColor;
             button.FlatAppearance.MouseOverBackColor = activeButton.BackColor;
             button.Text = activeButton.Text;
-            Console.WriteLine(button.Name);
         }
 
         private void selectButton_click(object sender, EventArgs e)
@@ -87,24 +67,97 @@ namespace MapEditor
 
         private void saveMap(object sender, EventArgs e)
         {
-            worldMap[5, 5] = 1;
-            for (int i = 0; i < mapDimension; i++)
+            for (int i = 0; i < mapDimensionY; i++)
             {
-                for (int j = 0; j < mapDimension; j++)
+                List<int> row = new List<int>();
+                for (int j = 0; j < mapDimensionX; j++)
                 {
                     Control btn = this.Controls.Find(i.ToString() + "-" + j.ToString(), true)[0];
+                    row.Add(Convert.ToInt32(btn.Text));
+                }
+                worldMap.Add(row);
+            }
+
+            String mapName = txtMapName.Text;
+            if(checkMapName(mapName))
+            {
+                Map map = new Map(mapName + ".json");
+
+                map.worldMap = worldMap;
+
+                String mapJson = JsonConvert.SerializeObject(map);
+
+                string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.FullName;
+
+                File.WriteAllText(projectDirectory + @"\Maps\" + map.filename, mapJson);
+            }
+        }
+
+        private void btnChangeDim_Click(object sender, EventArgs e)
+        {
+            if (mapGenerated)
+            {
+                clearMap();
+            }
+            mapDimensionY = (int)mapDimY.Value;
+            mapDimensionX = (int)mapDimX.Value;
+
+            generateMap(mapDimensionY, mapDimensionX);
+        }
+
+        private void clearMap()
+        {
+            for (int i = 0; i < mapDimensionY; i++)
+            {
+                for (int j = 0; j < mapDimensionX; j++)
+                {
+                    Control btn = this.Controls.Find(i.ToString() + "-" + j.ToString(), true)[0];
+                    this.Controls.Remove(btn);
                 }
             }
-            Console.WriteLine(worldMap);
+        }
 
-            //Map map = new Map("test.json");
-            //map.worldMap = worldMap.ToArray();
+        private void generateMap(int dimX, int dimY)
+        {
+            int startX = 300;
+            int posX = startX;
+            int posY = 100;
 
-            //String mapJson = JsonConvert.SerializeObject(map);
+            for (int i = 0; i < dimX; i++)
+            {
+                for (int j = 0; j < dimY; j++)
+                {
+                    Button button = new Button();
+                    button.Name = i.ToString() + "-" + j.ToString();
+                    button.Size = new Size(50, 50);
+                    button.Location = new Point(posX, posY);
+                    button.BackColor = Color.White;
+                    button.Click += new EventHandler(btn_click);
+                    button.FlatStyle = FlatStyle.Flat;
+                    button.Text = "0";
+                    button.FlatAppearance.MouseOverBackColor = Color.White;
+                    button.ForeColor = Color.White;
+                    this.Controls.Add(button);
+                    posX += 51;
+                }
+                posX = startX;
+                posY += 51;
+            }
+            mapGenerated = true;
+        }
 
-            //Console.WriteLine(Directory.GetCurrentDirectory() + @"\" + map.filename);
-
-            //File.WriteAllText(projectDirectory + @"\Maps\" + map.filename, mapJson);
+        private bool checkMapName(string name)
+        {
+            if(String.IsNullOrEmpty(name) || String.IsNullOrWhiteSpace(name))
+            {
+                // todo add label for error message
+                return false;
+            }
+            if (name.Contains('.'))
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

@@ -32,7 +32,6 @@
             this.btnMapEditor = new System.Windows.Forms.Button();
             this.lblLogo = new System.Windows.Forms.Label();
             this.listBoxMaps = new System.Windows.Forms.ListBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btnPlayGame
@@ -84,20 +83,12 @@
             this.listBoxMaps.Size = new System.Drawing.Size(596, 211);
             this.listBoxMaps.TabIndex = 3;
             // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(335, 361);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 22);
-            this.textBox1.TabIndex = 4;
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::Launcher.Properties.Resources.background;
             this.ClientSize = new System.Drawing.Size(1564, 926);
-            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.listBoxMaps);
             this.Controls.Add(this.lblLogo);
             this.Controls.Add(this.btnMapEditor);
@@ -118,7 +109,6 @@
         private System.Windows.Forms.Button btnMapEditor;
         private System.Windows.Forms.Label lblLogo;
         private System.Windows.Forms.ListBox listBoxMaps;
-        private System.Windows.Forms.TextBox textBox1;
     }
 }
 

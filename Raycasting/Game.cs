@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,6 +30,7 @@ namespace Raycasting
 
         int VBORed, VBOGreen, VBOBlue, VBOWhite, VBOShadow;
         int VAORed, VAOGreen, VAOBlue, VAOWhite, VAOShadow;
+        int barrelID; //TODO
 
         //Fields for Sprites
         List<float> ZBuffer = new List<float>();
@@ -36,12 +38,13 @@ namespace Raycasting
         List<float> spriteDistance = new List<float>();
 
 
-        public Game(Player player, Map map) : base(500, 300, GraphicsMode.Default, "Raycasting")
+        public Game(Player player, Map map) : base(500, 300, GraphicsMode.Default, "Raycasting", GameWindowFlags.Fullscreen)
         {
             this.map = map;
             this.player = player;
             this.CursorVisible = false;
             this.CursorGrabbed = true;
+            GL.Enable(EnableCap.Texture2D); //TODO
         }
 
 
@@ -145,9 +148,33 @@ namespace Raycasting
                 Sprite.sprites[i].updateDistanceToPlayer(player.position);
             }
             Sprite.sprites.Sort();
-            for (int i = 0; i < Sprite.sprites.Count; i++)
+
+            foreach (Sprite currSprite in Sprite.sprites)
             {
-                //TODO: Rest machen
+                var spritePosition = currSprite.position - player.position;
+                float invDet = 1.0f / (player.plane.X * player.direction.Y - player.direction.X * player.plane.Y); 
+                float transformX = invDet * (player.direction.Y * currSprite.position.X - player.direction.X * currSprite.position.Y);
+                float transformY = invDet * (-player.plane.Y * currSprite.position.X + player.plane.X * currSprite.position.Y);
+                int spriteScreenX = (int)((this.Width / 2) * (1 + transformX / transformY));  
+                
+                //TODO: HIER WIRD VLLT NUR spriteHeight und spriteWidth benötigt
+                //calculate height of the sprite on screen
+                int spriteHeight = Math.Abs((int)(this.Height / (transformY))); 
+                int drawStartY = -spriteHeight / 2 + this.Height / 2;
+                if (drawStartY < 0) 
+                    drawStartY = 0;
+                int drawEndY = spriteHeight / 2 + this.Height / 2;
+                if (drawEndY >= this.Height) 
+                    drawEndY = this.Height - 1;
+
+                //calculate width of the sprite
+                int spriteWidth = Math.Abs((int)(this.Height / (transformY)));
+                int drawStartX = -spriteWidth / 2 + spriteScreenX;
+                if (drawStartX < 0) 
+                    drawStartX = 0;
+                int drawEndX = spriteWidth / 2 + spriteScreenX;
+                if (drawEndX >= this.Width) 
+                    drawEndX = this.Width - 1;
             }
 
             //speed modifiers
@@ -248,6 +275,22 @@ namespace Raycasting
             Sprite.sprites.Add(new Sprite(new Vector2(3f, 3f), Sprite.SpriteName.barrel));
             Sprite.sprites.Add(new Sprite(new Vector2(5f, 3f), Sprite.SpriteName.barrel));
 
+            //TEST
+            //GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
+            barrelID = GL.GenTexture();
+            GL.BindTexture(TextureTarget.Texture2D, barrelID);
+
+            Bitmap bmp = new Bitmap(Sprite.getSprite(Sprite.SpriteName.barrel));
+            bmp.MakeTransparent(Color.FromArgb(255,255,255)); //NOCHMAL SCHAUEN WAS DA LOS IST!!!
+            BitmapData data = bmp.LockBits(new Rectangle(0,0,bmp.Width, bmp.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb); 
+
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
+
+            bmp.UnlockBits(data);
+
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+            GL.BindTexture(TextureTarget.Texture2D, 0);
 
             base.OnLoad(e);
         }
@@ -266,7 +309,6 @@ namespace Raycasting
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
-
             GL.Begin(PrimitiveType.Quads);
             GL.Color3(0.2f, 0.2f, 0.2f);
             GL.Vertex2(verticesGroundPlane[0]);
@@ -304,6 +346,28 @@ namespace Raycasting
             GL.Disable(EnableCap.Blend);
 
             shader.Remove();
+
+            //TEST
+            GL.BindTexture(TextureTarget.Texture2D, barrelID);
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.LoadIdentity();
+            GL.Begin(BeginMode.Quads);
+            GL.Color3(Color.Transparent);
+
+            GL.TexCoord2(1, 1);
+			GL.Vertex2(0.3f, 0.5f);
+			GL.TexCoord2(0, 1);
+			GL.Vertex2(-0.3f, 0.5f);
+
+            GL.TexCoord2(0, 0);
+			GL.Vertex2(-0.3f, -0.5f);
+			GL.TexCoord2(1, 0);
+			GL.Vertex2(0.3f, -0.5f);
+			GL.End();
+
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+
+
             Context.SwapBuffers();
             base.OnRenderFrame(e);
         }

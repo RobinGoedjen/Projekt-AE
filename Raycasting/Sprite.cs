@@ -11,7 +11,7 @@ namespace Raycasting
     class Sprite : IComparable<Sprite>
     {
         public enum SpriteName { barrel }
-        private Vector2 position { get; }
+        public Vector2 position { get; }
         private SpriteName texture { get; }
 
         public readonly static List<Sprite> sprites = new List<Sprite>();

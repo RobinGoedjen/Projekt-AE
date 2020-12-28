@@ -44,7 +44,7 @@ namespace Raycasting
             this.player = player;
             this.CursorVisible = false;
             this.CursorGrabbed = true;
-            GL.Enable(EnableCap.Texture2D); //TODO
+            GL.Enable(EnableCap.Texture2D);
         }
 
 
@@ -143,9 +143,9 @@ namespace Raycasting
             }
 
             //Sprite casting
-            for (int i = 0; i < Sprite.sprites.Count; i++)
+            foreach (Sprite currSpirte in Sprite.sprites)
             {
-                Sprite.sprites[i].updateDistanceToPlayer(player.position);
+                currSpirte.updateDistanceToPlayer(player.position);
             }
             Sprite.sprites.Sort();
 
@@ -153,28 +153,45 @@ namespace Raycasting
             {
                 var spritePosition = currSprite.position - player.position;
                 float invDet = 1.0f / (player.plane.X * player.direction.Y - player.direction.X * player.plane.Y); 
-                float transformX = invDet * (player.direction.Y * currSprite.position.X - player.direction.X * currSprite.position.Y);
-                float transformY = invDet * (-player.plane.Y * currSprite.position.X + player.plane.X * currSprite.position.Y);
-                int spriteScreenX = (int)((this.Width / 2) * (1 + transformX / transformY));  
+                float transformX = invDet * (player.direction.Y * spritePosition.X - player.direction.X * spritePosition.Y);
+                float transformY = invDet * (-player.plane.Y * spritePosition.X + player.plane.X * spritePosition.Y);
+                int spriteScreenX = (int)((this.Width / 2f) * (1f + transformX / transformY));  
                 
-                //TODO: HIER WIRD VLLT NUR spriteHeight und spriteWidth benötigt
                 //calculate height of the sprite on screen
-                int spriteHeight = Math.Abs((int)(this.Height / (transformY))); 
-                int drawStartY = -spriteHeight / 2 + this.Height / 2;
-                if (drawStartY < 0) 
-                    drawStartY = 0;
-                int drawEndY = spriteHeight / 2 + this.Height / 2;
-                if (drawEndY >= this.Height) 
-                    drawEndY = this.Height - 1;
+                int spriteHeight = Math.Abs((int)(this.Height / (transformY)))/2; //Die Zwei verkleinert die Barrel VLLT Konstane machen TODO
+                int drawStartY = -spriteHeight / 2 + this.Height / 2 + (int)(-20/transformY); //AUS DIESEM TERM VLLT AUCH EINE KOSNTANTE MACHEN TODO
+                int drawEndY = spriteHeight / 2 + this.Height / 2 + (int)(-20/transformY); //TODO
 
                 //calculate width of the sprite
-                int spriteWidth = Math.Abs((int)(this.Height / (transformY)));
+                int spriteWidth = Math.Abs((int)(this.Height / (transformY)))/2; //Die Zwei verkleinert die Barrel TODO
                 int drawStartX = -spriteWidth / 2 + spriteScreenX;
-                if (drawStartX < 0) 
-                    drawStartX = 0;
                 int drawEndX = spriteWidth / 2 + spriteScreenX;
-                if (drawEndX >= this.Width) 
-                    drawEndX = this.Width - 1;
+
+                int firstVisibleX = -1;
+                int lastVisibleX = -1;
+                for(int stripe = drawStartX; stripe < drawEndX; stripe++)
+                {
+                    if(transformY > 0 && stripe > 0 && stripe < this.Width && transformY < ZBuffer[stripe])
+                    {
+                        if (firstVisibleX == -1)
+                        {
+                            firstVisibleX = stripe;
+                        } else
+                        {
+                            lastVisibleX = stripe;
+                        }
+                    }
+                }
+                currSprite.visible = lastVisibleX != -1 && firstVisibleX != -1;
+                if (!currSprite.visible)
+                    continue;
+                int spriteWidthPixel = drawEndX - drawStartX;
+                currSprite.firstTextureX = (float)(firstVisibleX-drawStartX) / spriteWidthPixel;
+                currSprite.lastTextureX = (float)(lastVisibleX-drawStartX) / spriteWidthPixel;
+
+                currSprite.drawStart = new Vector2(firstVisibleX, drawStartY);
+                currSprite.drawEnd = new Vector2(lastVisibleX, drawEndY);
+                currSprite.transformDrawToScrren(this.Width, this.Height);
             }
 
             //speed modifiers
@@ -271,17 +288,19 @@ namespace Raycasting
             shader = new Shader("shader.vert", "shader.frag");
 
             //Textures
-            //TODO: Aus File laden
-            Sprite.sprites.Add(new Sprite(new Vector2(3f, 3f), Sprite.SpriteName.barrel));
-            Sprite.sprites.Add(new Sprite(new Vector2(5f, 3f), Sprite.SpriteName.barrel));
+            Sprite.sprites.Add(new Sprite(new Vector2(6f, 9f), Sprite.SpriteName.barrel));
+            Sprite.sprites.Add(new Sprite(new Vector2(6f, 8f), Sprite.SpriteName.barrel));
 
             //TEST
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             //GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
+            
             barrelID = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, barrelID);
 
             Bitmap bmp = new Bitmap(Sprite.getSprite(Sprite.SpriteName.barrel));
-            bmp.MakeTransparent(Color.FromArgb(255,255,255)); //NOCHMAL SCHAUEN WAS DA LOS IST!!!
+            bmp.MakeTransparent(Color.FromArgb(255,255,0,220));
+            bmp.RotateFlip(RotateFlipType.Rotate180FlipX);
             BitmapData data = bmp.LockBits(new Rectangle(0,0,bmp.Width, bmp.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb); 
 
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
@@ -336,38 +355,42 @@ namespace Raycasting
             GL.VertexAttrib4(1, colors[3]);
             GL.DrawArrays(PrimitiveType.Lines, 0, verticesWhite.Count);
 
-            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.One);
             GL.Enable(EnableCap.Blend);
 
             GL.BindVertexArray(VAOShadow);
-            GL.VertexAttrib4(1, new Vector4(0.2f, 0.2f, 0.2f, 0.8f));
+            GL.VertexAttrib4(1, new Vector4(0.2f, 0.2f, 0.2f, 0.175f));
             GL.DrawArrays(PrimitiveType.Lines, 0, verticesShadow.Count);
-
-            GL.Disable(EnableCap.Blend);
 
             shader.Remove();
 
             //TEST
             GL.BindTexture(TextureTarget.Texture2D, barrelID);
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadIdentity();
-            GL.Begin(BeginMode.Quads);
-            GL.Color3(Color.Transparent);
+            //GL.MatrixMode(MatrixMode.Projection);
+            //GL.LoadIdentity();
+            foreach (Sprite currSprite in Sprite.sprites)
+            {
+                if (!currSprite.visible)
+                    continue;
+                GL.Begin(BeginMode.Quads);
+                GL.Color3(Color.Transparent);
 
-            GL.TexCoord2(1, 1);
-			GL.Vertex2(0.3f, 0.5f);
-			GL.TexCoord2(0, 1);
-			GL.Vertex2(-0.3f, 0.5f);
+                GL.TexCoord2(currSprite.firstTextureX, 0);
+			    GL.Vertex2(currSprite.drawStart);
 
-            GL.TexCoord2(0, 0);
-			GL.Vertex2(-0.3f, -0.5f);
-			GL.TexCoord2(1, 0);
-			GL.Vertex2(0.3f, -0.5f);
-			GL.End();
+                GL.TexCoord2(currSprite.firstTextureX, 0.8f);
+			    GL.Vertex2(currSprite.drawStart.X, currSprite.drawEnd.Y);
+
+                GL.TexCoord2(currSprite.lastTextureX, 0.8f);
+			    GL.Vertex2(currSprite.drawEnd);
+
+                GL.TexCoord2(currSprite.lastTextureX, 0);
+			    GL.Vertex2(currSprite.drawEnd.X, currSprite.drawStart.Y);
+			    
+			    GL.End();
+            }
 
             GL.BindTexture(TextureTarget.Texture2D, 0);
-
-
+            GL.Disable(EnableCap.Blend);
             Context.SwapBuffers();
             base.OnRenderFrame(e);
         }

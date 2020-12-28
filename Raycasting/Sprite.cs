@@ -13,6 +13,11 @@ namespace Raycasting
         public enum SpriteName { barrel }
         public Vector2 position { get; }
         private SpriteName texture { get; }
+        public Vector2 drawStart;
+        public Vector2 drawEnd;
+        public bool visible;
+        public float firstTextureX;
+        public float lastTextureX;
 
         public readonly static List<Sprite> sprites = new List<Sprite>();
         private readonly static Dictionary<SpriteName, String> spriteDict = new Dictionary<SpriteName, String>(); //Hier nochma typ ändern? TODO
@@ -46,10 +51,21 @@ namespace Raycasting
 
         public int CompareTo(Sprite other)
         {
-            return (int)(this.distanceToPlayer - other.distanceToPlayer);   
+            return (int)(other.distanceToPlayer - this.distanceToPlayer);   
         }
 
+        public void transformDrawToScrren(int screenWidth, int scrrenHeight)
+        {
+            this.drawStart = scaleVecotrToScreen(this.drawStart, screenWidth, scrrenHeight);
+            this.drawEnd = scaleVecotrToScreen(this.drawEnd, screenWidth, scrrenHeight);
+        }
          
+        private Vector2 scaleVecotrToScreen(Vector2 input, int width, int height)
+        {
+            float newX = (float)input.X / width * 2f - 1f;
+            float newY = (float)input.Y / height * 2f - 1f;           
+            return new Vector2(newX, newY);     
+        }
         
     }
 }

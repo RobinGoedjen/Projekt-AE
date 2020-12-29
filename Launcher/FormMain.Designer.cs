@@ -36,9 +36,10 @@
             // 
             // btnPlayGame
             // 
-            this.btnPlayGame.Location = new System.Drawing.Point(68, 189);
+            this.btnPlayGame.Location = new System.Drawing.Point(91, 233);
+            this.btnPlayGame.Margin = new System.Windows.Forms.Padding(4);
             this.btnPlayGame.Name = "btnPlayGame";
-            this.btnPlayGame.Size = new System.Drawing.Size(160, 52);
+            this.btnPlayGame.Size = new System.Drawing.Size(213, 64);
             this.btnPlayGame.TabIndex = 0;
             this.btnPlayGame.Text = "Play Game";
             this.btnPlayGame.UseVisualStyleBackColor = true;
@@ -46,9 +47,10 @@
             // 
             // btnMapEditor
             // 
-            this.btnMapEditor.Location = new System.Drawing.Point(68, 261);
+            this.btnMapEditor.Location = new System.Drawing.Point(91, 321);
+            this.btnMapEditor.Margin = new System.Windows.Forms.Padding(4);
             this.btnMapEditor.Name = "btnMapEditor";
-            this.btnMapEditor.Size = new System.Drawing.Size(160, 50);
+            this.btnMapEditor.Size = new System.Drawing.Size(213, 62);
             this.btnMapEditor.TabIndex = 1;
             this.btnMapEditor.Text = "Map Editor";
             this.btnMapEditor.UseVisualStyleBackColor = true;
@@ -60,9 +62,10 @@
             this.lblLogo.BackColor = System.Drawing.Color.Black;
             this.lblLogo.Font = new System.Drawing.Font("Microsoft Sans Serif", 40F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblLogo.ForeColor = System.Drawing.Color.White;
-            this.lblLogo.Location = new System.Drawing.Point(57, 64);
+            this.lblLogo.Location = new System.Drawing.Point(76, 79);
+            this.lblLogo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblLogo.Name = "lblLogo";
-            this.lblLogo.Size = new System.Drawing.Size(426, 63);
+            this.lblLogo.Size = new System.Drawing.Size(526, 76);
             this.lblLogo.TabIndex = 2;
             this.lblLogo.Text = "Krasses Spiel :D";
             // 
@@ -70,33 +73,28 @@
             // 
             this.listBoxMaps.BackColor = System.Drawing.SystemColors.Window;
             this.listBoxMaps.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.listBoxMaps.Font = new System.Drawing.Font("Algerian", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.listBoxMaps.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listBoxMaps.FormattingEnabled = true;
-            this.listBoxMaps.ItemHeight = 54;
-            this.listBoxMaps.Items.AddRange(new object[] {
-            "fjbhwf#awfjio",
-            "fwhafu",
-            "iawhf",
-            "waijpfoa",
-            "oj",
-            "sgs"});
-            this.listBoxMaps.Location = new System.Drawing.Point(540, 189);
+            this.listBoxMaps.ItemHeight = 69;
+            this.listBoxMaps.Location = new System.Drawing.Point(720, 233);
+            this.listBoxMaps.Margin = new System.Windows.Forms.Padding(4);
             this.listBoxMaps.Name = "listBoxMaps";
             this.listBoxMaps.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.listBoxMaps.Size = new System.Drawing.Size(448, 220);
+            this.listBoxMaps.Size = new System.Drawing.Size(596, 211);
             this.listBoxMaps.TabIndex = 3;
             // 
             // FormMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::Launcher.Properties.Resources.background;
-            this.ClientSize = new System.Drawing.Size(1173, 752);
+            this.ClientSize = new System.Drawing.Size(1564, 926);
             this.Controls.Add(this.listBoxMaps);
             this.Controls.Add(this.lblLogo);
             this.Controls.Add(this.btnMapEditor);
             this.Controls.Add(this.btnPlayGame);
             this.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FormMain";
             this.Text = "Launcher";
             this.Load += new System.EventHandler(this.FormMain_Load);

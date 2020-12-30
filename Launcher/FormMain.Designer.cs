@@ -34,6 +34,7 @@
             this.listBoxMaps = new System.Windows.Forms.ListBox();
             this.btnEditMap = new System.Windows.Forms.Button();
             this.pictureBoxPreview = new System.Windows.Forms.PictureBox();
+            this.btnDeleteMap = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).BeginInit();
             this.SuspendLayout();
             // 
@@ -76,10 +77,10 @@
             this.listBoxMaps.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listBoxMaps.FormattingEnabled = true;
             this.listBoxMaps.ItemHeight = 55;
-            this.listBoxMaps.Location = new System.Drawing.Point(540, 189);
+            this.listBoxMaps.Location = new System.Drawing.Point(540, 64);
             this.listBoxMaps.Name = "listBoxMaps";
             this.listBoxMaps.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.listBoxMaps.Size = new System.Drawing.Size(448, 169);
+            this.listBoxMaps.Size = new System.Drawing.Size(448, 279);
             this.listBoxMaps.TabIndex = 3;
             this.listBoxMaps.Click += new System.EventHandler(this.listBoxMaps_Click);
             // 
@@ -95,7 +96,7 @@
             // 
             // pictureBoxPreview
             // 
-            this.pictureBoxPreview.Location = new System.Drawing.Point(540, 397);
+            this.pictureBoxPreview.Location = new System.Drawing.Point(540, 374);
             this.pictureBoxPreview.Name = "pictureBoxPreview";
             this.pictureBoxPreview.Size = new System.Drawing.Size(448, 323);
             this.pictureBoxPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -103,12 +104,23 @@
             this.pictureBoxPreview.TabStop = false;
             this.pictureBoxPreview.Visible = false;
             // 
+            // btnDeleteMap
+            // 
+            this.btnDeleteMap.Location = new System.Drawing.Point(68, 392);
+            this.btnDeleteMap.Name = "btnDeleteMap";
+            this.btnDeleteMap.Size = new System.Drawing.Size(160, 50);
+            this.btnDeleteMap.TabIndex = 6;
+            this.btnDeleteMap.Text = "Delete Map";
+            this.btnDeleteMap.UseVisualStyleBackColor = true;
+            this.btnDeleteMap.Click += new System.EventHandler(this.btnDeleteMap_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::Launcher.Properties.Resources.background;
-            this.ClientSize = new System.Drawing.Size(1173, 752);
+            this.ClientSize = new System.Drawing.Size(1066, 752);
+            this.Controls.Add(this.btnDeleteMap);
             this.Controls.Add(this.pictureBoxPreview);
             this.Controls.Add(this.btnEditMap);
             this.Controls.Add(this.listBoxMaps);
@@ -132,6 +144,7 @@
         private System.Windows.Forms.ListBox listBoxMaps;
         private System.Windows.Forms.Button btnEditMap;
         private System.Windows.Forms.PictureBox pictureBoxPreview;
+        private System.Windows.Forms.Button btnDeleteMap;
     }
 }
 

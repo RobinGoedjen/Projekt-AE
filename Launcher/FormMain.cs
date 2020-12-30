@@ -22,7 +22,7 @@ namespace MapEditor
         public FormMain()
         {
             InitializeComponent();
-            laodMapsFromFolder();
+            loadMapsFromFolder();
         }
 
         private void btnPlayGame_Click(object sender, EventArgs e)
@@ -42,10 +42,10 @@ namespace MapEditor
         private void btnMapEditor_Click(object sender, EventArgs e)
         {
             new FormMapEditor().ShowDialog();
-            laodMapsFromFolder();
+            loadMapsFromFolder();
         }
 
-        private void laodMapsFromFolder()
+        private void loadMapsFromFolder()
         {
             listBoxMaps.Items.Clear();
             availableMaps = Directory.GetFiles(projectDirectory + @"\Maps");
@@ -70,7 +70,7 @@ namespace MapEditor
             var map = JsonConvert.DeserializeObject<Map>(File.ReadAllText(availableMaps[listBoxMaps.SelectedIndex]));
             
             new FormMapEditor(map).ShowDialog();
-            laodMapsFromFolder();
+            loadMapsFromFolder();
         }
 
         private void listBoxMaps_Click(object sender, EventArgs e)
@@ -78,10 +78,22 @@ namespace MapEditor
             if (listBoxMaps.SelectedIndex == -1)
                 return;
             var map = JsonConvert.DeserializeObject<Map>(File.ReadAllText(availableMaps[listBoxMaps.SelectedIndex]));
-            Size size = new Size(this.Width - pictureBoxPreview.Top - 10, this.Height - pictureBoxPreview.Left - 10);
+            Size size = new Size(this.Width - pictureBoxPreview.Left - 50, this.Height - pictureBoxPreview.Top - 50);
             var mapVisualizer = new MapVisualizer(size, map);
             pictureBoxPreview.Image = mapVisualizer.currentMapImage;
             pictureBoxPreview.Visible = true;
+        }
+
+        private void btnDeleteMap_Click(object sender, EventArgs e)
+        {
+            if (listBoxMaps.SelectedIndex == -1)
+                return;
+            //Abfrage: bist du sicher? TODO
+            if (!File.Exists(availableMaps[listBoxMaps.SelectedIndex]))
+                return;
+            File.Delete(availableMaps[listBoxMaps.SelectedIndex]);
+            pictureBoxPreview.Visible = false;
+            loadMapsFromFolder();
         }
     }
 }

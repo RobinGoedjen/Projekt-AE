@@ -129,6 +129,7 @@
             this.Controls.Add(this.btnPlayGame);
             this.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.Name = "FormMain";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Launcher";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).EndInit();
             this.ResumeLayout(false);

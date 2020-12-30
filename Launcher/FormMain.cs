@@ -17,33 +17,43 @@ namespace MapEditor
 {
     public partial class FormMain : Form
     {
-        List<Map> maps = new List<Map>();
-        string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.FullName;
+        string projectDirectory = Environment.CurrentDirectory;
+        String[] availableMaps;
         public FormMain()
         {
             InitializeComponent();
-        }
-
-        private void FormMain_Load(object sender, EventArgs e)
-        {
-            listBoxMaps.Items.Clear();
-            String[] files = Directory.GetFiles(projectDirectory + @"\Maps");
-
-            foreach (var file in files)
-            {
-                listBoxMaps.Items.Add(JsonConvert.DeserializeObject<Map>(File.ReadAllText(file)));
-            }
+            laodMapsFromFolder();
         }
 
         private void btnPlayGame_Click(object sender, EventArgs e)
         {
-            Process.Start(Directory.GetCurrentDirectory() + "/Raycasting.exe");
+            if (availableMaps.Length == 0)
+            {
+                //Show error Message
+                return;
+            }
+            if (listBoxMaps.SelectedIndex == -1)
+            {
+                listBoxMaps.SelectedIndex = 0;
+            }
+            Process.Start(Directory.GetCurrentDirectory() + "/Raycasting.exe", '"' + availableMaps[listBoxMaps.SelectedIndex] + '"');
         }
 
         private void btnMapEditor_Click(object sender, EventArgs e)
         {
-            FormMapEditor mapEditor = new FormMapEditor();
-            mapEditor.ShowDialog();
+            new FormMapEditor().ShowDialog();
+            laodMapsFromFolder();
+        }
+
+        private void laodMapsFromFolder()
+        {
+            listBoxMaps.Items.Clear();
+            availableMaps = Directory.GetFiles(projectDirectory + @"\Maps");
+
+            foreach (var file in availableMaps)
+            {
+                listBoxMaps.Items.Add(Path.GetFileNameWithoutExtension(file));
+            }
         }
     }
 }

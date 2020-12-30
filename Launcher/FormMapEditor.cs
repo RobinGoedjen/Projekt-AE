@@ -17,28 +17,23 @@ namespace MapEditor
     public partial class FormMapEditor : Form
     {
         List<Button> mainButtons = new List<Button>();
+        List<Button> allMapButtons = new List<Button>();
+        Map currentMap;
         List<List<int>> worldMap = new List<List<int>>();
         Button activeButton;
-        int mapDimensionY;
-        int mapDimensionX;
         bool mapGenerated = false;
 
         public FormMapEditor()
         {
             InitializeComponent();
-        }
-
-        private void FormMapEditor_Load(object sender, EventArgs e)
-        {
             
-            mapDimensionY = (int) mapDimX.Value;
-            mapDimensionX = (int) mapDimY.Value;
-            generateMap(mapDimensionY, mapDimensionX);
+            generateNewMap();
         }
 
         private void btn_click(object sender, EventArgs e)
         {
-            if(activeButton == null) { return; }
+            if(activeButton == null) 
+                return; 
             Button button = (Button) sender;
             button.BackColor = activeButton.BackColor;
             button.ForeColor = activeButton.ForeColor;
@@ -55,7 +50,7 @@ namespace MapEditor
                 mainButtons.Add(button);
             }
 
-            foreach(Button b in mainButtons.ToArray())
+            foreach(Button b in mainButtons) //wofür die liste?
             {
                 b.FlatAppearance.BorderColor = b.BackColor;
             }
@@ -67,30 +62,28 @@ namespace MapEditor
 
         private void saveMap(object sender, EventArgs e)
         {
-            for (int i = 0; i < mapDimensionY; i++)
-            {
-                List<int> row = new List<int>();
-                for (int j = 0; j < mapDimensionX; j++)
-                {
-                    Control btn = this.Controls.Find(i.ToString() + "-" + j.ToString(), true)[0];
-                    row.Add(Convert.ToInt32(btn.Text));
-                }
-                worldMap.Add(row);
-            }
-
             String mapName = txtMapName.Text;
-            if(checkMapName(mapName))
+            if (!checkMapName(mapName))
             {
-                Map map = new Map(mapName + ".json");
-
-                map.worldMap = worldMap;
-
-                String mapJson = JsonConvert.SerializeObject(map);
-
-                string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.FullName;
-
-                File.WriteAllText(projectDirectory + @"\Maps\" + map.filename, mapJson);
+                //Show error here
+                return;
             }
+
+
+            ushort currentButtonIndex = 0;
+            foreach (Button b in allMapButtons)
+            {
+                if (currentButtonIndex % currentMap.width == 0)
+                {
+                    currentMap.worldMap.Add(new List<sbyte>());
+                }
+                currentMap.worldMap[currentMap.worldMap.Count - 1].Add(Convert.ToSByte(b.Text));
+                currentButtonIndex++;
+            }
+
+            String mapJson = JsonConvert.SerializeObject(currentMap);
+            string projectDirectory = Environment.CurrentDirectory;
+            File.WriteAllText(projectDirectory + @"\Maps\" + mapName + ".json", mapJson);
         }
 
         private void btnChangeDim_Click(object sender, EventArgs e)
@@ -99,29 +92,26 @@ namespace MapEditor
             {
                 clearMap();
             }
-            mapDimensionY = (int)mapDimY.Value;
-            mapDimensionX = (int)mapDimX.Value;
-
-            generateMap(mapDimensionY, mapDimensionX);
+            generateNewMap();
         }
 
         private void clearMap()
         {
-            for (int i = 0; i < mapDimensionY; i++)
+            foreach(Button b in allMapButtons)
             {
-                for (int j = 0; j < mapDimensionX; j++)
-                {
-                    Control btn = this.Controls.Find(i.ToString() + "-" + j.ToString(), true)[0];
-                    this.Controls.Remove(btn);
-                }
+                this.Controls.Remove(b);
             }
         }
 
-        private void generateMap(int dimX, int dimY)
+        private void generateNewMap()
         {
             int startX = 300;
             int posX = startX;
             int posY = 100;
+            uint dimX = (uint)numericUpDownMapDimX.Value;
+            uint dimY = (uint)numericUpDownMapDimY.Value;
+            currentMap = new Map(dimX, dimY);
+            allMapButtons.Clear();
 
             for (int i = 0; i < dimX; i++)
             {
@@ -132,13 +122,14 @@ namespace MapEditor
                     button.Size = new Size(50, 50);
                     button.Location = new Point(posX, posY);
                     button.BackColor = Color.White;
-                    button.Click += new EventHandler(btn_click);
+                    button.Click += btn_click;
                     button.FlatStyle = FlatStyle.Flat;
                     button.Text = "0";
                     button.FlatAppearance.MouseOverBackColor = Color.White;
                     button.ForeColor = Color.White;
-                    this.Controls.Add(button);
+                    button.Parent = this;
                     posX += 51;
+                    allMapButtons.Add(button);
                 }
                 posX = startX;
                 posY += 51;
@@ -150,7 +141,6 @@ namespace MapEditor
         {
             if(String.IsNullOrEmpty(name) || String.IsNullOrWhiteSpace(name))
             {
-                // todo add label for error message
                 return false;
             }
             if (name.Contains('.'))

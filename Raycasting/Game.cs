@@ -9,6 +9,7 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
+using MapLibrary;
 
 namespace Raycasting
 {
@@ -114,7 +115,7 @@ namespace Raycasting
                         side = 1;
                     }
                     //Check if ray has hit a wall
-                    hit = map.worldMap[currentMapPosition.X, currentMapPosition.Y] > 0;
+                    hit = map.worldMap[currentMapPosition.X][currentMapPosition.Y] > 0;
                 }
                 if (side == 0) 
                     perpWallDist = (currentMapPosition.X - player.position.X + (1 - stepX) / 2) / rayDir.X;
@@ -133,8 +134,8 @@ namespace Raycasting
 
                 float drawXScaled = (float)x / this.Width * 2 - 1f;
                 float drawYScaled = (float)lineHeight / this.Height / 2;
-                addVertice(new Vector2(drawXScaled, drawYScaled), map.worldMap[currentMapPosition.X, currentMapPosition.Y]);
-                addVertice(new Vector2(drawXScaled, -drawYScaled), map.worldMap[currentMapPosition.X, currentMapPosition.Y]);
+                addVertice(new Vector2(drawXScaled, drawYScaled), map.worldMap[currentMapPosition.X][currentMapPosition.Y]);
+                addVertice(new Vector2(drawXScaled, -drawYScaled), map.worldMap[currentMapPosition.X][currentMapPosition.Y]);
                 if (side == 0)
                 {
                     addVertice(new Vector2(drawXScaled, drawYScaled), 0);
@@ -205,17 +206,17 @@ namespace Raycasting
             }
             if (input.IsKeyDown(Key.W))
             {
-                if (map.worldMap[(int)(player.position.X + player.direction.X * moveSpeed), (int)player.position.Y] == 0)
+                if (map.worldMap[(int)(player.position.X + player.direction.X * moveSpeed)][(int)player.position.Y] == 0)
                     player.position += new Vector2(player.direction.X * moveSpeed, 0f);
-                if (map.worldMap[(int)player.position.X, (int)(player.position.Y + player.direction.Y * moveSpeed)] == 0)
+                if (map.worldMap[(int)player.position.X][(int)(player.position.Y + player.direction.Y * moveSpeed)] == 0)
                     player.position += new Vector2(0f, player.direction.Y * moveSpeed);
             }
 
             if (input.IsKeyDown(Key.S))
             {
-                if (map.worldMap[(int)(player.position.X - player.direction.X * moveSpeed), (int)player.position.Y] == 0)
+                if (map.worldMap[(int)(player.position.X - player.direction.X * moveSpeed)][(int)player.position.Y] == 0)
                     player.position -= new Vector2(player.direction.X * moveSpeed, 0f);
-                if (map.worldMap[(int)player.position.X, (int)(player.position.Y - player.direction.Y * moveSpeed)] == 0)
+                if (map.worldMap[(int)player.position.X][(int)(player.position.Y - player.direction.Y * moveSpeed)] == 0)
                     player.position -= new Vector2(0f, player.direction.Y * moveSpeed);
             }
 
@@ -371,7 +372,7 @@ namespace Raycasting
             {
                 if (!currSprite.visible)
                     continue;
-                GL.Begin(BeginMode.Quads);
+                GL.Begin(PrimitiveType.Quads);
                 GL.Color3(Color.Transparent);
 
                 GL.TexCoord2(currSprite.firstTextureX, 0);
@@ -396,7 +397,7 @@ namespace Raycasting
         }
 
 
-        private void addVertice(Vector2 position, uint colorID)
+        private void addVertice(Vector2 position, sbyte colorID)
         {
             switch (colorID)
             {

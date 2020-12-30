@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raycasting", "..\Raycasting\Raycasting.csproj", "{6B2CD292-47AC-4EE1-AF90-7F596737E8EF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{894A24CF-56CE-4F65-89C5-A5BBCC27B059} = {894A24CF-56CE-4F65-89C5-A5BBCC27B059}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Launcher", "..\Launcher\Launcher.csproj", "{7B17A516-3656-47E3-8083-E80D407A4FAE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6B2CD292-47AC-4EE1-AF90-7F596737E8EF} = {6B2CD292-47AC-4EE1-AF90-7F596737E8EF}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapLibrary", "..\MapLibrary\MapLibrary.csproj", "{894A24CF-56CE-4F65-89C5-A5BBCC27B059}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6B2CD292-47AC-4EE1-AF90-7F596737E8EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B2CD292-47AC-4EE1-AF90-7F596737E8EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B2CD292-47AC-4EE1-AF90-7F596737E8EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B2CD292-47AC-4EE1-AF90-7F596737E8EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B17A516-3656-47E3-8083-E80D407A4FAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B17A516-3656-47E3-8083-E80D407A4FAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B17A516-3656-47E3-8083-E80D407A4FAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B17A516-3656-47E3-8083-E80D407A4FAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{894A24CF-56CE-4F65-89C5-A5BBCC27B059}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{894A24CF-56CE-4F65-89C5-A5BBCC27B059}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{894A24CF-56CE-4F65-89C5-A5BBCC27B059}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{894A24CF-56CE-4F65-89C5-A5BBCC27B059}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0E8DBD6E-A985-4B60-AC61-41D5809AE10C}
+	EndGlobalSection
+EndGlobal

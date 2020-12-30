@@ -73,7 +73,7 @@ namespace MapEditor
             ushort currentButtonIndex = 0;
             foreach (Button b in allMapButtons)
             {
-                if (currentButtonIndex % currentMap.width == 0)
+                if (currentButtonIndex % currentMap.height == 0)
                 {
                     currentMap.worldMap.Add(new List<sbyte>());
                 }

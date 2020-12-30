@@ -24,7 +24,7 @@ namespace Raycasting
                 return;
             }
             //22,12 old start pos 66 old FOV
-            var player = new Player(new Vector2(5, 3), new Vector2(-1, 0), new Vector2(0, 95f));
+            var player = new Player(new Vector2(5, 3), new Vector2(-1, 0), new Vector2(0, 0.95f));
             var map = JsonConvert.DeserializeObject<Map>(File.ReadAllText(mapPath));
             using (Game game = new Game(player, map))
             {

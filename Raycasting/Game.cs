@@ -19,13 +19,8 @@ namespace Raycasting
         Map map;
 
         List<Vector2> verticesRed, verticesGreen, verticesBlue, verticesWhite, verticesShadow, verticesGroundPlane;
-        Vector4[] colors =
-        {
-            new Vector4(0.75f, 0, 0, 1f),
-            new Vector4(0, 0.75f, 0, 1f),
-            new Vector4(0, 0, 0.75f, 1f),
-            new Vector4(0.75f, 0.75f, 0.75f, 1f)
-        };
+        List<Vector4> colors = new List<Vector4>();
+
 
         private Shader shader;
 
@@ -46,6 +41,11 @@ namespace Raycasting
             this.CursorVisible = false;
             this.CursorGrabbed = true;
             GL.Enable(EnableCap.Texture2D);
+            for (sbyte i = 1; i <= Map.colorCount; i++)
+            {
+                var currColor = Map.getColorFromTileID(i);
+                colors.Add(new Vector4((float)currColor.R / 255, (float)currColor.G / 255, (float)currColor.B / 255, (float)currColor.A / 255));
+            }
         }
 
 

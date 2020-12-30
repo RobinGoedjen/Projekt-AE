@@ -29,9 +29,12 @@
         private void InitializeComponent()
         {
             this.btnPlayGame = new System.Windows.Forms.Button();
-            this.btnMapEditor = new System.Windows.Forms.Button();
+            this.btnNewMap = new System.Windows.Forms.Button();
             this.lblLogo = new System.Windows.Forms.Label();
             this.listBoxMaps = new System.Windows.Forms.ListBox();
+            this.btnEditMap = new System.Windows.Forms.Button();
+            this.pictureBoxPreview = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).BeginInit();
             this.SuspendLayout();
             // 
             // btnPlayGame
@@ -44,15 +47,15 @@
             this.btnPlayGame.UseVisualStyleBackColor = true;
             this.btnPlayGame.Click += new System.EventHandler(this.btnPlayGame_Click);
             // 
-            // btnMapEditor
+            // btnNewMap
             // 
-            this.btnMapEditor.Location = new System.Drawing.Point(68, 261);
-            this.btnMapEditor.Name = "btnMapEditor";
-            this.btnMapEditor.Size = new System.Drawing.Size(160, 50);
-            this.btnMapEditor.TabIndex = 1;
-            this.btnMapEditor.Text = "Map Editor";
-            this.btnMapEditor.UseVisualStyleBackColor = true;
-            this.btnMapEditor.Click += new System.EventHandler(this.btnMapEditor_Click);
+            this.btnNewMap.Location = new System.Drawing.Point(68, 261);
+            this.btnNewMap.Name = "btnNewMap";
+            this.btnNewMap.Size = new System.Drawing.Size(160, 50);
+            this.btnNewMap.TabIndex = 1;
+            this.btnNewMap.Text = "New Map";
+            this.btnNewMap.UseVisualStyleBackColor = true;
+            this.btnNewMap.Click += new System.EventHandler(this.btnMapEditor_Click);
             // 
             // lblLogo
             // 
@@ -78,6 +81,27 @@
             this.listBoxMaps.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.listBoxMaps.Size = new System.Drawing.Size(448, 169);
             this.listBoxMaps.TabIndex = 3;
+            this.listBoxMaps.Click += new System.EventHandler(this.listBoxMaps_Click);
+            // 
+            // btnEditMap
+            // 
+            this.btnEditMap.Location = new System.Drawing.Point(68, 327);
+            this.btnEditMap.Name = "btnEditMap";
+            this.btnEditMap.Size = new System.Drawing.Size(160, 50);
+            this.btnEditMap.TabIndex = 4;
+            this.btnEditMap.Text = "Edit Map";
+            this.btnEditMap.UseVisualStyleBackColor = true;
+            this.btnEditMap.Click += new System.EventHandler(this.btnEditMap_Click);
+            // 
+            // pictureBoxPreview
+            // 
+            this.pictureBoxPreview.Location = new System.Drawing.Point(540, 397);
+            this.pictureBoxPreview.Name = "pictureBoxPreview";
+            this.pictureBoxPreview.Size = new System.Drawing.Size(448, 323);
+            this.pictureBoxPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureBoxPreview.TabIndex = 5;
+            this.pictureBoxPreview.TabStop = false;
+            this.pictureBoxPreview.Visible = false;
             // 
             // FormMain
             // 
@@ -85,13 +109,16 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::Launcher.Properties.Resources.background;
             this.ClientSize = new System.Drawing.Size(1173, 752);
+            this.Controls.Add(this.pictureBoxPreview);
+            this.Controls.Add(this.btnEditMap);
             this.Controls.Add(this.listBoxMaps);
             this.Controls.Add(this.lblLogo);
-            this.Controls.Add(this.btnMapEditor);
+            this.Controls.Add(this.btnNewMap);
             this.Controls.Add(this.btnPlayGame);
             this.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.Name = "FormMain";
             this.Text = "Launcher";
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -100,9 +127,11 @@
         #endregion
 
         private System.Windows.Forms.Button btnPlayGame;
-        private System.Windows.Forms.Button btnMapEditor;
+        private System.Windows.Forms.Button btnNewMap;
         private System.Windows.Forms.Label lblLogo;
         private System.Windows.Forms.ListBox listBoxMaps;
+        private System.Windows.Forms.Button btnEditMap;
+        private System.Windows.Forms.PictureBox pictureBoxPreview;
     }
 }
 

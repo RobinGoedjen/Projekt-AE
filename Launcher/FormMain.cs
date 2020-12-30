@@ -55,5 +55,33 @@ namespace MapEditor
                 listBoxMaps.Items.Add(Path.GetFileNameWithoutExtension(file));
             }
         }
+
+        private void btnEditMap_Click(object sender, EventArgs e)
+        {
+            if (availableMaps.Length == 0)
+            {
+                //Show error Message
+                return;
+            }
+            if (listBoxMaps.SelectedIndex == -1)
+            {
+                listBoxMaps.SelectedIndex = 0;
+            }
+            var map = JsonConvert.DeserializeObject<Map>(File.ReadAllText(availableMaps[listBoxMaps.SelectedIndex]));
+            
+            new FormMapEditor(map).ShowDialog();
+            laodMapsFromFolder();
+        }
+
+        private void listBoxMaps_Click(object sender, EventArgs e)
+        {
+            if (listBoxMaps.SelectedIndex == -1)
+                return;
+            var map = JsonConvert.DeserializeObject<Map>(File.ReadAllText(availableMaps[listBoxMaps.SelectedIndex]));
+            Size size = new Size(this.Width - pictureBoxPreview.Top - 10, this.Height - pictureBoxPreview.Left - 10);
+            var mapVisualizer = new MapVisualizer(size, map);
+            pictureBoxPreview.Image = mapVisualizer.currentMapImage;
+            pictureBoxPreview.Visible = true;
+        }
     }
 }

@@ -40,6 +40,8 @@
             this.labelName = new System.Windows.Forms.Label();
             this.txtMapName = new System.Windows.Forms.TextBox();
             this.pictureBoxMap = new System.Windows.Forms.PictureBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMapDimX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMapDimY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMap)).BeginInit();
@@ -64,12 +66,12 @@
             this.buttonRed.BackColor = System.Drawing.Color.Red;
             this.buttonRed.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonRed.ForeColor = System.Drawing.Color.Red;
-            this.buttonRed.Location = new System.Drawing.Point(24, 161);
+            this.buttonRed.Location = new System.Drawing.Point(24, 115);
             this.buttonRed.Margin = new System.Windows.Forms.Padding(2);
             this.buttonRed.Name = "buttonRed";
             this.buttonRed.Size = new System.Drawing.Size(38, 41);
             this.buttonRed.TabIndex = 1;
-            this.buttonRed.Text = "2";
+            this.buttonRed.Text = "1";
             this.buttonRed.UseVisualStyleBackColor = false;
             this.buttonRed.Click += new System.EventHandler(this.selectButton_click);
             // 
@@ -78,12 +80,12 @@
             this.buttonGreen.BackColor = System.Drawing.Color.Green;
             this.buttonGreen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonGreen.ForeColor = System.Drawing.Color.Green;
-            this.buttonGreen.Location = new System.Drawing.Point(24, 115);
+            this.buttonGreen.Location = new System.Drawing.Point(24, 161);
             this.buttonGreen.Margin = new System.Windows.Forms.Padding(2);
             this.buttonGreen.Name = "buttonGreen";
             this.buttonGreen.Size = new System.Drawing.Size(38, 41);
             this.buttonGreen.TabIndex = 2;
-            this.buttonGreen.Text = "1";
+            this.buttonGreen.Text = "2";
             this.buttonGreen.UseVisualStyleBackColor = false;
             this.buttonGreen.Click += new System.EventHandler(this.selectButton_click);
             // 
@@ -137,7 +139,7 @@
             this.numericUpDownMapDimX.Size = new System.Drawing.Size(36, 20);
             this.numericUpDownMapDimX.TabIndex = 8;
             this.numericUpDownMapDimX.Value = new decimal(new int[] {
-            9,
+            10,
             0,
             0,
             0});
@@ -155,7 +157,7 @@
             this.numericUpDownMapDimY.Size = new System.Drawing.Size(36, 20);
             this.numericUpDownMapDimY.TabIndex = 9;
             this.numericUpDownMapDimY.Value = new decimal(new int[] {
-            9,
+            10,
             0,
             0,
             0});
@@ -198,7 +200,36 @@
             this.pictureBoxMap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBoxMap.TabIndex = 13;
             this.pictureBoxMap.TabStop = false;
-            this.pictureBoxMap.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBoxMap_MouseDown);
+            this.pictureBoxMap.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBoxMap_Mouse);
+            this.pictureBoxMap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBoxMap_Mouse);
+            // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.Color.Blue;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.ForeColor = System.Drawing.Color.Blue;
+            this.button1.Location = new System.Drawing.Point(24, 206);
+            this.button1.Margin = new System.Windows.Forms.Padding(2);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(38, 41);
+            this.button1.TabIndex = 14;
+            this.button1.Text = "3";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.selectButton_click);
+            // 
+            // button2
+            // 
+            this.button2.BackColor = System.Drawing.Color.LightGray;
+            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button2.ForeColor = System.Drawing.Color.LightGray;
+            this.button2.Location = new System.Drawing.Point(24, 251);
+            this.button2.Margin = new System.Windows.Forms.Padding(2);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(38, 41);
+            this.button2.TabIndex = 15;
+            this.button2.Text = "4";
+            this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.selectButton_click);
             // 
             // FormMapEditor
             // 
@@ -206,6 +237,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.ClientSize = new System.Drawing.Size(1177, 650);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.pictureBoxMap);
             this.Controls.Add(this.txtMapName);
             this.Controls.Add(this.labelName);
@@ -244,5 +277,7 @@
         private System.Windows.Forms.Label labelName;
         private System.Windows.Forms.TextBox txtMapName;
         private System.Windows.Forms.PictureBox pictureBoxMap;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
     }
 }

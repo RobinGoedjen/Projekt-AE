@@ -16,51 +16,34 @@ namespace MapEditor
 {
     public partial class FormMapEditor : Form
     {
-        List<Button> mainButtons = new List<Button>();
-        List<Button> allMapButtons = new List<Button>();
-        Map currentMap;
+        Map currentMap = null;
         MapVisualizer mapVisualizer;
-        List<List<int>> worldMap = new List<List<int>>();
-        Button activeButton;
+        sbyte selectedTileID = 0;
 
         public FormMapEditor()
         {
             InitializeComponent();
         }
+        public FormMapEditor(Map map)
+        {
+            InitializeComponent();
+            currentMap = map;
+            txtMapName.Text = map.name;
+            numericUpDownMapDimX.Value = map.width;
+            numericUpDownMapDimY.Value = map.height;
+        }
         private void FormMapEditor_Shown(object sender, EventArgs e)
         {
-            generateNewMap();
+            if (currentMap == null)
+                generateNewMap();
+            mapVisualizer = new MapVisualizer(getDrawAbleSize(), currentMap);
             pictureBoxMap.Image = mapVisualizer.currentMapImage;
         }
 
-        private void btn_click(object sender, EventArgs e)
-        {
-            if(activeButton == null) 
-                return; 
-            Button button = (Button) sender;
-            button.BackColor = activeButton.BackColor;
-            button.ForeColor = activeButton.ForeColor;
-            button.FlatAppearance.MouseOverBackColor = activeButton.BackColor;
-            button.Text = activeButton.Text;
-        }
 
         private void selectButton_click(object sender, EventArgs e)
         {
-            Button button = (Button)sender;
-
-            if (!mainButtons.Contains(button))
-            {
-                mainButtons.Add(button);
-            }
-
-            foreach(Button b in mainButtons) //wofür die liste?
-            {
-                b.FlatAppearance.BorderColor = b.BackColor;
-            }
-            
-            button.FlatStyle = FlatStyle.Flat;
-            button.FlatAppearance.BorderColor = Color.LightGreen;
-            activeButton = button;
+            selectedTileID = Convert.ToSByte(((Button)sender).Text);
         }
 
         private void saveMap(object sender, EventArgs e)
@@ -72,18 +55,6 @@ namespace MapEditor
                 return;
             }
 
-
-            ushort currentButtonIndex = 0;
-            foreach (Button b in allMapButtons)
-            {
-                if (currentButtonIndex % currentMap.height == 0)
-                {
-                    currentMap.worldMap.Add(new List<sbyte>());
-                }
-                currentMap.worldMap[currentMap.worldMap.Count - 1].Add(Convert.ToSByte(b.Text));
-                currentButtonIndex++;
-            }
-
             String mapJson = JsonConvert.SerializeObject(currentMap);
             string projectDirectory = Environment.CurrentDirectory;
             File.WriteAllText(projectDirectory + @"\Maps\" + mapName + ".json", mapJson);
@@ -91,17 +62,9 @@ namespace MapEditor
 
         private void btnChangeDim_Click(object sender, EventArgs e)
         {
-            clearMap();
             generateNewMap();
+            mapVisualizer = new MapVisualizer(getDrawAbleSize(), currentMap);
             pictureBoxMap.Image = mapVisualizer.currentMapImage;
-        }
-
-        private void clearMap()
-        {
-            foreach(Button b in allMapButtons)
-            {
-                this.Controls.Remove(b);
-            }
         }
 
         private void generateNewMap()
@@ -109,33 +72,19 @@ namespace MapEditor
             uint dimX = (uint)numericUpDownMapDimX.Value;
             uint dimY = (uint)numericUpDownMapDimY.Value;
             currentMap = new Map(dimX, dimY);
-            mapVisualizer = new MapVisualizer(currentMap, getDrawAbleSize());
-            //int startX = 300;
-            //int posX = startX;
-            //int posY = 100;
-            //allMapButtons.Clear();
-
-            //for (int i = 0; i < dimX; i++)
-            //{
-            //    for (int j = 0; j < dimY; j++)
-            //    {
-            //        Button button = new Button();
-            //        button.Name = i.ToString() + "-" + j.ToString();
-            //        button.Size = new Size(50, 50);
-            //        button.Location = new Point(posX, posY);
-            //        button.BackColor = Color.White;
-            //        button.Click += btn_click;
-            //        button.FlatStyle = FlatStyle.Flat;
-            //        button.Text = "0";
-            //        button.FlatAppearance.MouseOverBackColor = Color.White;
-            //        button.ForeColor = Color.White;
-            //        button.Parent = this;
-            //        posX += 51;
-            //        allMapButtons.Add(button);
-            //    }
-            //    posX = startX;
-            //    posY += 51;
-            //}
+            for (int i = 0; i < dimY; i++)
+            {
+                currentMap.worldMap.Add(new List<sbyte>());
+                for (int j = 0; j < dimX; j++)
+                {
+                    if (i == dimY-1 || i == 0 || j == 0 || j == dimX-1)
+                    {
+                        currentMap.worldMap[i].Add(4);
+                        continue;
+                    }
+                    currentMap.worldMap[i].Add(0);
+                }
+            }
         }
 
         private bool checkMapName(string name)
@@ -151,15 +100,6 @@ namespace MapEditor
             return true;
         }
 
-        private void pictureBoxMap_MouseDown(object sender, MouseEventArgs e)
-        {
-            long sectionX = pictureBoxMap.Width / currentMap.width;
-            long sectionY = pictureBoxMap.Height / currentMap.height;
-            int coordX = (int)(e.X / sectionX);
-            int coordY = (int)(e.Y / sectionY);
-            this.Text = (coordX).ToString() + " " + coordY.ToString();
-        }
-
         private Size getDrawAbleSize()
         {
             int maxWidth = this.Width - pictureBoxMap.Left - 50;
@@ -167,6 +107,18 @@ namespace MapEditor
             return new Size(maxWidth, maxHeight);
         }
 
+        private void pictureBoxMap_Mouse(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left)
+                return;
+            long sectionX = pictureBoxMap.Width / currentMap.width;
+            long sectionY = pictureBoxMap.Height / currentMap.height;
+            int coordX = (int)(e.X / sectionX);
+            int coordY = (int)(e.Y / sectionY);
+            mapVisualizer.colorCoordinate(new Point(coordX, coordY), new SolidBrush(Map.getColorFromTileID(selectedTileID)));
+            pictureBoxMap.Image = mapVisualizer.currentMapImage;
+            currentMap.worldMap[coordY][coordX] = selectedTileID;
+        }
 
     }
 }

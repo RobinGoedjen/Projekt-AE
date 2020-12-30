@@ -54,7 +54,7 @@ namespace MapEditor
                 //Show error here
                 return;
             }
-
+            currentMap.name = mapName;
             String mapJson = JsonConvert.SerializeObject(currentMap);
             string projectDirectory = Environment.CurrentDirectory;
             File.WriteAllText(projectDirectory + @"\Maps\" + mapName + ".json", mapJson);
@@ -115,10 +115,11 @@ namespace MapEditor
             long sectionY = pictureBoxMap.Height / currentMap.height;
             int coordX = (int)(e.X / sectionX);
             int coordY = (int)(e.Y / sectionY);
-            mapVisualizer.colorCoordinate(new Point(coordX, coordY), new SolidBrush(Map.getColorFromTileID(selectedTileID)));
-            pictureBoxMap.Image = mapVisualizer.currentMapImage;
-            currentMap.worldMap[coordY][coordX] = selectedTileID;
+            if (mapVisualizer.colorCoordinate(new Point(coordX, coordY), new SolidBrush(Map.getColorFromTileID(selectedTileID))))
+            {
+                pictureBoxMap.Image = mapVisualizer.currentMapImage;
+                currentMap.worldMap[coordY][coordX] = selectedTileID;
+            }
         }
-
     }
 }

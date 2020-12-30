@@ -70,6 +70,7 @@ namespace MapEditor
             var map = JsonConvert.DeserializeObject<Map>(File.ReadAllText(availableMaps[listBoxMaps.SelectedIndex]));
             
             new FormMapEditor(map).ShowDialog();
+            pictureBoxPreview.Visible = false;
             loadMapsFromFolder();
         }
 

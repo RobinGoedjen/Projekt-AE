@@ -56,13 +56,14 @@ namespace MapEditor
             return bm;
         }
 
-        public void colorCoordinate(Point cords, SolidBrush brush, bool force = false)
+        public bool colorCoordinate(Point cords, SolidBrush brush, bool force = false)
         {
             if (!force && brush.Color == Color.White && (cords.X == loadedMap.width - 1 || cords.X == 0 || cords.Y == 0 || cords.Y == loadedMap.height - 1))
             {
-                return;
+                return false;
             }
             currGr.FillRectangle(brush, new Rectangle(cords.X*scaleFactor + 1, cords.Y*scaleFactor + 1, scaleFactor - 2, scaleFactor- 2));
+            return true;
         }
 
     }

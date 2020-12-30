@@ -39,8 +39,10 @@
             this.label2 = new System.Windows.Forms.Label();
             this.labelName = new System.Windows.Forms.Label();
             this.txtMapName = new System.Windows.Forms.TextBox();
+            this.pictureBoxMap = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMapDimX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMapDimY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMap)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonWhite
@@ -121,6 +123,16 @@
             // 
             this.numericUpDownMapDimX.Location = new System.Drawing.Point(324, 14);
             this.numericUpDownMapDimX.Margin = new System.Windows.Forms.Padding(2);
+            this.numericUpDownMapDimX.Maximum = new decimal(new int[] {
+            175,
+            0,
+            0,
+            0});
+            this.numericUpDownMapDimX.Minimum = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
             this.numericUpDownMapDimX.Name = "numericUpDownMapDimX";
             this.numericUpDownMapDimX.Size = new System.Drawing.Size(36, 20);
             this.numericUpDownMapDimX.TabIndex = 8;
@@ -134,6 +146,11 @@
             // 
             this.numericUpDownMapDimY.Location = new System.Drawing.Point(381, 14);
             this.numericUpDownMapDimY.Margin = new System.Windows.Forms.Padding(2);
+            this.numericUpDownMapDimY.Minimum = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
             this.numericUpDownMapDimY.Name = "numericUpDownMapDimY";
             this.numericUpDownMapDimY.Size = new System.Drawing.Size(36, 20);
             this.numericUpDownMapDimY.TabIndex = 9;
@@ -171,12 +188,25 @@
             this.txtMapName.Size = new System.Drawing.Size(76, 20);
             this.txtMapName.TabIndex = 12;
             // 
+            // pictureBoxMap
+            // 
+            this.pictureBoxMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureBoxMap.Location = new System.Drawing.Point(227, 70);
+            this.pictureBoxMap.Margin = new System.Windows.Forms.Padding(0);
+            this.pictureBoxMap.Name = "pictureBoxMap";
+            this.pictureBoxMap.Size = new System.Drawing.Size(525, 525);
+            this.pictureBoxMap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureBoxMap.TabIndex = 13;
+            this.pictureBoxMap.TabStop = false;
+            this.pictureBoxMap.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBoxMap_MouseDown);
+            // 
             // FormMapEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.ClientSize = new System.Drawing.Size(1177, 650);
+            this.Controls.Add(this.pictureBoxMap);
             this.Controls.Add(this.txtMapName);
             this.Controls.Add(this.labelName);
             this.Controls.Add(this.label2);
@@ -191,8 +221,10 @@
             this.Name = "FormMapEditor";
             this.Text = "Map Editor";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.Shown += new System.EventHandler(this.FormMapEditor_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMapDimX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMapDimY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMap)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -211,5 +243,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label labelName;
         private System.Windows.Forms.TextBox txtMapName;
+        private System.Windows.Forms.PictureBox pictureBoxMap;
     }
 }

@@ -106,6 +106,7 @@
     <Compile Include="FormMapEditor.Designer.cs">
       <DependentUpon>FormMapEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="MapVisualizer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FormMain.resx">

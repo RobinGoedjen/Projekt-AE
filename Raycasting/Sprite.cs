@@ -32,6 +32,7 @@ namespace Raycasting
         static Sprite()
         {
             Sprite.registerSprite(SpriteName.barrel, Directory.GetCurrentDirectory() + "/Sprites/barrel.png");
+
         }
 
         private static void registerSprite(SpriteName name, String path)

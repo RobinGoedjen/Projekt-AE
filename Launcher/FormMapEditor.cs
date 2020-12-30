@@ -19,15 +19,18 @@ namespace MapEditor
         List<Button> mainButtons = new List<Button>();
         List<Button> allMapButtons = new List<Button>();
         Map currentMap;
+        MapVisualizer mapVisualizer;
         List<List<int>> worldMap = new List<List<int>>();
         Button activeButton;
-        bool mapGenerated = false;
 
         public FormMapEditor()
         {
             InitializeComponent();
-            
+        }
+        private void FormMapEditor_Shown(object sender, EventArgs e)
+        {
             generateNewMap();
+            pictureBoxMap.Image = mapVisualizer.currentMapImage;
         }
 
         private void btn_click(object sender, EventArgs e)
@@ -88,11 +91,9 @@ namespace MapEditor
 
         private void btnChangeDim_Click(object sender, EventArgs e)
         {
-            if (mapGenerated)
-            {
-                clearMap();
-            }
+            clearMap();
             generateNewMap();
+            pictureBoxMap.Image = mapVisualizer.currentMapImage;
         }
 
         private void clearMap()
@@ -105,36 +106,36 @@ namespace MapEditor
 
         private void generateNewMap()
         {
-            int startX = 300;
-            int posX = startX;
-            int posY = 100;
             uint dimX = (uint)numericUpDownMapDimX.Value;
             uint dimY = (uint)numericUpDownMapDimY.Value;
             currentMap = new Map(dimX, dimY);
-            allMapButtons.Clear();
+            mapVisualizer = new MapVisualizer(currentMap, getDrawAbleSize());
+            //int startX = 300;
+            //int posX = startX;
+            //int posY = 100;
+            //allMapButtons.Clear();
 
-            for (int i = 0; i < dimX; i++)
-            {
-                for (int j = 0; j < dimY; j++)
-                {
-                    Button button = new Button();
-                    button.Name = i.ToString() + "-" + j.ToString();
-                    button.Size = new Size(50, 50);
-                    button.Location = new Point(posX, posY);
-                    button.BackColor = Color.White;
-                    button.Click += btn_click;
-                    button.FlatStyle = FlatStyle.Flat;
-                    button.Text = "0";
-                    button.FlatAppearance.MouseOverBackColor = Color.White;
-                    button.ForeColor = Color.White;
-                    button.Parent = this;
-                    posX += 51;
-                    allMapButtons.Add(button);
-                }
-                posX = startX;
-                posY += 51;
-            }
-            mapGenerated = true;
+            //for (int i = 0; i < dimX; i++)
+            //{
+            //    for (int j = 0; j < dimY; j++)
+            //    {
+            //        Button button = new Button();
+            //        button.Name = i.ToString() + "-" + j.ToString();
+            //        button.Size = new Size(50, 50);
+            //        button.Location = new Point(posX, posY);
+            //        button.BackColor = Color.White;
+            //        button.Click += btn_click;
+            //        button.FlatStyle = FlatStyle.Flat;
+            //        button.Text = "0";
+            //        button.FlatAppearance.MouseOverBackColor = Color.White;
+            //        button.ForeColor = Color.White;
+            //        button.Parent = this;
+            //        posX += 51;
+            //        allMapButtons.Add(button);
+            //    }
+            //    posX = startX;
+            //    posY += 51;
+            //}
         }
 
         private bool checkMapName(string name)
@@ -149,5 +150,23 @@ namespace MapEditor
             }
             return true;
         }
+
+        private void pictureBoxMap_MouseDown(object sender, MouseEventArgs e)
+        {
+            long sectionX = pictureBoxMap.Width / currentMap.width;
+            long sectionY = pictureBoxMap.Height / currentMap.height;
+            int coordX = (int)(e.X / sectionX);
+            int coordY = (int)(e.Y / sectionY);
+            this.Text = (coordX).ToString() + " " + coordY.ToString();
+        }
+
+        private Size getDrawAbleSize()
+        {
+            int maxWidth = this.Width - pictureBoxMap.Left - 50;
+            int maxHeight = this.Height - pictureBoxMap.Top - 50;
+            return new Size(maxWidth, maxHeight);
+        }
+
+
     }
 }

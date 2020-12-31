@@ -14,11 +14,13 @@ namespace MapLibrary
         public List<List<sbyte>> worldMap;
         public string name;
         public const byte colorCount = 4;
+        public PointF playerStartPosition;
 
         public Map(uint width, uint height)
         {
             this.width = width;
             this.height = height;
+            playerStartPosition = new PointF(1f, 1f);
             worldMap = new List<List<sbyte>>();
         }
 

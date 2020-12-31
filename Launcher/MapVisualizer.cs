@@ -10,44 +10,45 @@ namespace MapEditor
 {
     class MapVisualizer
     {
-        private Map loadedMap;
+        private Map map;
         public readonly int scaleFactor;
-        public Bitmap currentMapImage { get; }
-        private Graphics currGr;
+        public Bitmap currentMapImage;
+        private Graphics graphBase;
 
         public MapVisualizer(Size drawSize,Map map)
         {
-            loadedMap = map;
+            this.map = map;
             int scaleWdith = (int)(drawSize.Width / map.width);
             int scaleHeight = (int)(drawSize.Height / map.height);
             scaleFactor = scaleWdith < scaleHeight ? scaleWdith : scaleHeight;
-            currentMapImage = drawMapFromScratch();
+            currentMapImage = drawColoredFromScratch();
+            redrawNonTiles();
         }
 
-        public Bitmap drawMapFromScratch()
+        public Bitmap drawColoredFromScratch()
         {
-            Bitmap bm = new Bitmap((int)loadedMap.width * scaleFactor, (int)loadedMap.height * scaleFactor);
-            currGr = Graphics.FromImage(bm);
-            currGr.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-            currGr.FillRectangle(Brushes.LightGray, new Rectangle(0, 0, bm.Width, bm.Height));
+            Bitmap bm = new Bitmap((int)map.width * scaleFactor, (int)map.height * scaleFactor);
+            graphBase = Graphics.FromImage(bm);
+            graphBase.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            graphBase.FillRectangle(Brushes.LightGray, new Rectangle(0, 0, bm.Width, bm.Height));
 
             //Draw grid
-            for (int i = 1; i < loadedMap.height; i++)
+            for (int i = 1; i < map.height; i++)
             {
-                currGr.DrawLine(Pens.Black, 0, i * scaleFactor, bm.Width, i * scaleFactor);
+                graphBase.DrawLine(Pens.Black, 0, i * scaleFactor, bm.Width, i * scaleFactor);
             }
-            for (int i = 1; i < loadedMap.width; i++)
+            for (int i = 1; i < map.width; i++)
             {
-                currGr.DrawLine(Pens.Black, i * scaleFactor, 0, i * scaleFactor, bm.Height);
+                graphBase.DrawLine(Pens.Black, i * scaleFactor, 0, i * scaleFactor, bm.Height);
             }
 
             //Color Grid
             SolidBrush b = new SolidBrush(Color.Black);
-            for (int i = 0; i < loadedMap.height; i++)
+            for (int i = 0; i < map.height; i++)
             {
-                for (int j = 0; j < loadedMap.width; j++)
+                for (int j = 0; j < map.width; j++)
                 {
-                    sbyte tileID = loadedMap.worldMap[i][j];
+                    sbyte tileID = map.worldMap[i][j];
                     b.Color = Map.getColorFromTileID(tileID);
                     colorCoordinate(new Point(j, i),b , true);
                 }
@@ -58,15 +59,26 @@ namespace MapEditor
 
         public bool colorCoordinate(Point coords, SolidBrush brush, bool force = false)
         {
-            if (coords.X >= loadedMap.width || coords.Y >= loadedMap.height || coords.X < 0|| coords.Y < 0)
+            if (coords.X >= map.width || coords.Y >= map.height || coords.X < 0|| coords.Y < 0)
             {
                 return false;
             }
-            if (!force && brush.Color == Color.White && (coords.X == loadedMap.width - 1 || coords.X == 0 || coords.Y == 0 || coords.Y == loadedMap.height - 1))
+            if (!force && brush.Color == Color.White && (coords.X == map.width - 1 || coords.X == 0 || coords.Y == 0 || coords.Y == map.height - 1))
                 return false;
-            currGr.FillRectangle(brush, new Rectangle(coords.X*scaleFactor + 1, coords.Y*scaleFactor + 1, scaleFactor - 2, scaleFactor- 2));
+            graphBase.FillRectangle(brush, new Rectangle(coords.X*scaleFactor + 1, coords.Y*scaleFactor + 1, scaleFactor - 2, scaleFactor- 2));
             return true;
         }
 
+        private void drawPlayer()
+        {
+            int startX = (int)(map.playerStartPosition.X * scaleFactor - scaleFactor * 0.2f);
+            int startY = (int)(map.playerStartPosition.Y * scaleFactor - scaleFactor * 0.2f);
+            graphBase.FillEllipse(new SolidBrush(Color.Black), new Rectangle(startX, startY, (int)(scaleFactor * 0.4f), (int)(scaleFactor * 0.4f)));
+        }
+
+        public void redrawNonTiles()
+        {
+                drawPlayer();
+        }
     }
 }

@@ -42,6 +42,7 @@
             this.pictureBoxMap = new System.Windows.Forms.PictureBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.btnSetPlayerPosition = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMapDimX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMapDimY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMap)).BeginInit();
@@ -66,7 +67,7 @@
             this.buttonRed.BackColor = System.Drawing.Color.Red;
             this.buttonRed.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonRed.ForeColor = System.Drawing.Color.Red;
-            this.buttonRed.Location = new System.Drawing.Point(24, 115);
+            this.buttonRed.Location = new System.Drawing.Point(66, 70);
             this.buttonRed.Margin = new System.Windows.Forms.Padding(2);
             this.buttonRed.Name = "buttonRed";
             this.buttonRed.Size = new System.Drawing.Size(38, 41);
@@ -80,7 +81,7 @@
             this.buttonGreen.BackColor = System.Drawing.Color.Green;
             this.buttonGreen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonGreen.ForeColor = System.Drawing.Color.Green;
-            this.buttonGreen.Location = new System.Drawing.Point(24, 161);
+            this.buttonGreen.Location = new System.Drawing.Point(108, 70);
             this.buttonGreen.Margin = new System.Windows.Forms.Padding(2);
             this.buttonGreen.Name = "buttonGreen";
             this.buttonGreen.Size = new System.Drawing.Size(38, 41);
@@ -91,7 +92,7 @@
             // 
             // btnSaveMap
             // 
-            this.btnSaveMap.Location = new System.Drawing.Point(60, 536);
+            this.btnSaveMap.Location = new System.Drawing.Point(25, 37);
             this.btnSaveMap.Margin = new System.Windows.Forms.Padding(2);
             this.btnSaveMap.Name = "btnSaveMap";
             this.btnSaveMap.Size = new System.Drawing.Size(56, 19);
@@ -208,7 +209,7 @@
             this.button1.BackColor = System.Drawing.Color.Blue;
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button1.ForeColor = System.Drawing.Color.Blue;
-            this.button1.Location = new System.Drawing.Point(24, 206);
+            this.button1.Location = new System.Drawing.Point(150, 70);
             this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(38, 41);
@@ -222,7 +223,7 @@
             this.button2.BackColor = System.Drawing.Color.LightGray;
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button2.ForeColor = System.Drawing.Color.LightGray;
-            this.button2.Location = new System.Drawing.Point(24, 251);
+            this.button2.Location = new System.Drawing.Point(24, 115);
             this.button2.Margin = new System.Windows.Forms.Padding(2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(38, 41);
@@ -231,12 +232,24 @@
             this.button2.UseVisualStyleBackColor = false;
             this.button2.Click += new System.EventHandler(this.selectButton_click);
             // 
+            // btnSetPlayerPosition
+            // 
+            this.btnSetPlayerPosition.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSetPlayerPosition.Location = new System.Drawing.Point(24, 182);
+            this.btnSetPlayerPosition.Name = "btnSetPlayerPosition";
+            this.btnSetPlayerPosition.Size = new System.Drawing.Size(164, 45);
+            this.btnSetPlayerPosition.TabIndex = 16;
+            this.btnSetPlayerPosition.Text = "Set Player Position";
+            this.btnSetPlayerPosition.UseVisualStyleBackColor = true;
+            this.btnSetPlayerPosition.Click += new System.EventHandler(this.btnSetPlayerPosition_Click);
+            // 
             // FormMapEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.ClientSize = new System.Drawing.Size(1177, 650);
+            this.Controls.Add(this.btnSetPlayerPosition);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.pictureBoxMap);
@@ -279,5 +292,6 @@
         private System.Windows.Forms.PictureBox pictureBoxMap;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnSetPlayerPosition;
     }
 }

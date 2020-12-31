@@ -19,6 +19,7 @@ namespace MapEditor
         Map currentMap = null;
         MapVisualizer mapVisualizer;
         sbyte selectedTileID = 0;
+        bool setPlayer = false;
 
         public FormMapEditor()
         {
@@ -113,13 +114,29 @@ namespace MapEditor
                 return;
             long sectionX = pictureBoxMap.Width / currentMap.width;
             long sectionY = pictureBoxMap.Height / currentMap.height;
+            if (setPlayer)
+            {
+                currentMap.playerStartPosition.X = (float)e.X / sectionX;
+                currentMap.playerStartPosition.Y = (float)e.Y / sectionY;
+                mapVisualizer = new MapVisualizer(getDrawAbleSize(), currentMap);
+                pictureBoxMap.Image = mapVisualizer.currentMapImage;
+                setPlayer = false;
+                return;
+            }
+            
             int coordX = (int)(e.X / sectionX);
             int coordY = (int)(e.Y / sectionY);
             if (mapVisualizer.colorCoordinate(new Point(coordX, coordY), new SolidBrush(Map.getColorFromTileID(selectedTileID))))
             {
+                mapVisualizer.redrawNonTiles();
                 pictureBoxMap.Image = mapVisualizer.currentMapImage;
                 currentMap.worldMap[coordY][coordX] = selectedTileID;
             }
+        }
+
+        private void btnSetPlayerPosition_Click(object sender, EventArgs e)
+        {
+            setPlayer = true;
         }
     }
 }

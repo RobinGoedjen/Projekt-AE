@@ -13,11 +13,14 @@ namespace Raycasting
         public Vector2 direction { get; set; }
         public Vector2 plane { get; set; }
 
-        public Player(Vector2 startPosition, Vector2 startDirection, Vector2 viewPlane)
+        public Player(Vector2 startPosition, ushort startDirectionDegree)
         {
             position = startPosition;
-            direction = startDirection;
-            plane = viewPlane;
+            double radiance = startDirectionDegree * Math.PI / 180d;
+            direction = new Vector2((float)Math.Cos(radiance), (float)Math.Sin(radiance));
+            direction.Normalize();
+            plane = new Vector2(direction.Y, -direction.X) * 0.95f;
+            
         }
     }
 }

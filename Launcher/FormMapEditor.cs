@@ -32,6 +32,7 @@ namespace MapEditor
             txtMapName.Text = map.name;
             numericUpDownMapDimX.Value = map.width;
             numericUpDownMapDimY.Value = map.height;
+            trackBarPlayerOrientation.Value = map.playerStartOrientation;
         }
         private void FormMapEditor_Shown(object sender, EventArgs e)
         {
@@ -137,6 +138,13 @@ namespace MapEditor
         private void btnSetPlayerPosition_Click(object sender, EventArgs e)
         {
             setPlayer = true;
+        }
+
+        private void trackBarPlayerOrientation_ValueChanged(object sender, EventArgs e)
+        {
+            currentMap.playerStartOrientation = (ushort)trackBarPlayerOrientation.Value;
+            mapVisualizer = new MapVisualizer(getDrawAbleSize(), currentMap);
+            pictureBoxMap.Image = mapVisualizer.currentMapImage;
         }
     }
 }

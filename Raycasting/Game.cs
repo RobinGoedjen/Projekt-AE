@@ -30,8 +30,6 @@ namespace Raycasting
 
         //Fields for Sprites
         List<float> ZBuffer = new List<float>();
-        List<int> spriteOrder = new List<int>();
-        List<float> spriteDistance = new List<float>();
 
 
         public Game(Player player, Map map) : base(500, 300, GraphicsMode.Default, "Raycasting", GameWindowFlags.Fullscreen)

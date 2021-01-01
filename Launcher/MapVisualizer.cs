@@ -76,9 +76,25 @@ namespace MapEditor
             graphBase.FillEllipse(new SolidBrush(Color.Black), new Rectangle(startX, startY, (int)(scaleFactor * 0.4f), (int)(scaleFactor * 0.4f)));
         }
 
+        private void drawPlayerOrientation()
+        {
+            int startX = (int)(map.playerStartPosition.X * scaleFactor);
+            int startY = (int)(map.playerStartPosition.Y * scaleFactor);
+            double endX = scaleFactor * 0.5f;
+            double endY = 0;
+            double radiant = (-map.playerStartOrientation + 90) * Math.PI / 180;
+            double s = Math.Sin(radiant);
+            double c = Math.Cos(radiant);
+            double newEndX = endX * c - endY * s;
+            double newEndY = endX * s + endY * c;
+            var p = new Pen(new SolidBrush(Color.Red), scaleFactor * 0.05f);
+            graphBase.DrawLine(p, startX, startY, (int)(newEndX + startX), (int)(newEndY + startY));
+        }
+
         public void redrawNonTiles()
         {
-                drawPlayer();
+            drawPlayer();
+            drawPlayerOrientation();
         }
     }
 }

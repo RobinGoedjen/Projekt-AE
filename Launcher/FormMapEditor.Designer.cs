@@ -43,9 +43,12 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.btnSetPlayerPosition = new System.Windows.Forms.Button();
+            this.labelPlayerOrientation = new System.Windows.Forms.Label();
+            this.trackBarPlayerOrientation = new System.Windows.Forms.TrackBar();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMapDimX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMapDimY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMap)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarPlayerOrientation)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonWhite
@@ -243,12 +246,33 @@
             this.btnSetPlayerPosition.UseVisualStyleBackColor = true;
             this.btnSetPlayerPosition.Click += new System.EventHandler(this.btnSetPlayerPosition_Click);
             // 
+            // labelPlayerOrientation
+            // 
+            this.labelPlayerOrientation.AutoSize = true;
+            this.labelPlayerOrientation.Location = new System.Drawing.Point(25, 234);
+            this.labelPlayerOrientation.Name = "labelPlayerOrientation";
+            this.labelPlayerOrientation.Size = new System.Drawing.Size(88, 13);
+            this.labelPlayerOrientation.TabIndex = 17;
+            this.labelPlayerOrientation.Text = "Player orientation";
+            // 
+            // trackBarPlayerOrientation
+            // 
+            this.trackBarPlayerOrientation.Location = new System.Drawing.Point(28, 250);
+            this.trackBarPlayerOrientation.Maximum = 360;
+            this.trackBarPlayerOrientation.Name = "trackBarPlayerOrientation";
+            this.trackBarPlayerOrientation.Size = new System.Drawing.Size(160, 45);
+            this.trackBarPlayerOrientation.TabIndex = 18;
+            this.trackBarPlayerOrientation.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.trackBarPlayerOrientation.ValueChanged += new System.EventHandler(this.trackBarPlayerOrientation_ValueChanged);
+            // 
             // FormMapEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.ClientSize = new System.Drawing.Size(1177, 650);
+            this.Controls.Add(this.trackBarPlayerOrientation);
+            this.Controls.Add(this.labelPlayerOrientation);
             this.Controls.Add(this.btnSetPlayerPosition);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -271,6 +295,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMapDimX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMapDimY)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMap)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarPlayerOrientation)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -293,5 +318,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button btnSetPlayerPosition;
+        private System.Windows.Forms.Label labelPlayerOrientation;
+        private System.Windows.Forms.TrackBar trackBarPlayerOrientation;
     }
 }

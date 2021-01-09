@@ -17,8 +17,8 @@ namespace Raycasting
         static SpriteManager()
         {
             string currDirectory = Directory.GetCurrentDirectory() + @"\Sprites\";
-            spritePaths.Add(SpriteName.barrel, currDirectory + "barrel.png");
-            spritePaths.Add(SpriteName.pillar, currDirectory +"pillar.png");
+            spritePaths.Add(SpriteName.Barrel, currDirectory + "barrel.png");
+            spritePaths.Add(SpriteName.Pillar, currDirectory +"pillar.png");
         }
         public static String getSpritePath(SpriteName name)
         {
@@ -33,6 +33,14 @@ namespace Raycasting
         public static void addSpriteTextureID(SpriteName name, int ID)
         {
             spriteTextureIDs[name] = ID;
+        }
+
+        public static void loadSpritesFromMap(Map map)
+        {
+            foreach (var sprite in map.sprites)
+            {
+                sprites.Add(new Sprite(new OpenTK.Vector2(sprite.position.Y, sprite.position.X), sprite.name));
+            }
         }
     }
 }

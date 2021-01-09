@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace MapLibrary
 {
-    public enum SpriteName { barrel, pillar }
+    public enum SpriteName { Barrel, Pillar }
     public class Map
     {
         public uint height { get; }
@@ -26,6 +26,7 @@ namespace MapLibrary
             playerStartPosition = new PointF(1f, 1f);
             playerStartOrientation = 0;
             worldMap = new List<List<sbyte>>();
+            sprites = new List<spriteData>();
         }
 
         public static Color getColorFromTileID(sbyte tileID)
@@ -52,5 +53,10 @@ namespace MapLibrary
     {
         public PointF position;
         public SpriteName name;
+
+        public double getDistanceToPoint(PointF point)
+        {
+            return Math.Abs(Math.Sqrt(Math.Pow(point.X - this.position.X, 2) + Math.Pow(point.Y - this.position.Y, 2)));
+        }
     }
 }

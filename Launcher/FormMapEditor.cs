@@ -25,10 +25,16 @@ namespace MapEditor
         public FormMapEditor()
         {
             InitializeComponent();
+            listBoxSprites.DrawMode = DrawMode.OwnerDrawFixed;
+            listBoxSprites.DrawItem += listBox_DrawItem;
+            foreach (SpriteName name in (SpriteName[])Enum.GetValues(typeof(SpriteName)))
+            {
+                listBoxSprites.Items.Add(name);
+            }
+            listBoxSprites.SelectedIndex = 0;
         }
-        public FormMapEditor(Map map)
+        public FormMapEditor(Map map) : this()
         {
-            InitializeComponent();
             currentMap = map;
             txtMapName.Text = map.name;
             numericUpDownMapDimX.Value = map.width;
@@ -39,8 +45,7 @@ namespace MapEditor
         {
             if (currentMap == null)
                 generateNewMap();
-            mapVisualizer = new MapVisualizer(getDrawAbleSize(), currentMap);
-            pictureBoxMap.Image = mapVisualizer.currentMapImage;
+            drawFromScratch();
         }
 
 
@@ -54,7 +59,7 @@ namespace MapEditor
             String mapName = txtMapName.Text;
             if (!checkMapName(mapName))
             {
-                //Show error here
+                //Show error here TODO
                 return;
             }
             currentMap.name = mapName;
@@ -66,8 +71,7 @@ namespace MapEditor
         private void btnChangeDim_Click(object sender, EventArgs e)
         {
             generateNewMap();
-            mapVisualizer = new MapVisualizer(getDrawAbleSize(), currentMap);
-            pictureBoxMap.Image = mapVisualizer.currentMapImage;
+            drawFromScratch();
         }
 
         private void generateNewMap()
@@ -110,29 +114,71 @@ namespace MapEditor
             return new Size(maxWidth, maxHeight);
         }
 
+        private void drawFromScratch()
+        {
+            if (mapVisualizer != null)
+                mapVisualizer.Dispose();
+            mapVisualizer = new MapVisualizer(getDrawAbleSize(), currentMap);
+            pictureBoxMap.Image = mapVisualizer.currentMapImage;
+        }
+
         private void pictureBoxMap_Mouse(object sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left)
                 return;
             long sectionX = pictureBoxMap.Width / currentMap.width;
             long sectionY = pictureBoxMap.Height / currentMap.height;
+            float coordX = (float)e.X / sectionX;
+            float coordY = (float)e.Y / sectionY;
             if (setPlayer)
             {
-                currentMap.playerStartPosition.X = (float)e.X / sectionX;
-                currentMap.playerStartPosition.Y = (float)e.Y / sectionY;
-                mapVisualizer = new MapVisualizer(getDrawAbleSize(), currentMap);
-                pictureBoxMap.Image = mapVisualizer.currentMapImage;
+                currentMap.playerStartPosition.X = coordX;
+                currentMap.playerStartPosition.Y = coordY;
+                drawFromScratch();
                 setPlayer = false;
                 return;
             }
+
+            if (radioButtonSpriteDraw.Checked)
+            {
+                var newSpriteCoords = new PointF(coordX, coordY);
+                if (currentMap.sprites.Count > 0)
+                {
+                    var lastSprite = currentMap.sprites[currentMap.sprites.Count - 1];
+                    var distance = lastSprite.getDistanceToPoint(newSpriteCoords);
+                    if (distance < 0.5)
+                        return;
+                }
+                spriteData newSprite;
+                newSprite.name = (SpriteName)listBoxSprites.SelectedItem;
+                newSprite.position = newSpriteCoords;
+                currentMap.sprites.Add(newSprite);
+                drawFromScratch();
+                return;
+            }
+
+            if (radioButtonSpriteDelete.Checked)
+            {
+                var newSpriteCoords = new PointF(coordX, coordY);
+                var delete = new List<spriteData>();
+                foreach (var sprite in currentMap.sprites.Where<spriteData>(x => x.getDistanceToPoint(newSpriteCoords) < 0.2f))
+                {
+                    delete.Add(sprite);
+                }
+                foreach (var sprite in delete)
+                {
+                    currentMap.sprites.Remove(sprite);
+                }
+                if (delete.Count > 0)
+                    drawFromScratch();
+                return;
+            }
             
-            int coordX = (int)(e.X / sectionX);
-            int coordY = (int)(e.Y / sectionY);
-            if (mapVisualizer.colorCoordinate(new Point(coordX, coordY), new SolidBrush(Map.getColorFromTileID(selectedTileID))))
+            if (mapVisualizer.colorCoordinate(new Point((int)coordX, (int)coordY), new SolidBrush(Map.getColorFromTileID(selectedTileID))))
             {
                 mapVisualizer.redrawNonTiles();
                 pictureBoxMap.Image = mapVisualizer.currentMapImage;
-                currentMap.worldMap[coordY][coordX] = selectedTileID;
+                currentMap.worldMap[(int)coordY][(int)coordX] = selectedTileID;
             }
         }
 
@@ -144,8 +190,7 @@ namespace MapEditor
         private void trackBarPlayerOrientation_ValueChanged(object sender, EventArgs e)
         {
             currentMap.playerStartOrientation = (ushort)trackBarPlayerOrientation.Value;
-            mapVisualizer = new MapVisualizer(getDrawAbleSize(), currentMap);
-            pictureBoxMap.Image = mapVisualizer.currentMapImage;
+            drawFromScratch();
         }
 
         private void btnRandom_Click(object sender, EventArgs e)
@@ -162,8 +207,7 @@ namespace MapEditor
                 }
             }
             recursiveBacktracker(1, 1);
-            mapVisualizer = new MapVisualizer(getDrawAbleSize(), currentMap);
-            pictureBoxMap.Image = mapVisualizer.currentMapImage;
+            drawFromScratch();
         }
 
         private bool recursiveBacktracker(int x, int y)
@@ -225,6 +269,21 @@ namespace MapEditor
                 resultList.Add(new Point(x, y - 2));
             }
             return resultList.ToArray();
+        }
+
+        private void listBox_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            e.DrawBackground();
+
+            Graphics g = e.Graphics;
+            g.FillRectangle(new SolidBrush(MapVisualizer.getColorForSpirte((SpriteName)listBoxSprites.Items[e.Index])), e.Bounds);
+            ListBox lb = (ListBox)sender;
+            if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
+                g.DrawString(lb.Items[e.Index].ToString(), e.Font, new SolidBrush(Color.White), new PointF(e.Bounds.X, e.Bounds.Y));
+            else
+                g.DrawString(lb.Items[e.Index].ToString(), e.Font, new SolidBrush(Color.Black), new PointF(e.Bounds.X, e.Bounds.Y));
+
+            e.DrawFocusRectangle();
         }
     }
 }

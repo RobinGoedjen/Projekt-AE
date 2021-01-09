@@ -8,7 +8,7 @@ using System.Drawing;
 
 namespace MapEditor
 {
-    class MapVisualizer
+    class MapVisualizer : IDisposable
     {
         private Map map;
         public readonly int scaleFactor;
@@ -91,10 +91,40 @@ namespace MapEditor
             graphBase.DrawLine(p, startX, startY, (int)(newEndX + startX), (int)(newEndY + startY));
         }
 
+        private void drawSprites()
+        {
+            foreach (var sprite in map.sprites)
+            {
+                int startX = (int)(sprite.position.X * scaleFactor - scaleFactor * 0.2f);
+                int startY = (int)(sprite.position.Y * scaleFactor - scaleFactor * 0.2f);
+                graphBase.FillEllipse(new SolidBrush(getColorForSpirte(sprite.name)), new Rectangle(startX, startY, (int)(scaleFactor * 0.4f), (int)(scaleFactor * 0.4f)));
+            }
+        }
+
+        public static Color getColorForSpirte(SpriteName name)
+        {
+            switch (name)
+            {
+                case SpriteName.Barrel:
+                    return Color.SaddleBrown;
+                case SpriteName.Pillar:
+                    return Color.DarkSlateGray;
+                default:
+                    return Color.Pink;
+            }
+        }
+
         public void redrawNonTiles()
         {
             drawPlayer();
             drawPlayerOrientation();
+            drawSprites();
+        }
+
+        public void Dispose()
+        {
+            graphBase.Dispose();
+            currentMapImage.Dispose();
         }
     }
 }

@@ -279,10 +279,8 @@ namespace Raycasting
             {
                 generateTexture(name);
             }
-            //Load Sprites from Map TODO
-            SpriteManager.sprites.Add(new Sprite(new Vector2(6f, 9f), SpriteName.barrel));
-            SpriteManager.sprites.Add(new Sprite(new Vector2(6f, 8f), SpriteName.barrel));
-            SpriteManager.sprites.Add(new Sprite(new Vector2(6f, 8.5f), SpriteName.pillar));
+            SpriteManager.loadSpritesFromMap(map);
+            
 
             base.OnLoad(e);
         }

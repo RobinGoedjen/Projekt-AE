@@ -22,5 +22,16 @@ namespace Raycasting
             plane = new Vector2(direction.Y, -direction.X) * 0.95f;
             
         }
+
+        public void rotate(float rotSpeed)
+        {
+            float newDirX = (float)(direction.X * Math.Cos(rotSpeed) - direction.Y * Math.Sin(rotSpeed));
+            float newDirY = (float)(direction.X * Math.Sin(rotSpeed) + direction.Y * Math.Cos(rotSpeed));
+            direction = new Vector2(newDirX, newDirY);
+
+            float newPlaneX = (float)(plane.X * Math.Cos(rotSpeed) - plane.Y * Math.Sin(rotSpeed));
+            float newPlaneY = (float)(plane.X * Math.Sin(rotSpeed) + plane.Y * Math.Cos(rotSpeed));
+            plane = new Vector2(newPlaneX, newPlaneY);
+        }
     }
 }

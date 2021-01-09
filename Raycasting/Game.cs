@@ -26,7 +26,6 @@ namespace Raycasting
 
         int VBORed, VBOGreen, VBOBlue, VBOWhite, VBOShadow;
         int VAORed, VAOGreen, VAOBlue, VAOWhite, VAOShadow;
-        int barrelID; //TODO
 
         //Fields for Sprites
         List<float> ZBuffer = new List<float>();
@@ -142,13 +141,13 @@ namespace Raycasting
             }
 
             //Sprite casting
-            foreach (Sprite currSpirte in Sprite.sprites)
+            foreach (Sprite currSpirte in SpriteManager.sprites)
             {
                 currSpirte.updateDistanceToPlayer(player.position);
             }
-            Sprite.sprites.Sort();
+            SpriteManager.sprites.Sort();
 
-            foreach (Sprite currSprite in Sprite.sprites)
+            foreach (Sprite currSprite in SpriteManager.sprites)
             {
                 var spritePosition = currSprite.position - player.position;
                 float invDet = 1.0f / (player.plane.X * player.direction.Y - player.direction.X * player.plane.Y); 
@@ -220,24 +219,12 @@ namespace Raycasting
 
             if (input.IsKeyDown(Key.D))
             {
-                float newDirX = (float)(player.direction.X * Math.Cos(-rotSpeed) - player.direction.Y * Math.Sin(-rotSpeed));
-                float newDirY = (float)(player.direction.X * Math.Sin(-rotSpeed) + player.direction.Y * Math.Cos(-rotSpeed));
-                player.direction = new Vector2(newDirX, newDirY);
-
-                float newPlaneX = (float)(player.plane.X * Math.Cos(-rotSpeed) - player.plane.Y * Math.Sin(-rotSpeed));
-                float newPlaneY = (float)(player.plane.X * Math.Sin(-rotSpeed) + player.plane.Y * Math.Cos(-rotSpeed));
-                player.plane = new Vector2(newPlaneX, newPlaneY);
+                player.rotate(-rotSpeed);
             }
 
             if (input.IsKeyDown(Key.A))
             {
-                float newDirX = (float)(player.direction.X * Math.Cos(rotSpeed) - player.direction.Y * Math.Sin(rotSpeed));
-                float newDirY = (float)(player.direction.X * Math.Sin(rotSpeed) + player.direction.Y * Math.Cos(rotSpeed));
-                player.direction = new Vector2(newDirX, newDirY);
-
-                float newPlaneX = (float)(player.plane.X * Math.Cos(rotSpeed) - player.plane.Y * Math.Sin(rotSpeed));
-                float newPlaneY = (float)(player.plane.X * Math.Sin(rotSpeed) + player.plane.Y * Math.Cos(rotSpeed));
-                player.plane = new Vector2(newPlaneX, newPlaneY);
+                player.rotate(rotSpeed);
             }
             fillVAO(VAORed, VBORed, verticesRed);
 
@@ -287,28 +274,15 @@ namespace Raycasting
             shader = new Shader("shader.vert", "shader.frag");
 
             //Textures
-            Sprite.sprites.Add(new Sprite(new Vector2(6f, 9f), Sprite.SpriteName.barrel));
-            Sprite.sprites.Add(new Sprite(new Vector2(6f, 8f), Sprite.SpriteName.barrel));
-
-            //TEST
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-            //GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
-            
-            barrelID = GL.GenTexture();
-            GL.BindTexture(TextureTarget.Texture2D, barrelID);
-
-            Bitmap bmp = new Bitmap(Sprite.getSprite(Sprite.SpriteName.barrel));
-            bmp.MakeTransparent(Color.FromArgb(255,255,0,220));
-            bmp.RotateFlip(RotateFlipType.Rotate180FlipX);
-            BitmapData data = bmp.LockBits(new Rectangle(0,0,bmp.Width, bmp.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb); 
-
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
-
-            bmp.UnlockBits(data);
-
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-            GL.BindTexture(TextureTarget.Texture2D, 0);
+            foreach (SpriteName name in (SpriteName[])Enum.GetValues(typeof(SpriteName)))
+            {
+                generateTexture(name);
+            }
+            //Load Sprites from Map TODO
+            SpriteManager.sprites.Add(new Sprite(new Vector2(6f, 9f), SpriteName.barrel));
+            SpriteManager.sprites.Add(new Sprite(new Vector2(6f, 8f), SpriteName.barrel));
+            SpriteManager.sprites.Add(new Sprite(new Vector2(6f, 8.5f), SpriteName.pillar));
 
             base.OnLoad(e);
         }
@@ -320,6 +294,7 @@ namespace Raycasting
             GL.DeleteBuffer(VBOGreen);
             GL.DeleteBuffer(VBOBlue);
             GL.DeleteBuffer(VBOWhite);
+            GL.BindTexture(TextureTarget.Texture2D, 0);
             shader.Dispose();
             base.OnUnload(e);
         }
@@ -362,33 +337,30 @@ namespace Raycasting
 
             shader.Remove();
 
-            //TEST
-            GL.BindTexture(TextureTarget.Texture2D, barrelID);
-            //GL.MatrixMode(MatrixMode.Projection);
-            //GL.LoadIdentity();
-            foreach (Sprite currSprite in Sprite.sprites)
+            foreach (Sprite currSprite in SpriteManager.sprites)
             {
                 if (!currSprite.visible)
                     continue;
+                GL.BindTexture(TextureTarget.Texture2D, SpriteManager.getSpriteTextureID(currSprite.name));
                 GL.Begin(PrimitiveType.Quads);
                 GL.Color3(Color.Transparent);
 
                 GL.TexCoord2(currSprite.firstTextureX, 0);
 			    GL.Vertex2(currSprite.drawStart);
 
-                GL.TexCoord2(currSprite.firstTextureX, 0.8f);
+                GL.TexCoord2(currSprite.firstTextureX, 0.99f);
 			    GL.Vertex2(currSprite.drawStart.X, currSprite.drawEnd.Y);
 
-                GL.TexCoord2(currSprite.lastTextureX, 0.8f);
+                GL.TexCoord2(currSprite.lastTextureX, 0.99f);
 			    GL.Vertex2(currSprite.drawEnd);
 
                 GL.TexCoord2(currSprite.lastTextureX, 0);
 			    GL.Vertex2(currSprite.drawEnd.X, currSprite.drawStart.Y);
 			    
 			    GL.End();
+                GL.BindTexture(TextureTarget.Texture2D, 0);
             }
 
-            GL.BindTexture(TextureTarget.Texture2D, 0);
             GL.Disable(EnableCap.Blend);
             Context.SwapBuffers();
             base.OnRenderFrame(e);
@@ -426,6 +398,26 @@ namespace Raycasting
             GL.EnableVertexAttribArray(0);
             GL.BindVertexArray(0);
 
+        }
+
+        private void generateTexture(SpriteName spriteName)
+        {
+            int newTextureID = GL.GenTexture();
+            GL.BindTexture(TextureTarget.Texture2D, newTextureID);
+
+            Bitmap bmp = new Bitmap(SpriteManager.getSpritePath(spriteName));
+            bmp.MakeTransparent(Color.FromArgb(255, 255, 0, 220)); //TODO Constante machen
+            bmp.RotateFlip(RotateFlipType.Rotate180FlipX);
+            BitmapData data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
+
+            bmp.UnlockBits(data);
+
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear); //schauen ob diese für jede Textur gesetzt werden müssen
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+            SpriteManager.addSpriteTextureID(spriteName, newTextureID);
         }
     }
 }

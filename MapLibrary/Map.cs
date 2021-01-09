@@ -7,6 +7,7 @@ using System.Drawing;
 
 namespace MapLibrary
 {
+    public enum SpriteName { barrel, pillar }
     public class Map
     {
         public uint height { get; }
@@ -16,6 +17,7 @@ namespace MapLibrary
         public const byte colorCount = 4;
         public PointF playerStartPosition;
         public ushort playerStartOrientation;
+        public List<spriteData> sprites;
 
         public Map(uint width, uint height)
         {
@@ -44,5 +46,11 @@ namespace MapLibrary
                     return Color.Gray;
             }
         }
+    }
+
+    public struct spriteData
+    {
+        public PointF position;
+        public SpriteName name;
     }
 }

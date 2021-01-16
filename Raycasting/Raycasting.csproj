@@ -58,6 +58,8 @@
     <Compile Include="Shader.cs" />
     <Compile Include="Sprite.cs" />
     <Compile Include="SpriteManager.cs" />
+    <Compile Include="Texture.cs" />
+    <Compile Include="GameTextureManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -18,14 +18,10 @@ namespace Raycasting
         Player player;
         Map map;
 
-        List<Vector2> verticesRed, verticesGreen, verticesBlue, verticesWhite, verticesShadow, verticesGroundPlane;
-        List<Vector4> colors = new List<Vector4>();
+        List<Vector2> verticesGroundPlane;
 
 
         private Shader shader;
-
-        int VBORed, VBOGreen, VBOBlue, VBOWhite, VBOShadow;
-        int VAORed, VAOGreen, VAOBlue, VAOWhite, VAOShadow;
 
         //Fields for Sprites
         List<float> ZBuffer = new List<float>();
@@ -38,21 +34,12 @@ namespace Raycasting
             this.CursorVisible = false;
             this.CursorGrabbed = true;
             GL.Enable(EnableCap.Texture2D);
-            for (sbyte i = 1; i <= Map.colorCount; i++)
-            {
-                var currColor = Map.getColorFromTileID(i);
-                colors.Add(new Vector4((float)currColor.R / 255, (float)currColor.G / 255, (float)currColor.B / 255, (float)currColor.A / 255));
-            }
         }
 
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
-            verticesRed.Clear();
-            verticesGreen.Clear();
-            verticesBlue.Clear();
-            verticesWhite.Clear();
-            verticesShadow.Clear();
+            GameTextureManager.clearAllVAOs();
 
             Point lastHit = new Point(-100,0);
             float lastYScaled = 0;
@@ -138,12 +125,10 @@ namespace Raycasting
                 //FIRST HIT
                 if (lastHit.X == -100)
                 {
-                    addVertice(new Vector2(drawXScaled, drawYScaled), map.worldMap[currentMapPosition.X][currentMapPosition.Y]);
-                    addVertice(new Vector2(drawXScaled, -drawYScaled), map.worldMap[currentMapPosition.X][currentMapPosition.Y]);
+                    GameTextureManager.getTextureByID(map.worldMap[currentMapPosition.X][currentMapPosition.Y]).addOpenVertice(drawXScaled, drawYScaled);
                     if (side == 0)
                     {
-                        addVertice(new Vector2(drawXScaled, drawYScaled), 0);
-                        addVertice(new Vector2(drawXScaled, -drawYScaled), 0);
+                        GameTextureManager.textureDictionary[GameTexture.Shadow].addOpenVertice(drawXScaled, drawYScaled);
                     }
 
                     lastHit = new Point(currentMapPosition.X, currentMapPosition.Y);
@@ -155,12 +140,10 @@ namespace Raycasting
                 //LAST HIT
                 if (x == this.Width - 1)
                 {
-                    addVertice(new Vector2(drawXScaled, -drawYScaled), map.worldMap[currentMapPosition.X][currentMapPosition.Y]);
-                    addVertice(new Vector2(drawXScaled, drawYScaled), map.worldMap[currentMapPosition.X][currentMapPosition.Y]);
+                    GameTextureManager.getTextureByID(map.worldMap[currentMapPosition.X][currentMapPosition.Y]).addCloseVertice(drawXScaled, drawYScaled);
                     if (side == 0)
                     {
-                        addVertice(new Vector2(drawXScaled, -drawYScaled), 0);
-                        addVertice(new Vector2(drawXScaled, drawYScaled), 0);
+                        GameTextureManager.textureDictionary[GameTexture.Shadow].addCloseVertice(drawXScaled, drawYScaled);
                     }
                     continue;
                 }
@@ -173,21 +156,17 @@ namespace Raycasting
                 }
 
                 //NEW BLOCK
-                addVertice(new Vector2(drawXScaled, -lastYScaled), map.worldMap[lastHit.X][lastHit.Y]);
-                addVertice(new Vector2(drawXScaled, lastYScaled), map.worldMap[lastHit.X][lastHit.Y]);
-                addVertice(new Vector2(drawXScaled, drawYScaled), map.worldMap[currentMapPosition.X][currentMapPosition.Y]);
-                addVertice(new Vector2(drawXScaled, -drawYScaled), map.worldMap[currentMapPosition.X][currentMapPosition.Y]);
+                GameTextureManager.getTextureByID(map.worldMap[lastHit.X][lastHit.Y]).addCloseVertice(drawXScaled, lastYScaled);
+                GameTextureManager.getTextureByID(map.worldMap[currentMapPosition.X][currentMapPosition.Y]).addOpenVertice(drawXScaled, drawYScaled);
 
                 if (lastSide == 0)
                 {
-                    addVertice(new Vector2(drawXScaled, -lastYScaled), 0);
-                    addVertice(new Vector2(drawXScaled, lastYScaled), 0);
+                    GameTextureManager.textureDictionary[GameTexture.Shadow].addCloseVertice(drawXScaled, lastYScaled);
                 }
 
                 if (side == 0)
                 {
-                    addVertice(new Vector2(drawXScaled, drawYScaled), 0);
-                    addVertice(new Vector2(drawXScaled, -drawYScaled), 0);
+                    GameTextureManager.textureDictionary[GameTexture.Shadow].addOpenVertice(drawXScaled, drawYScaled);
                 }
 
                 lastHit = new Point(currentMapPosition.X, currentMapPosition.Y);
@@ -280,44 +259,17 @@ namespace Raycasting
             {
                 player.rotate(rotSpeed);
             }
-            fillVAO(VAORed, VBORed, verticesRed);
 
-            fillVAO(VAOGreen, VBOGreen, verticesGreen);
-
-            fillVAO(VAOBlue, VBOBlue, verticesBlue);
-
-            fillVAO(VAOWhite, VBOWhite, verticesWhite);
-
-            fillVAO(VAOShadow, VBOShadow, verticesShadow);
+            GameTextureManager.fillAllVAOs();
 
             base.OnUpdateFrame(e);
         }
 
         protected override void OnLoad(EventArgs e)
         {
-            verticesRed = new List<Vector2>();
-            verticesGreen = new List<Vector2>();
-            verticesBlue = new List<Vector2>();
-            verticesWhite = new List<Vector2>();
-            verticesShadow = new List<Vector2>();
             verticesGroundPlane = new List<Vector2>();
 
             GL.ClearColor(0.4f, 0.2f, 0.2f, 1f);
-
-            VAORed = GL.GenVertexArray();
-            VBORed = GL.GenBuffer();
-
-            VAOGreen = GL.GenVertexArray();
-            VBOGreen = GL.GenBuffer();
-
-            VAOBlue = GL.GenVertexArray();
-            VBOBlue = GL.GenBuffer();
-
-            VAOWhite = GL.GenVertexArray();
-            VBOWhite = GL.GenBuffer();
-
-            VAOShadow = GL.GenVertexArray();
-            VBOShadow = GL.GenBuffer();
 
             verticesGroundPlane.Add(new Vector2(-1f, 0));
             verticesGroundPlane.Add(new Vector2(1f, 0));
@@ -342,11 +294,15 @@ namespace Raycasting
         protected override void OnUnload(EventArgs e)
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            GL.DeleteBuffer(VBORed);
-            GL.DeleteBuffer(VBOGreen);
-            GL.DeleteBuffer(VBOBlue);
-            GL.DeleteBuffer(VBOWhite);
+            foreach (var item in GameTextureManager.textureDictionary)
+            {
+                GL.DeleteBuffer(item.Value.VBO);
+            }
             GL.BindTexture(TextureTarget.Texture2D, 0);
+            foreach (SpriteName sprite in (SpriteName[])Enum.GetValues(typeof(SpriteName)))
+            {
+                GL.DeleteTexture(SpriteManager.getSpriteTextureID(sprite));
+            }
             shader.Dispose();
             base.OnUnload(e);
         }
@@ -364,28 +320,25 @@ namespace Raycasting
             GL.End();
 
             shader.Use();
-            
-            GL.BindVertexArray(VAORed);
-            GL.VertexAttrib4(1, colors[0]);
-            GL.DrawArrays(PrimitiveType.Quads, 0, verticesRed.Count);
 
-            GL.BindVertexArray(VAOGreen);
-            GL.VertexAttrib4(1, colors[1]);
-            GL.DrawArrays(PrimitiveType.Quads, 0, verticesGreen.Count);
+            foreach (var item in GameTextureManager.textureDictionary)
+            {
+                if (item.Key == GameTexture.Shadow)
+                    continue;
+                var currTexture = item.Value;
+                GL.BindVertexArray(currTexture.VAO);
+                GL.VertexAttrib4(1, currTexture.color);
+                GL.DrawArrays(PrimitiveType.Quads, 0, currTexture.vertices.Count);
 
-            GL.BindVertexArray(VAOBlue);
-            GL.VertexAttrib4(1, colors[2]);
-            GL.DrawArrays(PrimitiveType.Quads, 0, verticesBlue.Count);
-
-            GL.BindVertexArray(VAOWhite);
-            GL.VertexAttrib4(1, colors[3]);
-            GL.DrawArrays(PrimitiveType.Quads, 0, verticesWhite.Count);
+            }
 
             GL.Enable(EnableCap.Blend);
 
-            GL.BindVertexArray(VAOShadow);
+            var shadowTexture = GameTextureManager.textureDictionary[GameTexture.Shadow];
+            GL.BindVertexArray(shadowTexture.VAO);
             GL.VertexAttrib4(1, new Vector4(0.2f, 0.2f, 0.2f, 0.175f));
-            GL.DrawArrays(PrimitiveType.Quads, 0, verticesShadow.Count);
+            GL.DrawArrays(PrimitiveType.Quads, 0, shadowTexture.vertices.Count);
+            GL.BindVertexArray(0);
 
             shader.Remove();
 
@@ -416,40 +369,6 @@ namespace Raycasting
             GL.Disable(EnableCap.Blend);
             Context.SwapBuffers();
             base.OnRenderFrame(e);
-        }
-
-
-        private void addVertice(Vector2 position, sbyte colorID)
-        {
-            switch (colorID)
-            {
-                case 0:
-                    verticesShadow.Add(position);
-                    break;
-                case 1: 
-                    verticesRed.Add(position);
-                    break;
-                case 2:
-                    verticesGreen.Add(position);
-                    break;
-                case 3: 
-                    verticesBlue.Add(position);
-                    break;
-                default: 
-                    verticesWhite.Add(position);
-                    break;
-            }
-        }
-
-        private void fillVAO(int VAO, int VBO, List<Vector2> vertices)
-        {
-            GL.BindVertexArray(VAO);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Count * Vector2.SizeInBytes, vertices.ToArray(), BufferUsageHint.DynamicDraw);
-            GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, Vector2.SizeInBytes, 0);
-            GL.EnableVertexAttribArray(0);
-            GL.BindVertexArray(0);
-
         }
 
         private void generateTexture(SpriteName spriteName)

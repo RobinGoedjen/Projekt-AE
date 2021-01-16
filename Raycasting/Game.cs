@@ -54,6 +54,9 @@ namespace Raycasting
             verticesWhite.Clear();
             verticesShadow.Clear();
 
+            Point lastHit = new Point(-100,0);
+            float lastYScaled = 0;
+            int lastSide = 0;
             ZBuffer.Clear();
             for (int x = 0; x < this.Width; x++)
             {
@@ -131,15 +134,66 @@ namespace Raycasting
 
                 float drawXScaled = (float)x / this.Width * 2 - 1f;
                 float drawYScaled = (float)lineHeight / this.Height / 2;
+
+                //FIRST HIT
+                if (lastHit.X == -100)
+                {
+                    addVertice(new Vector2(drawXScaled, drawYScaled), map.worldMap[currentMapPosition.X][currentMapPosition.Y]);
+                    addVertice(new Vector2(drawXScaled, -drawYScaled), map.worldMap[currentMapPosition.X][currentMapPosition.Y]);
+                    if (side == 0)
+                    {
+                        addVertice(new Vector2(drawXScaled, drawYScaled), 0);
+                        addVertice(new Vector2(drawXScaled, -drawYScaled), 0);
+                    }
+
+                    lastHit = new Point(currentMapPosition.X, currentMapPosition.Y);
+                    lastYScaled = drawYScaled;
+                    lastSide = side;
+                    continue;
+                }
+                
+                //LAST HIT
+                if (x == this.Width - 1)
+                {
+                    addVertice(new Vector2(drawXScaled, -drawYScaled), map.worldMap[currentMapPosition.X][currentMapPosition.Y]);
+                    addVertice(new Vector2(drawXScaled, drawYScaled), map.worldMap[currentMapPosition.X][currentMapPosition.Y]);
+                    if (side == 0)
+                    {
+                        addVertice(new Vector2(drawXScaled, -drawYScaled), 0);
+                        addVertice(new Vector2(drawXScaled, drawYScaled), 0);
+                    }
+                    continue;
+                }
+
+                //STILL ON SAME BLOCK
+                if (currentMapPosition.Equals(lastHit) && lastSide == side)
+                {
+                    lastYScaled = drawYScaled;
+                    continue;
+                }
+
+                //NEW BLOCK
+                addVertice(new Vector2(drawXScaled, -lastYScaled), map.worldMap[lastHit.X][lastHit.Y]);
+                addVertice(new Vector2(drawXScaled, lastYScaled), map.worldMap[lastHit.X][lastHit.Y]);
                 addVertice(new Vector2(drawXScaled, drawYScaled), map.worldMap[currentMapPosition.X][currentMapPosition.Y]);
                 addVertice(new Vector2(drawXScaled, -drawYScaled), map.worldMap[currentMapPosition.X][currentMapPosition.Y]);
+
+                if (lastSide == 0)
+                {
+                    addVertice(new Vector2(drawXScaled, -lastYScaled), 0);
+                    addVertice(new Vector2(drawXScaled, lastYScaled), 0);
+                }
+
                 if (side == 0)
                 {
                     addVertice(new Vector2(drawXScaled, drawYScaled), 0);
                     addVertice(new Vector2(drawXScaled, -drawYScaled), 0);
                 }
-            }
 
+                lastHit = new Point(currentMapPosition.X, currentMapPosition.Y);
+                lastYScaled = drawYScaled;
+                lastSide = side;
+            }
             //Sprite casting
             foreach (Sprite currSpirte in SpriteManager.sprites)
             {
@@ -313,25 +367,25 @@ namespace Raycasting
             
             GL.BindVertexArray(VAORed);
             GL.VertexAttrib4(1, colors[0]);
-            GL.DrawArrays(PrimitiveType.Lines, 0, verticesRed.Count);
+            GL.DrawArrays(PrimitiveType.Quads, 0, verticesRed.Count);
 
             GL.BindVertexArray(VAOGreen);
             GL.VertexAttrib4(1, colors[1]);
-            GL.DrawArrays(PrimitiveType.Lines, 0, verticesGreen.Count);
+            GL.DrawArrays(PrimitiveType.Quads, 0, verticesGreen.Count);
 
             GL.BindVertexArray(VAOBlue);
             GL.VertexAttrib4(1, colors[2]);
-            GL.DrawArrays(PrimitiveType.Lines, 0, verticesBlue.Count);
+            GL.DrawArrays(PrimitiveType.Quads, 0, verticesBlue.Count);
 
             GL.BindVertexArray(VAOWhite);
             GL.VertexAttrib4(1, colors[3]);
-            GL.DrawArrays(PrimitiveType.Lines, 0, verticesWhite.Count);
+            GL.DrawArrays(PrimitiveType.Quads, 0, verticesWhite.Count);
 
             GL.Enable(EnableCap.Blend);
 
             GL.BindVertexArray(VAOShadow);
             GL.VertexAttrib4(1, new Vector4(0.2f, 0.2f, 0.2f, 0.175f));
-            GL.DrawArrays(PrimitiveType.Lines, 0, verticesShadow.Count);
+            GL.DrawArrays(PrimitiveType.Quads, 0, verticesShadow.Count);
 
             shader.Remove();
 
@@ -412,7 +466,7 @@ namespace Raycasting
 
             bmp.UnlockBits(data);
 
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear); //schauen ob diese für jede Textur gesetzt werden müssen
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear); //schauen ob diese für jede Textur gesetzt werden müssen TODO
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
             GL.BindTexture(TextureTarget.Texture2D, 0);
             SpriteManager.addSpriteTextureID(spriteName, newTextureID);

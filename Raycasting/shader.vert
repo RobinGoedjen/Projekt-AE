@@ -8,10 +8,6 @@ void main()
 {
     gl_Position = vec4(aPosition, 0, 1.0);
     double scale = abs(aPosition.y) * 2.5;
-    if(scale > 0.6)
-    {
-        scale = 0.6;
-    }
     if(scale < 0.15)
     {
         scale = 0.15;

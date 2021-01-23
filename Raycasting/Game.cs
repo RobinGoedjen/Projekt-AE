@@ -10,6 +10,8 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using MapLibrary;
+using System.Runtime.InteropServices;
+using System.IO;
 
 namespace Raycasting
 {
@@ -20,12 +22,13 @@ namespace Raycasting
 
         List<Vector2> verticesGroundPlane;
 
-
+        public bool UseWallTextures = false;
+        private int WallTexture;
         private Shader shader;
 
         //Fields for Sprites
         List<float> ZBuffer = new List<float>();
-
+        DebugProc debugProc;
 
         public Game(Player player, Map map) : base(500, 300, GraphicsMode.Default, "Raycasting", GameWindowFlags.Fullscreen)
         {
@@ -34,8 +37,15 @@ namespace Raycasting
             this.CursorVisible = false;
             this.CursorGrabbed = true;
             GL.Enable(EnableCap.Texture2D);
+            //GL.Enable(EnableCap.DebugOutput);  //Hier kann GLES Shader Debug aktiviert werden
+            debugProc = DebugCallback;
+            GL.DebugMessageCallback(debugProc, new IntPtr());
         }
 
+        public void DebugCallback(DebugSource source, DebugType type, int id, DebugSeverity severity, int length, IntPtr message, IntPtr userParam)
+        {
+            Console.WriteLine(Marshal.PtrToStringAnsi(message));
+        }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
@@ -44,6 +54,7 @@ namespace Raycasting
             Point lastHit = new Point(-100,0);
             float lastYScaled = 0;
             int lastSide = 0;
+            float lastWallX = 1f;
             ZBuffer.Clear();
             for (int x = 0; x < this.Width; x++)
             {
@@ -85,7 +96,6 @@ namespace Raycasting
                     stepY = 1;
                     sideDistance.Y = (currentMapPosition.Y + 1.0f - player.position.Y) * deltaDistY;
                 }
-
                 //perform DDA
                 while (!hit)
                 {
@@ -112,38 +122,40 @@ namespace Raycasting
                 int lineHeight = (int)(this.Height / perpWallDist);
 
                 //calculate lowest and highest pixel to fill in current stripe
-                int drawStart = -lineHeight / 2 + this.Height / 2;
-                if (drawStart < 0) 
-                    drawStart = 0;
-                int drawEnd = lineHeight / 2 + this.Height / 2;
-                if (drawEnd >= this.Height) 
-                    drawEnd = this.Height - 1;
 
+                float wallX; //where exactly the wall was hit
+                if (side == 0) 
+                    wallX = player.position.Y + perpWallDist * rayDir.Y;
+                else 
+                    wallX = player.position.X + perpWallDist * rayDir.X;
+                wallX -= (float)Math.Floor(wallX);
                 float drawXScaled = (float)x / this.Width * 2 - 1f;
                 float drawYScaled = (float)lineHeight / this.Height / 2;
 
                 //FIRST HIT
                 if (lastHit.X == -100)
                 {
-                    GameTextureManager.getTextureByID(map.worldMap[currentMapPosition.X][currentMapPosition.Y]).addOpenVertice(drawXScaled, drawYScaled);
+                    GameTextureManager.getTextureByID(map.worldMap[currentMapPosition.X][currentMapPosition.Y]).addOpenVertice(drawXScaled, drawYScaled, wallX);
                     if (side == 0)
                     {
-                        GameTextureManager.textureDictionary[GameTexture.Shadow].addOpenVertice(drawXScaled, drawYScaled);
+                        GameTextureManager.textureDictionary[GameTexture.Shadow].addOpenVertice(drawXScaled, drawYScaled, wallX);
                     }
 
                     lastHit = new Point(currentMapPosition.X, currentMapPosition.Y);
                     lastYScaled = drawYScaled;
                     lastSide = side;
+                    lastWallX = wallX;
                     continue;
                 }
                 
+
                 //LAST HIT
                 if (x == this.Width - 1)
                 {
-                    GameTextureManager.getTextureByID(map.worldMap[currentMapPosition.X][currentMapPosition.Y]).addCloseVertice(drawXScaled, drawYScaled);
+                    GameTextureManager.getTextureByID(map.worldMap[currentMapPosition.X][currentMapPosition.Y]).addCloseVertice(drawXScaled, drawYScaled, wallX);
                     if (side == 0)
                     {
-                        GameTextureManager.textureDictionary[GameTexture.Shadow].addCloseVertice(drawXScaled, drawYScaled);
+                        GameTextureManager.textureDictionary[GameTexture.Shadow].addCloseVertice(drawXScaled, drawYScaled, wallX);
                     }
                     continue;
                 }
@@ -152,27 +164,28 @@ namespace Raycasting
                 if (currentMapPosition.Equals(lastHit) && lastSide == side)
                 {
                     lastYScaled = drawYScaled;
+                    lastWallX = wallX;
                     continue;
                 }
-
                 //NEW BLOCK
-                GameTextureManager.getTextureByID(map.worldMap[lastHit.X][lastHit.Y]).addCloseVertice(drawXScaled, lastYScaled);
-                GameTextureManager.getTextureByID(map.worldMap[currentMapPosition.X][currentMapPosition.Y]).addOpenVertice(drawXScaled, drawYScaled);
+                GameTextureManager.getTextureByID(map.worldMap[lastHit.X][lastHit.Y]).addCloseVertice(drawXScaled, lastYScaled, lastWallX);
+                GameTextureManager.getTextureByID(map.worldMap[currentMapPosition.X][currentMapPosition.Y]).addOpenVertice(drawXScaled, drawYScaled, wallX);
 
                 if (lastSide == 0)
                 {
-                    GameTextureManager.textureDictionary[GameTexture.Shadow].addCloseVertice(drawXScaled, lastYScaled);
+                    GameTextureManager.textureDictionary[GameTexture.Shadow].addCloseVertice(drawXScaled, lastYScaled, lastWallX);
                 }
 
                 if (side == 0)
                 {
-                    GameTextureManager.textureDictionary[GameTexture.Shadow].addOpenVertice(drawXScaled, drawYScaled);
+                   GameTextureManager.textureDictionary[GameTexture.Shadow].addOpenVertice(drawXScaled, drawYScaled, wallX);
                 }
 
                 lastHit = new Point(currentMapPosition.X, currentMapPosition.Y);
                 lastYScaled = drawYScaled;
                 lastSide = side;
             }
+
             //Sprite casting
             foreach (Sprite currSpirte in SpriteManager.sprites)
             {
@@ -276,17 +289,16 @@ namespace Raycasting
             verticesGroundPlane.Add(new Vector2(1f, -1f));
             verticesGroundPlane.Add(new Vector2(-1f, -1f));
 
-
-            shader = new Shader("shader.vert", "shader.frag");
-
+            var fragShader = UseWallTextures ? "TexturedShader.frag" : "shader.frag";
+            shader = new Shader("shader.vert", fragShader);
             //Textures
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             foreach (SpriteName name in (SpriteName[])Enum.GetValues(typeof(SpriteName)))
             {
-                generateTexture(name);
+                SpriteManager.addSpriteTextureID(name, generateTexture(SpriteManager.getSpritePath(name))); 
             }
             SpriteManager.loadSpritesFromMap(map);
-            
+            WallTexture = generateTexture(Directory.GetCurrentDirectory() + @"\Textures\greystone.png");
 
             base.OnLoad(e);
         }
@@ -326,17 +338,17 @@ namespace Raycasting
                 if (item.Key == GameTexture.Shadow)
                     continue;
                 var currTexture = item.Value;
+                GL.BindTexture(TextureTarget.Texture2D, WallTexture);
                 GL.BindVertexArray(currTexture.VAO);
                 GL.VertexAttrib4(1, currTexture.color);
                 GL.DrawArrays(PrimitiveType.Quads, 0, currTexture.vertices.Count);
-
             }
-
+            GL.BindTexture(TextureTarget.Texture2D, 0);
             GL.Enable(EnableCap.Blend);
 
             var shadowTexture = GameTextureManager.textureDictionary[GameTexture.Shadow];
             GL.BindVertexArray(shadowTexture.VAO);
-            GL.VertexAttrib4(1, new Vector4(0.2f, 0.2f, 0.2f, 0.175f));
+            GL.VertexAttrib4(1, new Vector4(0f, 0f, 0f, 0.175f));
             GL.DrawArrays(PrimitiveType.Quads, 0, shadowTexture.vertices.Count);
             GL.BindVertexArray(0);
 
@@ -365,30 +377,33 @@ namespace Raycasting
 			    GL.End();
                 GL.BindTexture(TextureTarget.Texture2D, 0);
             }
-
             GL.Disable(EnableCap.Blend);
             Context.SwapBuffers();
             base.OnRenderFrame(e);
         }
 
-        private void generateTexture(SpriteName spriteName)
+        private int generateTexture(string texturePath)
         {
             int newTextureID = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, newTextureID);
 
-            Bitmap bmp = new Bitmap(SpriteManager.getSpritePath(spriteName));
+            
+            //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+            //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+
+            Bitmap bmp = new Bitmap(texturePath);
             bmp.MakeTransparent(Color.FromArgb(255, 255, 0, 220)); //TODO Constante machen
             bmp.RotateFlip(RotateFlipType.Rotate180FlipX);
             BitmapData data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
+            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D); 
 
             bmp.UnlockBits(data);
 
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear); //schauen ob diese für jede Textur gesetzt werden müssen TODO
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
             GL.BindTexture(TextureTarget.Texture2D, 0);
-            SpriteManager.addSpriteTextureID(spriteName, newTextureID);
+            return newTextureID;
         }
     }
 }

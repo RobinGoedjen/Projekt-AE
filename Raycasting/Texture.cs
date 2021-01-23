@@ -13,7 +13,7 @@ namespace Raycasting
     {
         public readonly int VAO;
         public readonly int VBO;
-        public readonly List<Vector2> vertices;
+        public readonly List<Vector4> vertices;
         public readonly Vector4 color;
         public readonly GameTexture texture;
 
@@ -23,18 +23,19 @@ namespace Raycasting
             this.color = color;
             this.VAO = VAO;
             this.VBO = VBO;
-            vertices = new List<Vector2>();
+            vertices = new List<Vector4>();
         }
 
-        public void addOpenVertice(float drawXScaled, float drawYScaled)
+        public void addOpenVertice(float drawXScaled, float drawYScaled, float textX)
         {
-            vertices.Add(new Vector2(drawXScaled, drawYScaled));
-            vertices.Add(new Vector2(drawXScaled, -drawYScaled));
+            vertices.Add(new Vector4(drawXScaled, drawYScaled, textX, 1f));
+            vertices.Add(new Vector4(drawXScaled, -drawYScaled, textX, 0f));
         }
 
-        public void addCloseVertice(float drawXScaled, float drawYScaled)
+        public void addCloseVertice(float drawXScaled, float drawYScaled, float textX)
         {
-            addOpenVertice(drawXScaled, -drawYScaled);
+            vertices.Add(new Vector4(drawXScaled, -drawYScaled, textX, 0f));
+            vertices.Add(new Vector4(drawXScaled, drawYScaled, textX, 1f));
         }
     }
 }

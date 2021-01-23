@@ -36,7 +36,7 @@ namespace MapEditor
             {
                 listBoxMaps.SelectedIndex = 0;
             }
-            Process.Start(Directory.GetCurrentDirectory() + "/Raycasting.exe", '"' + availableMaps[listBoxMaps.SelectedIndex] + '"');
+            Process.Start(Directory.GetCurrentDirectory() + "/Raycasting.exe", '"' + availableMaps[listBoxMaps.SelectedIndex] + '"' + (checkBoxUseWallTextures.Checked ? " true" :  ""));
         }
 
         private void btnMapEditor_Click(object sender, EventArgs e)

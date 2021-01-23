@@ -12,7 +12,7 @@ namespace Raycasting
 {
     class Shader : IDisposable
     {
-        int Handle;
+        public int Handle;
         int VertexShader;
         int FragmentShader;
 

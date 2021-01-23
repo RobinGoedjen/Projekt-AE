@@ -11,7 +11,7 @@ using MapLibrary;
 
 namespace Raycasting
 {
-    public enum GameTexture { Shadow, RedWall, GreenWall, BlueWall, LightGreyWall }  //TODO Hier nochmal in Map verschieben wenn Texturen dazu kommen
+    public enum GameTexture { Shadow, RedWall, GreenWall, BlueWall, LightGreyWall }  
     static class GameTextureManager
     {
         public static readonly Dictionary<GameTexture, Texture> textureDictionary;
@@ -36,8 +36,8 @@ namespace Raycasting
                 var currentTexture = texture.Value;
                 GL.BindVertexArray(currentTexture.VAO);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, currentTexture.VBO);
-                GL.BufferData(BufferTarget.ArrayBuffer, currentTexture.vertices.Count * Vector2.SizeInBytes, currentTexture.vertices.ToArray(), BufferUsageHint.DynamicDraw);
-                GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, Vector2.SizeInBytes, 0);
+                GL.BufferData(BufferTarget.ArrayBuffer, currentTexture.vertices.Count * Vector4.SizeInBytes, currentTexture.vertices.ToArray(), BufferUsageHint.DynamicDraw);
+                GL.VertexAttribPointer(0, 4, VertexAttribPointerType.Float, false, Vector4.SizeInBytes, 0);
                 GL.EnableVertexAttribArray(0);
                 GL.BindVertexArray(0);
             }

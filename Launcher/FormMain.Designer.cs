@@ -35,6 +35,7 @@
             this.btnEditMap = new System.Windows.Forms.Button();
             this.pictureBoxPreview = new System.Windows.Forms.PictureBox();
             this.btnDeleteMap = new System.Windows.Forms.Button();
+            this.checkBoxUseWallTextures = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).BeginInit();
             this.SuspendLayout();
             // 
@@ -114,12 +115,24 @@
             this.btnDeleteMap.UseVisualStyleBackColor = true;
             this.btnDeleteMap.Click += new System.EventHandler(this.btnDeleteMap_Click);
             // 
+            // checkBoxUseWallTextures
+            // 
+            this.checkBoxUseWallTextures.AutoSize = true;
+            this.checkBoxUseWallTextures.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBoxUseWallTextures.Location = new System.Drawing.Point(68, 468);
+            this.checkBoxUseWallTextures.Name = "checkBoxUseWallTextures";
+            this.checkBoxUseWallTextures.Size = new System.Drawing.Size(235, 22);
+            this.checkBoxUseWallTextures.TabIndex = 7;
+            this.checkBoxUseWallTextures.Text = "Use Wall Textures (visual bugs)";
+            this.checkBoxUseWallTextures.UseVisualStyleBackColor = true;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::Launcher.Properties.Resources.background;
             this.ClientSize = new System.Drawing.Size(1066, 752);
+            this.Controls.Add(this.checkBoxUseWallTextures);
             this.Controls.Add(this.btnDeleteMap);
             this.Controls.Add(this.pictureBoxPreview);
             this.Controls.Add(this.btnEditMap);
@@ -146,6 +159,7 @@
         private System.Windows.Forms.Button btnEditMap;
         private System.Windows.Forms.PictureBox pictureBoxPreview;
         private System.Windows.Forms.Button btnDeleteMap;
+        private System.Windows.Forms.CheckBox checkBoxUseWallTextures;
     }
 }
 

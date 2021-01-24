@@ -20,6 +20,7 @@ namespace MapEditor
         MapVisualizer mapVisualizer;
         sbyte selectedTileID = 0;
         bool setPlayer = false;
+        bool beginDraw = true;
         Random rand = new Random();
 
         public FormMapEditor()
@@ -52,6 +53,7 @@ namespace MapEditor
         private void selectButton_click(object sender, EventArgs e)
         {
             selectedTileID = Convert.ToSByte(((Button)sender).Text);
+            radioButtonSpriteIgnore.Checked = true;
         }
 
         private void saveMap(object sender, EventArgs e)
@@ -146,9 +148,10 @@ namespace MapEditor
                 {
                     var lastSprite = currentMap.sprites[currentMap.sprites.Count - 1];
                     var distance = lastSprite.getDistanceToPoint(newSpriteCoords);
-                    if (distance < 0.5)
+                    if (!beginDraw && distance < 0.5)
                         return;
                 }
+                beginDraw = false;
                 spriteData newSprite;
                 newSprite.name = (SpriteName)listBoxSprites.SelectedItem;
                 newSprite.position = newSpriteCoords;
@@ -284,6 +287,11 @@ namespace MapEditor
                 g.DrawString(lb.Items[e.Index].ToString(), e.Font, new SolidBrush(Color.Black), new PointF(e.Bounds.X, e.Bounds.Y));
 
             e.DrawFocusRectangle();
+        }
+
+        private void pictureBoxMap_MouseUp(object sender, MouseEventArgs e)
+        {
+            beginDraw = true;
         }
     }
 }

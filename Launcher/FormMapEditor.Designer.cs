@@ -49,8 +49,8 @@
             this.listBoxSprites = new System.Windows.Forms.ListBox();
             this.radioButtonSpriteIgnore = new System.Windows.Forms.RadioButton();
             this.groupBoxRadioSprite = new System.Windows.Forms.GroupBox();
-            this.radioButtonSpriteDraw = new System.Windows.Forms.RadioButton();
             this.radioButtonSpriteDelete = new System.Windows.Forms.RadioButton();
+            this.radioButtonSpriteDraw = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMapDimX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMapDimY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMap)).BeginInit();
@@ -64,7 +64,7 @@
             this.buttonWhite.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonWhite.ForeColor = System.Drawing.Color.White;
             this.buttonWhite.Location = new System.Drawing.Point(24, 70);
-            this.buttonWhite.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonWhite.Margin = new System.Windows.Forms.Padding(2);
             this.buttonWhite.Name = "buttonWhite";
             this.buttonWhite.Size = new System.Drawing.Size(38, 41);
             this.buttonWhite.TabIndex = 0;
@@ -78,7 +78,7 @@
             this.buttonRed.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonRed.ForeColor = System.Drawing.Color.Red;
             this.buttonRed.Location = new System.Drawing.Point(66, 70);
-            this.buttonRed.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonRed.Margin = new System.Windows.Forms.Padding(2);
             this.buttonRed.Name = "buttonRed";
             this.buttonRed.Size = new System.Drawing.Size(38, 41);
             this.buttonRed.TabIndex = 1;
@@ -92,7 +92,7 @@
             this.buttonGreen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonGreen.ForeColor = System.Drawing.Color.Green;
             this.buttonGreen.Location = new System.Drawing.Point(108, 70);
-            this.buttonGreen.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonGreen.Margin = new System.Windows.Forms.Padding(2);
             this.buttonGreen.Name = "buttonGreen";
             this.buttonGreen.Size = new System.Drawing.Size(38, 41);
             this.buttonGreen.TabIndex = 2;
@@ -103,7 +103,7 @@
             // btnSaveMap
             // 
             this.btnSaveMap.Location = new System.Drawing.Point(25, 37);
-            this.btnSaveMap.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnSaveMap.Margin = new System.Windows.Forms.Padding(2);
             this.btnSaveMap.Name = "btnSaveMap";
             this.btnSaveMap.Size = new System.Drawing.Size(56, 19);
             this.btnSaveMap.TabIndex = 3;
@@ -114,7 +114,7 @@
             // btnChangeDim
             // 
             this.btnChangeDim.Location = new System.Drawing.Point(438, 10);
-            this.btnChangeDim.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnChangeDim.Margin = new System.Windows.Forms.Padding(2);
             this.btnChangeDim.Name = "btnChangeDim";
             this.btnChangeDim.Size = new System.Drawing.Size(112, 24);
             this.btnChangeDim.TabIndex = 4;
@@ -135,7 +135,7 @@
             // numericUpDownMapDimX
             // 
             this.numericUpDownMapDimX.Location = new System.Drawing.Point(324, 14);
-            this.numericUpDownMapDimX.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.numericUpDownMapDimX.Margin = new System.Windows.Forms.Padding(2);
             this.numericUpDownMapDimX.Maximum = new decimal(new int[] {
             175,
             0,
@@ -158,7 +158,7 @@
             // numericUpDownMapDimY
             // 
             this.numericUpDownMapDimY.Location = new System.Drawing.Point(381, 14);
-            this.numericUpDownMapDimY.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.numericUpDownMapDimY.Margin = new System.Windows.Forms.Padding(2);
             this.numericUpDownMapDimY.Minimum = new decimal(new int[] {
             3,
             0,
@@ -196,7 +196,7 @@
             // txtMapName
             // 
             this.txtMapName.Location = new System.Drawing.Point(83, 13);
-            this.txtMapName.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtMapName.Margin = new System.Windows.Forms.Padding(2);
             this.txtMapName.Name = "txtMapName";
             this.txtMapName.Size = new System.Drawing.Size(76, 20);
             this.txtMapName.TabIndex = 12;
@@ -213,6 +213,7 @@
             this.pictureBoxMap.TabStop = false;
             this.pictureBoxMap.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBoxMap_Mouse);
             this.pictureBoxMap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBoxMap_Mouse);
+            this.pictureBoxMap.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBoxMap_MouseUp);
             // 
             // button1
             // 
@@ -220,7 +221,7 @@
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button1.ForeColor = System.Drawing.Color.Blue;
             this.button1.Location = new System.Drawing.Point(150, 70);
-            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(38, 41);
             this.button1.TabIndex = 14;
@@ -234,7 +235,7 @@
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button2.ForeColor = System.Drawing.Color.LightGray;
             this.button2.Location = new System.Drawing.Point(24, 115);
-            this.button2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button2.Margin = new System.Windows.Forms.Padding(2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(38, 41);
             this.button2.TabIndex = 15;
@@ -275,7 +276,7 @@
             // btnRandom
             // 
             this.btnRandom.Location = new System.Drawing.Point(575, 14);
-            this.btnRandom.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnRandom.Margin = new System.Windows.Forms.Padding(2);
             this.btnRandom.Name = "btnRandom";
             this.btnRandom.Size = new System.Drawing.Size(56, 19);
             this.btnRandom.TabIndex = 19;
@@ -301,6 +302,7 @@
             this.radioButtonSpriteIgnore.Name = "radioButtonSpriteIgnore";
             this.radioButtonSpriteIgnore.Size = new System.Drawing.Size(64, 20);
             this.radioButtonSpriteIgnore.TabIndex = 23;
+            this.radioButtonSpriteIgnore.TabStop = true;
             this.radioButtonSpriteIgnore.Text = "ignore";
             this.radioButtonSpriteIgnore.UseVisualStyleBackColor = true;
             // 
@@ -317,16 +319,6 @@
             this.groupBoxRadioSprite.TabStop = false;
             this.groupBoxRadioSprite.Text = "Sprite Actions";
             // 
-            // radioButtonSpriteDraw
-            // 
-            this.radioButtonSpriteDraw.AutoSize = true;
-            this.radioButtonSpriteDraw.Location = new System.Drawing.Point(6, 45);
-            this.radioButtonSpriteDraw.Name = "radioButtonSpriteDraw";
-            this.radioButtonSpriteDraw.Size = new System.Drawing.Size(55, 20);
-            this.radioButtonSpriteDraw.TabIndex = 24;
-            this.radioButtonSpriteDraw.Text = "draw";
-            this.radioButtonSpriteDraw.UseVisualStyleBackColor = true;
-            // 
             // radioButtonSpriteDelete
             // 
             this.radioButtonSpriteDelete.AutoSize = true;
@@ -336,6 +328,16 @@
             this.radioButtonSpriteDelete.TabIndex = 25;
             this.radioButtonSpriteDelete.Text = "delete";
             this.radioButtonSpriteDelete.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonSpriteDraw
+            // 
+            this.radioButtonSpriteDraw.AutoSize = true;
+            this.radioButtonSpriteDraw.Location = new System.Drawing.Point(6, 45);
+            this.radioButtonSpriteDraw.Name = "radioButtonSpriteDraw";
+            this.radioButtonSpriteDraw.Size = new System.Drawing.Size(55, 20);
+            this.radioButtonSpriteDraw.TabIndex = 24;
+            this.radioButtonSpriteDraw.Text = "draw";
+            this.radioButtonSpriteDraw.UseVisualStyleBackColor = true;
             // 
             // FormMapEditor
             // 

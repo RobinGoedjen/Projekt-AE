@@ -139,7 +139,7 @@ namespace Raycasting
                 //FIRST HIT
                 if (lastHit.X == -100)
                 {
-                    GameTextureManager.getTextureByID(map.worldMap[currentMapPosition.X][currentMapPosition.Y]).addOpenVertice(drawXScaled, drawYScaled, wallX);
+                    GameTextureManager.getTextureByGameTexture(map.worldMap[currentMapPosition.X][currentMapPosition.Y]).addOpenVertice(drawXScaled, drawYScaled, wallX);
                     if (side == 0)
                     {
                         GameTextureManager.textureDictionary[GameTexture.Shadow].addOpenVertice(drawXScaled, drawYScaled, wallX);
@@ -156,7 +156,7 @@ namespace Raycasting
                 //LAST HIT
                 if (x == this.Width - 1)
                 {
-                    GameTextureManager.getTextureByID(map.worldMap[currentMapPosition.X][currentMapPosition.Y]).addCloseVertice(drawXScaled, drawYScaled, wallX);
+                    GameTextureManager.getTextureByGameTexture(map.worldMap[currentMapPosition.X][currentMapPosition.Y]).addCloseVertice(drawXScaled, drawYScaled, wallX);
                     if (side == 0)
                     {
                         GameTextureManager.textureDictionary[GameTexture.Shadow].addCloseVertice(drawXScaled, drawYScaled, wallX);
@@ -172,8 +172,8 @@ namespace Raycasting
                     continue;
                 }
                 //NEW BLOCK
-                GameTextureManager.getTextureByID(map.worldMap[lastHit.X][lastHit.Y]).addCloseVertice(drawXScaled, lastYScaled, lastWallX);
-                GameTextureManager.getTextureByID(map.worldMap[currentMapPosition.X][currentMapPosition.Y]).addOpenVertice(drawXScaled, drawYScaled, wallX);
+                GameTextureManager.getTextureByGameTexture(map.worldMap[lastHit.X][lastHit.Y]).addCloseVertice(drawXScaled, lastYScaled, lastWallX);
+                GameTextureManager.getTextureByGameTexture(map.worldMap[currentMapPosition.X][currentMapPosition.Y]).addOpenVertice(drawXScaled, drawYScaled, wallX);
 
                 if (lastSide == 0)
                 {
@@ -210,6 +210,11 @@ namespace Raycasting
                         coinPlayer.Play();
                         break;
                     case SpriteName.Portal:
+                        Console.WriteLine("Congratulations! You managed to escape.");
+                        //TODO Show Time taken???
+                        Console.WriteLine("Press any key to continue...");
+                        this.WindowState = WindowState.Minimized;
+                        Console.ReadKey();
                         Exit();
                         break;
                     default:

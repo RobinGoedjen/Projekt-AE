@@ -8,11 +8,12 @@ using System.Drawing;
 namespace MapLibrary
 {
     public enum SpriteName { Barrel, Pillar, Portal, Portal_Inactive, Coin }
+    public enum GameTexture { None, Shadow, RedWall, GreenWall, BlueWall, LightGreyWall }
     public class Map
     {
         public uint height { get; }
         public uint width { get; }
-        public List<List<sbyte>> worldMap;
+        public List<List<GameTexture>> worldMap;
         public string name;
         public const byte colorCount = 4;
         public PointF playerStartPosition;
@@ -25,23 +26,23 @@ namespace MapLibrary
             this.height = height;
             playerStartPosition = new PointF(1f, 1f);
             playerStartOrientation = 0;
-            worldMap = new List<List<sbyte>>();
+            worldMap = new List<List<GameTexture>>();
             sprites = new List<spriteData>();
         }
 
-        public static Color getColorFromTileID(sbyte tileID)
+        public static Color getColorFromGameTexture(GameTexture texture)
         {
-            switch (tileID)
+            switch (texture)
             {
-                case 0:
+                case GameTexture.None:
                     return Color.White;
-                case 1:
+                case GameTexture.RedWall:
                     return Color.Red;
-                case 2:
+                case GameTexture.GreenWall:
                     return Color.Green;
-                case 3:
+                case GameTexture.BlueWall:
                     return Color.Blue;
-                case 4:
+                case GameTexture.LightGreyWall:
                     return Color.LightGray;
                 default:
                     return Color.Gray;

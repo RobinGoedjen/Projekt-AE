@@ -11,7 +11,6 @@ using MapLibrary;
 
 namespace Raycasting
 {
-    public enum GameTexture { Shadow, RedWall, GreenWall, BlueWall, LightGreyWall }  
     static class GameTextureManager
     {
         public static readonly Dictionary<GameTexture, Texture> textureDictionary;
@@ -21,10 +20,12 @@ namespace Raycasting
             textureDictionary = new Dictionary<GameTexture, Texture>();
             foreach (GameTexture texture in (GameTexture[])Enum.GetValues(typeof(GameTexture)))
             {
+                if (texture == GameTexture.None)
+                    continue;
                 int VAO = GL.GenVertexArray();
                 int VBO = GL.GenBuffer();
 
-                textureDictionary.Add(texture, new Texture(texture, colorToVec4(Map.getColorFromTileID((sbyte)texture)), VAO, VBO));
+                textureDictionary.Add(texture, new Texture(texture, colorToVec4(Map.getColorFromGameTexture(texture)), VAO, VBO));
             }
 
         }
@@ -58,9 +59,9 @@ namespace Raycasting
             return new Vector4((float)color.R / 255, (float)color.G / 255, (float)color.B / 255, (float)color.A / 255);
         }
 
-        public static Texture getTextureByID(sbyte tileID)
+        public static Texture getTextureByGameTexture(GameTexture texture)
         {
-            return textureDictionary[(GameTexture)tileID];
+            return textureDictionary[(GameTexture)texture];
         }
     }
 }

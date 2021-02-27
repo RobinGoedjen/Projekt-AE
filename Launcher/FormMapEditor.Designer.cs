@@ -28,9 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.buttonWhite = new System.Windows.Forms.Button();
-            this.buttonRed = new System.Windows.Forms.Button();
-            this.buttonGreen = new System.Windows.Forms.Button();
             this.btnSaveMap = new System.Windows.Forms.Button();
             this.btnChangeDim = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -40,8 +37,6 @@
             this.labelName = new System.Windows.Forms.Label();
             this.txtMapName = new System.Windows.Forms.TextBox();
             this.pictureBoxMap = new System.Windows.Forms.PictureBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             this.btnSetPlayerPosition = new System.Windows.Forms.Button();
             this.labelPlayerOrientation = new System.Windows.Forms.Label();
             this.trackBarPlayerOrientation = new System.Windows.Forms.TrackBar();
@@ -51,54 +46,13 @@
             this.groupBoxRadioSprite = new System.Windows.Forms.GroupBox();
             this.radioButtonSpriteDelete = new System.Windows.Forms.RadioButton();
             this.radioButtonSpriteDraw = new System.Windows.Forms.RadioButton();
+            this.listBoxGameTexture = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMapDimX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMapDimY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMap)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarPlayerOrientation)).BeginInit();
             this.groupBoxRadioSprite.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // buttonWhite
-            // 
-            this.buttonWhite.BackColor = System.Drawing.Color.White;
-            this.buttonWhite.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonWhite.ForeColor = System.Drawing.Color.White;
-            this.buttonWhite.Location = new System.Drawing.Point(24, 70);
-            this.buttonWhite.Margin = new System.Windows.Forms.Padding(2);
-            this.buttonWhite.Name = "buttonWhite";
-            this.buttonWhite.Size = new System.Drawing.Size(38, 41);
-            this.buttonWhite.TabIndex = 0;
-            this.buttonWhite.Text = "0";
-            this.buttonWhite.UseVisualStyleBackColor = false;
-            this.buttonWhite.Click += new System.EventHandler(this.selectButton_click);
-            // 
-            // buttonRed
-            // 
-            this.buttonRed.BackColor = System.Drawing.Color.Red;
-            this.buttonRed.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonRed.ForeColor = System.Drawing.Color.Red;
-            this.buttonRed.Location = new System.Drawing.Point(66, 70);
-            this.buttonRed.Margin = new System.Windows.Forms.Padding(2);
-            this.buttonRed.Name = "buttonRed";
-            this.buttonRed.Size = new System.Drawing.Size(38, 41);
-            this.buttonRed.TabIndex = 1;
-            this.buttonRed.Text = "1";
-            this.buttonRed.UseVisualStyleBackColor = false;
-            this.buttonRed.Click += new System.EventHandler(this.selectButton_click);
-            // 
-            // buttonGreen
-            // 
-            this.buttonGreen.BackColor = System.Drawing.Color.Green;
-            this.buttonGreen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonGreen.ForeColor = System.Drawing.Color.Green;
-            this.buttonGreen.Location = new System.Drawing.Point(108, 70);
-            this.buttonGreen.Margin = new System.Windows.Forms.Padding(2);
-            this.buttonGreen.Name = "buttonGreen";
-            this.buttonGreen.Size = new System.Drawing.Size(38, 41);
-            this.buttonGreen.TabIndex = 2;
-            this.buttonGreen.Text = "2";
-            this.buttonGreen.UseVisualStyleBackColor = false;
-            this.buttonGreen.Click += new System.EventHandler(this.selectButton_click);
             // 
             // btnSaveMap
             // 
@@ -215,38 +169,10 @@
             this.pictureBoxMap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBoxMap_Mouse);
             this.pictureBoxMap.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBoxMap_MouseUp);
             // 
-            // button1
-            // 
-            this.button1.BackColor = System.Drawing.Color.Blue;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.ForeColor = System.Drawing.Color.Blue;
-            this.button1.Location = new System.Drawing.Point(150, 70);
-            this.button1.Margin = new System.Windows.Forms.Padding(2);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(38, 41);
-            this.button1.TabIndex = 14;
-            this.button1.Text = "3";
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.Click += new System.EventHandler(this.selectButton_click);
-            // 
-            // button2
-            // 
-            this.button2.BackColor = System.Drawing.Color.LightGray;
-            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button2.ForeColor = System.Drawing.Color.LightGray;
-            this.button2.Location = new System.Drawing.Point(24, 115);
-            this.button2.Margin = new System.Windows.Forms.Padding(2);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(38, 41);
-            this.button2.TabIndex = 15;
-            this.button2.Text = "4";
-            this.button2.UseVisualStyleBackColor = false;
-            this.button2.Click += new System.EventHandler(this.selectButton_click);
-            // 
             // btnSetPlayerPosition
             // 
             this.btnSetPlayerPosition.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSetPlayerPosition.Location = new System.Drawing.Point(24, 182);
+            this.btnSetPlayerPosition.Location = new System.Drawing.Point(24, 212);
             this.btnSetPlayerPosition.Name = "btnSetPlayerPosition";
             this.btnSetPlayerPosition.Size = new System.Drawing.Size(164, 45);
             this.btnSetPlayerPosition.TabIndex = 16;
@@ -257,7 +183,7 @@
             // labelPlayerOrientation
             // 
             this.labelPlayerOrientation.AutoSize = true;
-            this.labelPlayerOrientation.Location = new System.Drawing.Point(25, 234);
+            this.labelPlayerOrientation.Location = new System.Drawing.Point(25, 264);
             this.labelPlayerOrientation.Name = "labelPlayerOrientation";
             this.labelPlayerOrientation.Size = new System.Drawing.Size(88, 13);
             this.labelPlayerOrientation.TabIndex = 17;
@@ -265,7 +191,7 @@
             // 
             // trackBarPlayerOrientation
             // 
-            this.trackBarPlayerOrientation.Location = new System.Drawing.Point(28, 250);
+            this.trackBarPlayerOrientation.Location = new System.Drawing.Point(28, 280);
             this.trackBarPlayerOrientation.Maximum = 360;
             this.trackBarPlayerOrientation.Name = "trackBarPlayerOrientation";
             this.trackBarPlayerOrientation.Size = new System.Drawing.Size(160, 45);
@@ -289,10 +215,11 @@
             this.listBoxSprites.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listBoxSprites.FormattingEnabled = true;
             this.listBoxSprites.ItemHeight = 18;
-            this.listBoxSprites.Location = new System.Drawing.Point(13, 278);
+            this.listBoxSprites.Location = new System.Drawing.Point(13, 312);
             this.listBoxSprites.Name = "listBoxSprites";
-            this.listBoxSprites.Size = new System.Drawing.Size(175, 94);
+            this.listBoxSprites.Size = new System.Drawing.Size(175, 130);
             this.listBoxSprites.TabIndex = 22;
+            this.listBoxSprites.Click += new System.EventHandler(this.listBoxSprites_Click);
             // 
             // radioButtonSpriteIgnore
             // 
@@ -312,7 +239,7 @@
             this.groupBoxRadioSprite.Controls.Add(this.radioButtonSpriteDraw);
             this.groupBoxRadioSprite.Controls.Add(this.radioButtonSpriteIgnore);
             this.groupBoxRadioSprite.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBoxRadioSprite.Location = new System.Drawing.Point(13, 378);
+            this.groupBoxRadioSprite.Location = new System.Drawing.Point(13, 447);
             this.groupBoxRadioSprite.Name = "groupBoxRadioSprite";
             this.groupBoxRadioSprite.Size = new System.Drawing.Size(175, 99);
             this.groupBoxRadioSprite.TabIndex = 24;
@@ -339,20 +266,30 @@
             this.radioButtonSpriteDraw.Text = "draw";
             this.radioButtonSpriteDraw.UseVisualStyleBackColor = true;
             // 
+            // listBoxGameTexture
+            // 
+            this.listBoxGameTexture.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.listBoxGameTexture.FormattingEnabled = true;
+            this.listBoxGameTexture.ItemHeight = 18;
+            this.listBoxGameTexture.Location = new System.Drawing.Point(13, 70);
+            this.listBoxGameTexture.Name = "listBoxGameTexture";
+            this.listBoxGameTexture.Size = new System.Drawing.Size(175, 130);
+            this.listBoxGameTexture.TabIndex = 25;
+            this.listBoxGameTexture.Click += new System.EventHandler(this.listBoxTextures_Click);
+            // 
             // FormMapEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.ClientSize = new System.Drawing.Size(1177, 650);
+            this.Controls.Add(this.listBoxGameTexture);
             this.Controls.Add(this.groupBoxRadioSprite);
             this.Controls.Add(this.listBoxSprites);
             this.Controls.Add(this.btnRandom);
             this.Controls.Add(this.trackBarPlayerOrientation);
             this.Controls.Add(this.labelPlayerOrientation);
             this.Controls.Add(this.btnSetPlayerPosition);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.pictureBoxMap);
             this.Controls.Add(this.txtMapName);
             this.Controls.Add(this.labelName);
@@ -362,9 +299,6 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnChangeDim);
             this.Controls.Add(this.btnSaveMap);
-            this.Controls.Add(this.buttonGreen);
-            this.Controls.Add(this.buttonRed);
-            this.Controls.Add(this.buttonWhite);
             this.Name = "FormMapEditor";
             this.Text = "Map Editor";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
@@ -381,10 +315,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Button buttonWhite;
-        private System.Windows.Forms.Button buttonRed;
-        private System.Windows.Forms.Button buttonGreen;
         private System.Windows.Forms.Button btnSaveMap;
         private System.Windows.Forms.Button btnChangeDim;
         private System.Windows.Forms.Label label1;
@@ -394,8 +324,6 @@
         private System.Windows.Forms.Label labelName;
         private System.Windows.Forms.TextBox txtMapName;
         private System.Windows.Forms.PictureBox pictureBoxMap;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button btnSetPlayerPosition;
         private System.Windows.Forms.Label labelPlayerOrientation;
         private System.Windows.Forms.TrackBar trackBarPlayerOrientation;
@@ -405,5 +333,6 @@
         private System.Windows.Forms.GroupBox groupBoxRadioSprite;
         private System.Windows.Forms.RadioButton radioButtonSpriteDelete;
         private System.Windows.Forms.RadioButton radioButtonSpriteDraw;
+        private System.Windows.Forms.ListBox listBoxGameTexture;
     }
 }

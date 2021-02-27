@@ -48,8 +48,8 @@ namespace MapEditor
             {
                 for (int j = 0; j < map.width; j++)
                 {
-                    sbyte tileID = map.worldMap[i][j];
-                    b.Color = Map.getColorFromTileID(tileID);
+                    GameTexture tileID = map.worldMap[i][j];
+                    b.Color = Map.getColorFromGameTexture(tileID);
                     colorCoordinate(new Point(j, i),b , true);
                 }
             }

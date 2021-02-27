@@ -19,7 +19,7 @@ namespace Raycasting
             double radiance = startDirectionDegree * Math.PI / 180d;
             direction = new Vector2((float)Math.Cos(radiance), (float)Math.Sin(radiance));
             direction.Normalize();
-            plane = new Vector2(direction.Y, -direction.X) * 0.95f;
+            plane = new Vector2(direction.Y, -direction.X) * 0.95f; //FOV
             
         }
 

@@ -109,6 +109,10 @@ namespace MapEditor
                     return Color.SaddleBrown;
                 case SpriteName.Pillar:
                     return Color.DarkSlateGray;
+                case SpriteName.Portal:
+                    return Color.DarkViolet;
+                case SpriteName.Coin:
+                    return Color.Gold;
                 default:
                     return Color.Pink;
             }

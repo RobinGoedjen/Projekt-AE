@@ -19,6 +19,9 @@ namespace Raycasting
             string currDirectory = Directory.GetCurrentDirectory() + @"\Sprites\";
             spritePaths.Add(SpriteName.Barrel, currDirectory + "barrel.png");
             spritePaths.Add(SpriteName.Pillar, currDirectory +"pillar.png");
+            spritePaths.Add(SpriteName.Portal, currDirectory +"portal.png");
+            spritePaths.Add(SpriteName.Portal_Inactive, currDirectory +"portal_inactive.png");
+            spritePaths.Add(SpriteName.Coin, currDirectory +"coin.png");
         }
         public static String getSpritePath(SpriteName name)
         {

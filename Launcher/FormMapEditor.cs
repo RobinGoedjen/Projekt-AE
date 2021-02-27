@@ -30,7 +30,8 @@ namespace MapEditor
             listBoxSprites.DrawItem += listBox_DrawItem;
             foreach (SpriteName name in (SpriteName[])Enum.GetValues(typeof(SpriteName)))
             {
-                listBoxSprites.Items.Add(name);
+                if (Map.canBeDrawnByUser(name))
+                    listBoxSprites.Items.Add(name);
             }
             listBoxSprites.SelectedIndex = 0;
         }

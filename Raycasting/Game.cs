@@ -47,7 +47,7 @@ namespace Raycasting
             Console.WriteLine(Marshal.PtrToStringAnsi(message));
         }
 
-        protected override void OnUpdateFrame(FrameEventArgs e)
+        protected override void OnUpdateFrame(FrameEventArgs e) //TODO Regions hinzufügen
         {
             GameTextureManager.clearAllVAOs();
 
@@ -388,7 +388,7 @@ namespace Raycasting
             GL.BindTexture(TextureTarget.Texture2D, newTextureID);
 
             
-            //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+            //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);   TODO
             //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);

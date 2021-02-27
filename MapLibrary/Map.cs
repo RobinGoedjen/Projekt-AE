@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace MapLibrary
 {
-    public enum SpriteName { Barrel, Pillar }
+    public enum SpriteName { Barrel, Pillar, Portal, Portal_Inactive, Coin }
     public class Map
     {
         public uint height { get; }
@@ -46,6 +46,11 @@ namespace MapLibrary
                 default:
                     return Color.Gray;
             }
+        }
+
+        public static bool canBeDrawnByUser(SpriteName sprite)
+        {
+            return sprite != SpriteName.Portal_Inactive;
         }
     }
 

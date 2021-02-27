@@ -76,6 +76,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Sound\coin.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Sprites\barrel.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
@@ -12,6 +10,7 @@ using OpenTK.Input;
 using MapLibrary;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Media;
 
 namespace Raycasting
 {
@@ -19,6 +18,7 @@ namespace Raycasting
     {
         Player player;
         Map map;
+        SoundPlayer coinPlayer;
 
         List<Vector2> verticesGroundPlane;
 
@@ -36,6 +36,8 @@ namespace Raycasting
             this.player = player;
             this.CursorVisible = false;
             this.CursorGrabbed = true;
+            coinPlayer = new SoundPlayer(Directory.GetCurrentDirectory() + @"/Sound/coin.wav");
+
             GL.Enable(EnableCap.Texture2D);
             //GL.Enable(EnableCap.DebugOutput);  //Hier kann GLES Shader Debug aktiviert werden
             debugProc = DebugCallback;
@@ -47,7 +49,7 @@ namespace Raycasting
             Console.WriteLine(Marshal.PtrToStringAnsi(message));
         }
 
-        protected override void OnUpdateFrame(FrameEventArgs e) //TODO Regions hinzufügen
+        protected override void OnUpdateFrame(FrameEventArgs e)
         {
             GameTextureManager.clearAllVAOs();
 
@@ -56,6 +58,8 @@ namespace Raycasting
             int lastSide = 0;
             float lastWallX = 1f;
             ZBuffer.Clear();
+
+            #region Raycasting
             for (int x = 0; x < this.Width; x++)
             {
                 float cameraX = 2f * x / this.Width - 1f;
@@ -185,7 +189,9 @@ namespace Raycasting
                 lastYScaled = drawYScaled;
                 lastSide = side;
             }
+            #endregion
 
+            #region Sprite-handling
             //Sprite casting
             foreach (Sprite currSpirte in SpriteManager.sprites)
             {
@@ -193,8 +199,28 @@ namespace Raycasting
             }
             SpriteManager.sprites.Sort();
 
+            //Check for player collision with sprites
+            foreach (Sprite currSprite in SpriteManager.sprites.Where<Sprite>(x => !x.hidden && x.distanceToPlayer < 0.05f))
+            {
+                switch (currSprite.name)
+                {
+                    case SpriteName.Coin:
+                        currSprite.hidden = true;
+                        player.collectedCoins++;
+                        coinPlayer.Play();
+                        break;
+                    case SpriteName.Portal:
+                        Exit();
+                        break;
+                    default:
+                        break;
+                }
+            }
+
             foreach (Sprite currSprite in SpriteManager.sprites)
             {
+                if (currSprite.hidden)
+                    continue;
                 var spritePosition = currSprite.position - player.position;
                 float invDet = 1.0f / (player.plane.X * player.direction.Y - player.direction.X * player.plane.Y); 
                 float transformX = invDet * (player.direction.Y * spritePosition.X - player.direction.X * spritePosition.Y);
@@ -202,12 +228,12 @@ namespace Raycasting
                 int spriteScreenX = (int)((this.Width / 2f) * (1f + transformX / transformY));  
                 
                 //calculate height of the sprite on screen
-                int spriteHeight = Math.Abs((int)(this.Height / (transformY)))/2; //Die Zwei verkleinert die Barrel VLLT Konstane machen TODO
-                int drawStartY = -spriteHeight / 2 + this.Height / 2 + (int)(-20/transformY); //AUS DIESEM TERM VLLT AUCH EINE KOSNTANTE MACHEN TODO
-                int drawEndY = spriteHeight / 2 + this.Height / 2 + (int)(-20/transformY); //TODO
+                int spriteHeight = Math.Abs((int)(this.Height / (transformY)))/2;
+                int drawStartY = -spriteHeight / 2 + this.Height / 2 + (int)(-20/transformY);
+                int drawEndY = spriteHeight / 2 + this.Height / 2 + (int)(-20/transformY);
 
                 //calculate width of the sprite
-                int spriteWidth = Math.Abs((int)(this.Height / (transformY)))/2; //Die Zwei verkleinert die Barrel TODO
+                int spriteWidth = Math.Abs((int)(this.Height / (transformY)))/2;
                 int drawStartX = -spriteWidth / 2 + spriteScreenX;
                 int drawEndX = spriteWidth / 2 + spriteScreenX;
 
@@ -237,11 +263,23 @@ namespace Raycasting
                 currSprite.drawEnd = new Vector2(lastVisibleX, drawEndY);
                 currSprite.transformDrawToScrren(this.Width, this.Height);
             }
+            #endregion
+
+            //Handle game logic
+            if (player.collectedCoins == SpriteManager.totalCoins)
+            {
+                foreach (Sprite currSprite in SpriteManager.sprites.Where<Sprite>(x => x.name == SpriteName.Portal_Inactive))
+                {
+                    currSprite.name = SpriteName.Portal;
+                }
+            }
+
 
             //speed modifiers
-            float moveSpeed = 0.08f; //TODO: Konstanten machen????
-            float rotSpeed = 0.03f;
+            float moveSpeed = Player.moveSpeed; 
+            float rotSpeed = Player.rotSpeed;
 
+            #region Keyboard-input
             KeyboardState input = Keyboard.GetState();
             if (input.IsKeyDown(Key.Escape))
             {
@@ -272,7 +310,7 @@ namespace Raycasting
             {
                 player.rotate(rotSpeed);
             }
-
+            #endregion
             GameTextureManager.fillAllVAOs();
 
             base.OnUpdateFrame(e);
@@ -356,7 +394,7 @@ namespace Raycasting
 
             foreach (Sprite currSprite in SpriteManager.sprites)
             {
-                if (!currSprite.visible)
+                if (currSprite.hidden || !currSprite.visible)
                     continue;
                 GL.BindTexture(TextureTarget.Texture2D, SpriteManager.getSpriteTextureID(currSprite.name));
                 GL.Begin(PrimitiveType.Quads);
@@ -388,13 +426,11 @@ namespace Raycasting
             GL.BindTexture(TextureTarget.Texture2D, newTextureID);
 
             
-            //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);   TODO
-            //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
 
             Bitmap bmp = new Bitmap(texturePath);
-            bmp.MakeTransparent(Color.FromArgb(255, 255, 0, 220)); //TODO Constante machen
+            bmp.MakeTransparent(Color.FromArgb(255, 255, 0, 220));
             bmp.RotateFlip(RotateFlipType.Rotate180FlipX);
             BitmapData data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);

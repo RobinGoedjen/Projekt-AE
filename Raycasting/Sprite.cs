@@ -11,19 +11,21 @@ namespace Raycasting
     class Sprite : IComparable<Sprite>
     {
         public Vector2 position { get; }
-        public SpriteName name { get; }
+        public SpriteName name { get; set; }
         public Vector2 drawStart;
         public Vector2 drawEnd;
         public bool visible;
+        public bool hidden;
         public float firstTextureX;
         public float lastTextureX;
 
 
-        private float distanceToPlayer { get; set; }
+        public float distanceToPlayer { get; set; }
         public Sprite(Vector2 position, SpriteName texture)
         {
             this.position = position;
             this.name = texture;
+            this.hidden = false;
         }
 
         public void updateDistanceToPlayer(Vector2 playerPosition)

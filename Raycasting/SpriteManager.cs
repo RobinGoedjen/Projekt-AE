@@ -10,6 +10,7 @@ namespace Raycasting
 {
     static class SpriteManager
     {
+        public static ushort totalCoins = 0;
         public readonly static List<Sprite> sprites = new List<Sprite>();
         private readonly static Dictionary<SpriteName, int> spriteTextureIDs = new Dictionary<SpriteName, int>();
         private readonly static Dictionary<SpriteName, String> spritePaths = new Dictionary<SpriteName, String>();
@@ -42,7 +43,9 @@ namespace Raycasting
         {
             foreach (var sprite in map.sprites)
             {
-                sprites.Add(new Sprite(new OpenTK.Vector2(sprite.position.Y, sprite.position.X), sprite.name));
+                sprites.Add(new Sprite(new OpenTK.Vector2(sprite.position.Y, sprite.position.X), sprite.name == SpriteName.Portal ? SpriteName.Portal_Inactive : sprite.name));
+                if (sprite.name == SpriteName.Coin)
+                    totalCoins++;
             }
         }
     }

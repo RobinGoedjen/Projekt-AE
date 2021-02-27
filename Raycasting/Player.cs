@@ -12,6 +12,9 @@ namespace Raycasting
         public Vector2 position { get; set; }
         public Vector2 direction { get; set; }
         public Vector2 plane { get; set; }
+        public ushort collectedCoins = 0;
+        public const float moveSpeed = 0.08f;
+        public const float rotSpeed = 0.03f;
 
         public Player(Vector2 startPosition, ushort startDirectionDegree)
         {

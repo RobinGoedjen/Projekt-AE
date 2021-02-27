@@ -189,6 +189,7 @@ namespace MapEditor
         private void btnSetPlayerPosition_Click(object sender, EventArgs e)
         {
             setPlayer = true;
+            radioButtonSpriteIgnore.Checked = true;
         }
 
         private void trackBarPlayerOrientation_ValueChanged(object sender, EventArgs e)

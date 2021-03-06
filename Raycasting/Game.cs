@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Linq;
 using OpenTK;
 using OpenTK.Graphics;
@@ -19,6 +18,7 @@ namespace Raycasting
         Player player;
         Map map;
         SoundPlayer coinPlayer;
+        ProgressBar coinProgress;
 
         List<Vector2> verticesGroundPlane;
 
@@ -208,6 +208,7 @@ namespace Raycasting
                         currSprite.hidden = true;
                         player.collectedCoins++;
                         coinPlayer.Play();
+                        coinProgress.updateProgress((float)player.collectedCoins / (float)SpriteManager.totalCoins);
                         break;
                     case SpriteName.Portal:
                         Console.WriteLine("Congratulations! You managed to escape.");
@@ -317,6 +318,7 @@ namespace Raycasting
             }
             #endregion
             GameTextureManager.fillAllVAOs();
+            GameTextureManager.fillVAO(coinProgress.VAO, coinProgress.VBO, coinProgress.vertices);
 
             base.OnUpdateFrame(e);
         }
@@ -325,12 +327,14 @@ namespace Raycasting
         {
             verticesGroundPlane = new List<Vector2>();
 
-            GL.ClearColor(0.4f, 0.2f, 0.2f, 1f);
+            GL.ClearColor(0.4f, 0.2f, 0.2f, 1f); //TODO nochmal ändern?
 
             verticesGroundPlane.Add(new Vector2(-1f, 0));
             verticesGroundPlane.Add(new Vector2(1f, 0));
             verticesGroundPlane.Add(new Vector2(1f, -1f));
             verticesGroundPlane.Add(new Vector2(-1f, -1f));
+
+            coinProgress = new ProgressBar(new Vector2(-0.9f, 0.9f), new Vector2(-0.1f, 0.825f), Color.Red);
 
             var fragShader = UseWallTextures ? "TexturedShader.frag" : "shader.frag";
             shader = new Shader("shader.vert", fragShader);
@@ -338,10 +342,10 @@ namespace Raycasting
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             foreach (SpriteName name in (SpriteName[])Enum.GetValues(typeof(SpriteName)))
             {
-                SpriteManager.addSpriteTextureID(name, generateTexture(SpriteManager.getSpritePath(name))); 
+                SpriteManager.addSpriteTextureID(name, GameTextureManager.generateTexture(SpriteManager.getSpritePath(name))); 
             }
             SpriteManager.loadSpritesFromMap(map);
-            WallTexture = generateTexture(Directory.GetCurrentDirectory() + @"\Textures\greystone.png");
+            WallTexture = GameTextureManager.generateTexture(Directory.GetCurrentDirectory() + @"\Textures\greystone.png");
 
             base.OnLoad(e);
         }
@@ -364,18 +368,20 @@ namespace Raycasting
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
+            //Draw Floor
             GL.Clear(ClearBufferMask.ColorBufferBit);
             GL.Begin(PrimitiveType.Quads);
-            GL.Color3(0.2f, 0.2f, 0.2f);
+            GL.Color3(0.2f, 0.2f, 0.2f); //TODO Farben anpassen
             GL.Vertex2(verticesGroundPlane[0]);
             GL.Vertex2(verticesGroundPlane[1]);
-            GL.Color3(0.25f, 0.07f, 0.30f);
+            GL.Color3(0.25f, 0.07f, 0.30f);  //TODO Farben anpassen
             GL.Vertex2(verticesGroundPlane[2]);
             GL.Vertex2(verticesGroundPlane[3]);
             GL.End();
 
             shader.Use();
 
+            //Draw Walls
             foreach (var item in GameTextureManager.textureDictionary)
             {
                 if (item.Key == GameTexture.Shadow)
@@ -393,10 +399,23 @@ namespace Raycasting
             GL.BindVertexArray(shadowTexture.VAO);
             GL.VertexAttrib4(1, new Vector4(0f, 0f, 0f, 0.175f));
             GL.DrawArrays(PrimitiveType.Quads, 0, shadowTexture.vertices.Count);
+
+            //Draw Progress Bar
+            GL.BindVertexArray(coinProgress.VBO);
+            GL.VertexAttrib4(1, new Vector4(0f, 0f, 0f, 1f));
+            GL.DrawArrays(PrimitiveType.Quads, 0, 4);
+            GL.VertexAttrib4(1, new Vector4(1f, 1f, 1f, 1f));
+            GL.DrawArrays(PrimitiveType.Quads, 4, 4);
+            if (player.collectedCoins > 0)
+            {
+                GL.VertexAttrib4(1, GameTextureManager.colorToVec4(coinProgress.barColor));
+                GL.DrawArrays(PrimitiveType.Quads, 8, 4);
+            }
             GL.BindVertexArray(0);
 
             shader.Remove();
 
+            //Draw Sprites
             foreach (Sprite currSprite in SpriteManager.sprites)
             {
                 if (currSprite.hidden || !currSprite.visible)
@@ -425,26 +444,5 @@ namespace Raycasting
             base.OnRenderFrame(e);
         }
 
-        private int generateTexture(string texturePath)
-        {
-            int newTextureID = GL.GenTexture();
-            GL.BindTexture(TextureTarget.Texture2D, newTextureID);
-
-            
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
-
-            Bitmap bmp = new Bitmap(texturePath);
-            bmp.MakeTransparent(Color.FromArgb(255, 255, 0, 220));
-            bmp.RotateFlip(RotateFlipType.Rotate180FlipX);
-            BitmapData data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
-            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D); 
-
-            bmp.UnlockBits(data);
-
-            GL.BindTexture(TextureTarget.Texture2D, 0);
-            return newTextureID;
-        }
     }
 }

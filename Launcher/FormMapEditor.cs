@@ -65,7 +65,7 @@ namespace MapEditor
             String mapName = txtMapName.Text;
             if (!checkMapName(mapName))
             {
-                //Show error here TODO
+                MessageBox.Show("Please enter a Name for the Map!", "Error", MessageBoxButtons.OK);
                 return;
             }
             currentMap.name = mapName;
@@ -103,10 +103,6 @@ namespace MapEditor
         private bool checkMapName(string name)
         {
             if(String.IsNullOrEmpty(name) || String.IsNullOrWhiteSpace(name))
-            {
-                return false;
-            }
-            if (name.Contains('.'))
             {
                 return false;
             }

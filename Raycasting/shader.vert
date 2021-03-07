@@ -13,6 +13,10 @@ void main()
     {
         scale = 0.15;
     }
+    if(scale > 1)
+    {
+        scale = 1.0;
+    }
     color = vertexColor * vec4(scale, scale, scale, 1.0);
     TexCoord = vec2(aPosition.z, aPosition.w);
 }

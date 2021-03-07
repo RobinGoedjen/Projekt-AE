@@ -211,6 +211,7 @@ namespace Raycasting
                         coinProgress.updateProgress((float)player.collectedCoins / (float)SpriteManager.totalCoins);
                         break;
                     case SpriteName.Portal:
+                        currSprite.hidden = true;
                         Console.WriteLine("Congratulations! You managed to escape.");
                         //TODO Show Time taken???
                         Console.WriteLine("Press any key to continue...");
@@ -327,7 +328,7 @@ namespace Raycasting
         {
             verticesGroundPlane = new List<Vector2>();
 
-            GL.ClearColor(0.4f, 0.2f, 0.2f, 1f); //TODO nochmal ändern?
+            GL.ClearColor(Color.FromArgb(1, 58, 72, 94));
 
             verticesGroundPlane.Add(new Vector2(-1f, 0));
             verticesGroundPlane.Add(new Vector2(1f, 0));
@@ -371,10 +372,10 @@ namespace Raycasting
             //Draw Floor
             GL.Clear(ClearBufferMask.ColorBufferBit);
             GL.Begin(PrimitiveType.Quads);
-            GL.Color3(0.2f, 0.2f, 0.2f); //TODO Farben anpassen
+            GL.Color3(new Vector3(77f / 255f, 53f / 255f, 42f / 255f) / 5);
             GL.Vertex2(verticesGroundPlane[0]);
             GL.Vertex2(verticesGroundPlane[1]);
-            GL.Color3(0.25f, 0.07f, 0.30f);  //TODO Farben anpassen
+            GL.Color3(77f / 255f, 53f / 255f, 42f / 255f);
             GL.Vertex2(verticesGroundPlane[2]);
             GL.Vertex2(verticesGroundPlane[3]);
             GL.End();
@@ -397,14 +398,14 @@ namespace Raycasting
 
             var shadowTexture = GameTextureManager.textureDictionary[GameTexture.Shadow];
             GL.BindVertexArray(shadowTexture.VAO);
-            GL.VertexAttrib4(1, new Vector4(0f, 0f, 0f, 0.175f));
+            GL.VertexAttrib4(1, GameTextureManager.colorToVec4(Color.FromArgb(45, 0, 0, 0)));
             GL.DrawArrays(PrimitiveType.Quads, 0, shadowTexture.vertices.Count);
 
             //Draw Progress Bar
             GL.BindVertexArray(coinProgress.VBO);
-            GL.VertexAttrib4(1, new Vector4(0f, 0f, 0f, 1f));
+            GL.VertexAttrib4(1, GameTextureManager.colorToVec4(Color.Black));
             GL.DrawArrays(PrimitiveType.Quads, 0, 4);
-            GL.VertexAttrib4(1, new Vector4(1f, 1f, 1f, 1f));
+            GL.VertexAttrib4(1, GameTextureManager.colorToVec4(Color.White));
             GL.DrawArrays(PrimitiveType.Quads, 4, 4);
             if (player.collectedCoins > 0)
             {

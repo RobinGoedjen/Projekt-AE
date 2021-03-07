@@ -8,7 +8,7 @@ using System.Drawing;
 namespace MapLibrary
 {
     public enum SpriteName { Barrel, Pillar, Portal, Portal_Inactive, Coin }
-    public enum GameTexture { None, Shadow, RedWall, GreenWall, BlueWall, LightGreyWall }
+    public enum GameTexture { None, Shadow, RedWall, GreenWall, BlueWall, LightGreyWall, VioletWall, OrangeWall, DarkWall, LightBlueWall }
     public class Map
     {
         public uint height { get; }
@@ -37,15 +37,23 @@ namespace MapLibrary
                 case GameTexture.None:
                     return Color.White;
                 case GameTexture.RedWall:
-                    return Color.Red;
+                    return Color.FromArgb(145, 9, 30);
                 case GameTexture.GreenWall:
-                    return Color.Green;
+                    return Color.FromArgb(8, 128, 17);
                 case GameTexture.BlueWall:
-                    return Color.Blue;
+                    return Color.FromArgb(21, 25, 101);
                 case GameTexture.LightGreyWall:
                     return Color.LightGray;
+                case GameTexture.VioletWall:
+                    return Color.FromArgb(57, 6, 90);
+                case GameTexture.OrangeWall:
+                    return Color.FromArgb(207, 122, 43);
+                case GameTexture.DarkWall:
+                    return Color.FromArgb(57, 62, 70);
+                case GameTexture.LightBlueWall:
+                    return Color.FromArgb(70, 179, 230);
                 default:
-                    return Color.Gray;
+                    return Color.HotPink;
             }
         }
 

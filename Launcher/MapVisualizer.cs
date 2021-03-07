@@ -113,6 +113,22 @@ namespace MapEditor
                     return Color.DarkViolet;
                 case SpriteName.Coin:
                     return Color.Gold;
+                case SpriteName.Pillar_brown:
+                    return Color.SandyBrown;
+                case SpriteName.Bone_Pile:
+                    return Color.DarkGray;
+                case SpriteName.Armor:
+                    return Color.MediumTurquoise;
+                case SpriteName.Dead_Tree:
+                    return Color.FromArgb(97, 58, 22);
+                case SpriteName.Skeleton:
+                    return Color.DarkRed;
+                case SpriteName.Skull:
+                    return Color.IndianRed;
+                case SpriteName.Well:
+                    return Color.SkyBlue;
+                case SpriteName.Well_blood:
+                    return Color.PaleVioletRed;
                 default:
                     return Color.Pink;
             }

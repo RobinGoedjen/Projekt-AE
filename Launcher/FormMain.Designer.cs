@@ -67,9 +67,9 @@
             this.lblLogo.ForeColor = System.Drawing.Color.White;
             this.lblLogo.Location = new System.Drawing.Point(57, 64);
             this.lblLogo.Name = "lblLogo";
-            this.lblLogo.Size = new System.Drawing.Size(426, 63);
+            this.lblLogo.Size = new System.Drawing.Size(338, 63);
             this.lblLogo.TabIndex = 2;
-            this.lblLogo.Text = "Krasses Spiel :D";
+            this.lblLogo.Text = "Raycaster :D";
             // 
             // listBoxMaps
             // 

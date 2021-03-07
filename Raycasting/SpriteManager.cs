@@ -16,10 +16,18 @@ namespace Raycasting
         {
             string currDirectory = Directory.GetCurrentDirectory() + @"\Sprites\";
             spritePaths.Add(SpriteName.Barrel, currDirectory + "barrel.png");
-            spritePaths.Add(SpriteName.Pillar, currDirectory +"pillar.png");
-            spritePaths.Add(SpriteName.Portal, currDirectory +"portal.png");
-            spritePaths.Add(SpriteName.Portal_Inactive, currDirectory +"portal_inactive.png");
-            spritePaths.Add(SpriteName.Coin, currDirectory +"coin.png");
+            spritePaths.Add(SpriteName.Pillar, currDirectory + "pillar.png");
+            spritePaths.Add(SpriteName.Portal, currDirectory + "portal.png");
+            spritePaths.Add(SpriteName.Portal_Inactive, currDirectory + "portal_inactive.png");
+            spritePaths.Add(SpriteName.Coin, currDirectory + "coin.png");
+            spritePaths.Add(SpriteName.Armor, currDirectory + "armor.png");
+            spritePaths.Add(SpriteName.Pillar_brown, currDirectory + "brown_pillar.png");
+            spritePaths.Add(SpriteName.Skeleton, currDirectory + "skeleton.png");
+            spritePaths.Add(SpriteName.Skull, currDirectory + "skull.png");
+            spritePaths.Add(SpriteName.Bone_Pile, currDirectory + "skulls.png");
+            spritePaths.Add(SpriteName.Well, currDirectory + "well.png");
+            spritePaths.Add(SpriteName.Well_blood, currDirectory + "well_blood.png");
+            spritePaths.Add(SpriteName.Dead_Tree, currDirectory + "dead_tree.png");
         }
         public static String getSpritePath(SpriteName name)
         {

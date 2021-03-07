@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace MapLibrary
 {
-    public enum SpriteName { Barrel, Pillar, Portal, Portal_Inactive, Coin }
+    public enum SpriteName { Barrel, Pillar, Portal, Portal_Inactive, Coin, Armor, Pillar_brown, Skeleton, Skull, Bone_Pile, Well, Well_blood, Dead_Tree }
     public enum GameTexture { None, Shadow, RedWall, GreenWall, BlueWall, LightGreyWall, VioletWall, OrangeWall, DarkWall, LightBlueWall }
     public class Map
     {

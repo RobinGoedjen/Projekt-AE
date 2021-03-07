@@ -10,6 +10,7 @@ using MapLibrary;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Media;
+using System.Diagnostics;
 
 namespace Raycasting
 {
@@ -25,6 +26,7 @@ namespace Raycasting
         public bool UseWallTextures = false;
         private int WallTexture;
         private Shader shader;
+        private Stopwatch stopwatch;
 
         //Fields for Sprites
         List<float> ZBuffer = new List<float>();
@@ -212,8 +214,9 @@ namespace Raycasting
                         break;
                     case SpriteName.Portal:
                         currSprite.hidden = true;
+                        stopwatch.Stop();
                         Console.WriteLine("Congratulations! You managed to escape.");
-                        //TODO Show Time taken???
+                        Console.Write("Completed in: " + stopwatch.Elapsed.ToString(@"mm\:ss") + "\n");
                         Console.WriteLine("Press any key to continue...");
                         this.WindowState = WindowState.Minimized;
                         Console.ReadKey();
@@ -348,6 +351,8 @@ namespace Raycasting
             SpriteManager.loadSpritesFromMap(map);
             WallTexture = GameTextureManager.generateTexture(Directory.GetCurrentDirectory() + @"\Textures\greystone.png");
 
+            stopwatch = new Stopwatch();
+            stopwatch.Start();
             base.OnLoad(e);
         }
 

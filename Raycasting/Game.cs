@@ -278,6 +278,7 @@ namespace Raycasting
             //Handle game logic
             if (player.collectedCoins == SpriteManager.totalCoins)
             {
+                coinProgress.barColor = Color.Green;
                 foreach (Sprite currSprite in SpriteManager.sprites.Where<Sprite>(x => x.name == SpriteName.Portal_Inactive))
                 {
                     currSprite.name = SpriteName.Portal;

@@ -10,7 +10,7 @@ namespace Raycasting
     {
         public List<Vector4> vertices;
         private readonly Vector2 topLeft, bottomRight;
-        public readonly Color barColor;
+        public Color barColor;
         public readonly int VBO, VAO;
         private readonly Vector2 topLeftScale, bottomRightScale;
         

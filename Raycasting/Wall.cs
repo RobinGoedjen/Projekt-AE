@@ -4,15 +4,15 @@ using MapLibrary;
 
 namespace Raycasting
 {
-    class Texture
+    class Wall
     {
         public readonly int VAO;
         public readonly int VBO;
         public readonly List<Vector4> vertices;
         public readonly Vector4 color;
-        public readonly GameTexture texture;
+        public readonly WallKind texture;
 
-        public Texture(GameTexture texture, Vector4 color, int VAO, int VBO)
+        public Wall(WallKind texture, Vector4 color, int VAO, int VBO)
         {
             this.texture = texture;
             this.color = color;

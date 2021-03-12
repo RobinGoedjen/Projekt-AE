@@ -48,7 +48,7 @@ namespace MapEditor
             {
                 for (int j = 0; j < map.width; j++)
                 {
-                    GameTexture tileID = map.worldMap[i][j];
+                    WallKind tileID = map.worldMap[i][j];
                     b.Color = Map.getColorFromGameTexture(tileID);
                     colorCoordinate(new Point(j, i),b , true);
                 }

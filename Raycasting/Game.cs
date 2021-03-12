@@ -144,7 +144,7 @@ namespace Raycasting
                     GameTextureManager.getTextureByGameTexture(map.worldMap[currentMapPosition.X][currentMapPosition.Y]).addOpenVertice(drawXScaled, drawYScaled, wallX);
                     if (side == 0)
                     {
-                        GameTextureManager.textureDictionary[GameTexture.Shadow].addOpenVertice(drawXScaled, drawYScaled, wallX);
+                        GameTextureManager.textureDictionary[WallKind.Shadow].addOpenVertice(drawXScaled, drawYScaled, wallX);
                     }
 
                     lastHit = new Point(currentMapPosition.X, currentMapPosition.Y);
@@ -161,7 +161,7 @@ namespace Raycasting
                     GameTextureManager.getTextureByGameTexture(map.worldMap[currentMapPosition.X][currentMapPosition.Y]).addCloseVertice(drawXScaled, drawYScaled, wallX);
                     if (side == 0)
                     {
-                        GameTextureManager.textureDictionary[GameTexture.Shadow].addCloseVertice(drawXScaled, drawYScaled, wallX);
+                        GameTextureManager.textureDictionary[WallKind.Shadow].addCloseVertice(drawXScaled, drawYScaled, wallX);
                     }
                     continue;
                 }
@@ -179,12 +179,12 @@ namespace Raycasting
 
                 if (lastSide == 0)
                 {
-                    GameTextureManager.textureDictionary[GameTexture.Shadow].addCloseVertice(drawXScaled, lastYScaled, lastWallX);
+                    GameTextureManager.textureDictionary[WallKind.Shadow].addCloseVertice(drawXScaled, lastYScaled, lastWallX);
                 }
 
                 if (side == 0)
                 {
-                   GameTextureManager.textureDictionary[GameTexture.Shadow].addOpenVertice(drawXScaled, drawYScaled, wallX);
+                   GameTextureManager.textureDictionary[WallKind.Shadow].addOpenVertice(drawXScaled, drawYScaled, wallX);
                 }
 
                 lastHit = new Point(currentMapPosition.X, currentMapPosition.Y);
@@ -195,14 +195,14 @@ namespace Raycasting
 
             #region Sprite-handling
             //Sprite casting
-            foreach (Sprite currSpirte in SpriteManager.sprites)
+            foreach (Sprite currSpirte in WallManager.sprites)
             {
                 currSpirte.updateDistanceToPlayer(player.position);
             }
-            SpriteManager.sprites.Sort();
+            WallManager.sprites.Sort();
 
             //Check for player collision with sprites
-            foreach (Sprite currSprite in SpriteManager.sprites.Where<Sprite>(x => !x.hidden && x.distanceToPlayer < 0.05f))
+            foreach (Sprite currSprite in WallManager.sprites.Where<Sprite>(x => !x.hidden && x.distanceToPlayer < 0.05f))
             {
                 switch (currSprite.name)
                 {
@@ -210,7 +210,7 @@ namespace Raycasting
                         currSprite.hidden = true;
                         player.collectedCoins++;
                         coinPlayer.Play();
-                        coinProgress.updateProgress((float)player.collectedCoins / (float)SpriteManager.totalCoins);
+                        coinProgress.updateProgress((float)player.collectedCoins / (float)WallManager.totalCoins);
                         break;
                     case SpriteName.Portal:
                         currSprite.hidden = true;
@@ -227,7 +227,7 @@ namespace Raycasting
                 }
             }
 
-            foreach (Sprite currSprite in SpriteManager.sprites)
+            foreach (Sprite currSprite in WallManager.sprites)
             {
                 if (currSprite.hidden)
                     continue;
@@ -276,10 +276,10 @@ namespace Raycasting
             #endregion
 
             //Handle game logic
-            if (player.collectedCoins == SpriteManager.totalCoins)
+            if (player.collectedCoins == WallManager.totalCoins)
             {
                 coinProgress.barColor = Color.Green;
-                foreach (Sprite currSprite in SpriteManager.sprites.Where<Sprite>(x => x.name == SpriteName.Portal_Inactive))
+                foreach (Sprite currSprite in WallManager.sprites.Where<Sprite>(x => x.name == SpriteName.Portal_Inactive))
                 {
                     currSprite.name = SpriteName.Portal;
                 }
@@ -347,9 +347,9 @@ namespace Raycasting
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             foreach (SpriteName name in (SpriteName[])Enum.GetValues(typeof(SpriteName)))
             {
-                SpriteManager.addSpriteTextureID(name, GameTextureManager.generateTexture(SpriteManager.getSpritePath(name))); 
+                WallManager.addSpriteTextureID(name, GameTextureManager.generateTexture(WallManager.getSpritePath(name))); 
             }
-            SpriteManager.loadSpritesFromMap(map);
+            WallManager.loadSpritesFromMap(map);
             WallTexture = GameTextureManager.generateTexture(Directory.GetCurrentDirectory() + @"\Textures\greystone.png");
 
             stopwatch = new Stopwatch();
@@ -367,7 +367,7 @@ namespace Raycasting
             GL.BindTexture(TextureTarget.Texture2D, 0);
             foreach (SpriteName sprite in (SpriteName[])Enum.GetValues(typeof(SpriteName)))
             {
-                GL.DeleteTexture(SpriteManager.getSpriteTextureID(sprite));
+                GL.DeleteTexture(WallManager.getSpriteTextureID(sprite));
             }
             shader.Dispose();
             base.OnUnload(e);
@@ -391,7 +391,7 @@ namespace Raycasting
             //Draw Walls
             foreach (var item in GameTextureManager.textureDictionary)
             {
-                if (item.Key == GameTexture.Shadow)
+                if (item.Key == WallKind.Shadow)
                     continue;
                 var currTexture = item.Value;
                 GL.BindTexture(TextureTarget.Texture2D, WallTexture);
@@ -402,7 +402,7 @@ namespace Raycasting
             GL.BindTexture(TextureTarget.Texture2D, 0);
             GL.Enable(EnableCap.Blend);
 
-            var shadowTexture = GameTextureManager.textureDictionary[GameTexture.Shadow];
+            var shadowTexture = GameTextureManager.textureDictionary[WallKind.Shadow];
             GL.BindVertexArray(shadowTexture.VAO);
             GL.VertexAttrib4(1, GameTextureManager.colorToVec4(Color.FromArgb(45, 0, 0, 0)));
             GL.DrawArrays(PrimitiveType.Quads, 0, shadowTexture.vertices.Count);
@@ -423,11 +423,11 @@ namespace Raycasting
             shader.Remove();
 
             //Draw Sprites
-            foreach (Sprite currSprite in SpriteManager.sprites)
+            foreach (Sprite currSprite in WallManager.sprites)
             {
                 if (currSprite.hidden || !currSprite.visible)
                     continue;
-                GL.BindTexture(TextureTarget.Texture2D, SpriteManager.getSpriteTextureID(currSprite.name));
+                GL.BindTexture(TextureTarget.Texture2D, WallManager.getSpriteTextureID(currSprite.name));
                 GL.Begin(PrimitiveType.Quads);
                 GL.Color3(Color.Transparent);
 

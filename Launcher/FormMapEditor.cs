@@ -18,7 +18,7 @@ namespace MapEditor
     {
         Map currentMap = null;
         MapVisualizer mapVisualizer;
-        GameTexture selectedGameTexture = GameTexture.None;
+        WallKind selectedGameTexture = WallKind.None;
         bool setPlayer = false;
         bool beginDraw = true;
         Random rand = new Random();
@@ -37,9 +37,9 @@ namespace MapEditor
 
             listBoxGameTexture.DrawMode = DrawMode.OwnerDrawFixed;
             listBoxGameTexture.DrawItem += listBoxTexture_DrawItem;
-            foreach (GameTexture texture in (GameTexture[])Enum.GetValues(typeof(GameTexture)))
+            foreach (WallKind texture in (WallKind[])Enum.GetValues(typeof(WallKind)))
             {
-                if (texture != GameTexture.Shadow)
+                if (texture != WallKind.Shadow)
                     listBoxGameTexture.Items.Add(texture);
             }
             listBoxSprites.SelectedIndex = 0;
@@ -87,12 +87,12 @@ namespace MapEditor
             currentMap = new Map(dimX, dimY);
             for (int i = 0; i < dimY; i++)
             {
-                currentMap.worldMap.Add(new List<GameTexture>());
+                currentMap.worldMap.Add(new List<WallKind>());
                 for (int j = 0; j < dimX; j++)
                 {
                     if (i == dimY-1 || i == 0 || j == 0 || j == dimX-1)
                     {
-                        currentMap.worldMap[i].Add(GameTexture.LightGreyWall);
+                        currentMap.worldMap[i].Add(WallKind.LightGreyWall);
                         continue;
                     }
                     currentMap.worldMap[i].Add(0);
@@ -204,10 +204,10 @@ namespace MapEditor
             currentMap = new Map(dimX, dimY);
             for (int i = 0; i < dimY; i++)
             {
-                currentMap.worldMap.Add(new List<GameTexture>());
+                currentMap.worldMap.Add(new List<WallKind>());
                 for (int j = 0; j < dimX; j++)
                 {
-                    currentMap.worldMap[i].Add(GameTexture.RedWall);
+                    currentMap.worldMap[i].Add(WallKind.RedWall);
                 }
             }
             recursiveBacktracker(1, 1);
@@ -294,7 +294,7 @@ namespace MapEditor
             e.DrawBackground();
 
             Graphics g = e.Graphics;
-            g.FillRectangle(new SolidBrush(Map.getColorFromGameTexture((GameTexture)listBoxGameTexture.Items[e.Index])), e.Bounds);
+            g.FillRectangle(new SolidBrush(Map.getColorFromGameTexture((WallKind)listBoxGameTexture.Items[e.Index])), e.Bounds);
             ListBox lb = (ListBox)sender;
             if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
                 g.DrawString(lb.Items[e.Index].ToString(), e.Font, new SolidBrush(Color.White), new PointF(e.Bounds.X, e.Bounds.Y));
@@ -311,7 +311,7 @@ namespace MapEditor
 
         private void listBoxTextures_Click(object sender, EventArgs e)
         {
-            selectedGameTexture = (GameTexture)listBoxGameTexture.SelectedItem;
+            selectedGameTexture = (WallKind)listBoxGameTexture.SelectedItem;
             radioButtonSpriteIgnore.Checked = true;
         }
 

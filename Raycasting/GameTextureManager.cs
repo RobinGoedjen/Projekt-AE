@@ -14,19 +14,19 @@ namespace Raycasting
 {
     static class GameTextureManager
     {
-        public static readonly Dictionary<GameTexture, Texture> textureDictionary;
+        public static readonly Dictionary<WallKind, Wall> textureDictionary;
 
         static GameTextureManager()
         {
-            textureDictionary = new Dictionary<GameTexture, Texture>();
-            foreach (GameTexture texture in (GameTexture[])Enum.GetValues(typeof(GameTexture)))
+            textureDictionary = new Dictionary<WallKind, Wall>();
+            foreach (WallKind texture in (WallKind[])Enum.GetValues(typeof(WallKind)))
             {
-                if (texture == GameTexture.None)
+                if (texture == WallKind.None)
                     continue;
                 int VAO = GL.GenVertexArray();
                 int VBO = GL.GenBuffer();
 
-                textureDictionary.Add(texture, new Texture(texture, colorToVec4(Map.getColorFromGameTexture(texture)), VAO, VBO));
+                textureDictionary.Add(texture, new Wall(texture, colorToVec4(Map.getColorFromGameTexture(texture)), VAO, VBO));
             }
 
         }
@@ -63,9 +63,9 @@ namespace Raycasting
             return new Vector4((float)color.R / 255, (float)color.G / 255, (float)color.B / 255, (float)color.A / 255);
         }
 
-        public static Texture getTextureByGameTexture(GameTexture texture)
+        public static Wall getTextureByGameTexture(WallKind texture)
         {
-            return textureDictionary[(GameTexture)texture];
+            return textureDictionary[(WallKind)texture];
         }
 
         public static int generateTexture(string texturePath)

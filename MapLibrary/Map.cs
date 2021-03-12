@@ -8,12 +8,12 @@ using System.Drawing;
 namespace MapLibrary
 {
     public enum SpriteName { Barrel, Pillar, Portal, Portal_Inactive, Coin, Armor, Pillar_brown, Skeleton, Skull, Bone_Pile, Well, Well_blood, Dead_Tree }
-    public enum GameTexture { None, Shadow, RedWall, GreenWall, BlueWall, LightGreyWall, VioletWall, OrangeWall, DarkWall, LightBlueWall }
+    public enum WallKind { None, Shadow, RedWall, GreenWall, BlueWall, LightGreyWall, VioletWall, OrangeWall, DarkWall, LightBlueWall }
     public class Map
     {
         public uint height { get; }
         public uint width { get; }
-        public List<List<GameTexture>> worldMap;
+        public List<List<WallKind>> worldMap;
         public string name;
         public const byte colorCount = 4;
         public PointF playerStartPosition;
@@ -26,31 +26,31 @@ namespace MapLibrary
             this.height = height;
             playerStartPosition = new PointF(1f, 1f);
             playerStartOrientation = 0;
-            worldMap = new List<List<GameTexture>>();
+            worldMap = new List<List<WallKind>>();
             sprites = new List<spriteData>();
         }
 
-        public static Color getColorFromGameTexture(GameTexture texture)
+        public static Color getColorFromGameTexture(WallKind texture)
         {
             switch (texture)
             {
-                case GameTexture.None:
+                case WallKind.None:
                     return Color.White;
-                case GameTexture.RedWall:
+                case WallKind.RedWall:
                     return Color.FromArgb(145, 9, 30);
-                case GameTexture.GreenWall:
+                case WallKind.GreenWall:
                     return Color.FromArgb(8, 128, 17);
-                case GameTexture.BlueWall:
+                case WallKind.BlueWall:
                     return Color.FromArgb(21, 25, 101);
-                case GameTexture.LightGreyWall:
+                case WallKind.LightGreyWall:
                     return Color.LightGray;
-                case GameTexture.VioletWall:
+                case WallKind.VioletWall:
                     return Color.FromArgb(57, 6, 90);
-                case GameTexture.OrangeWall:
+                case WallKind.OrangeWall:
                     return Color.FromArgb(207, 122, 43);
-                case GameTexture.DarkWall:
+                case WallKind.DarkWall:
                     return Color.FromArgb(57, 62, 70);
-                case GameTexture.LightBlueWall:
+                case WallKind.LightBlueWall:
                     return Color.FromArgb(70, 179, 230);
                 default:
                     return Color.HotPink;

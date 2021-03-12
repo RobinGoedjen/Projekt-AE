@@ -5,14 +5,14 @@ using MapLibrary;
 
 namespace Raycasting
 {
-    static class SpriteManager
+    static class WallManager
     {
         public static ushort totalCoins = 0;
         public readonly static List<Sprite> sprites = new List<Sprite>();
         private readonly static Dictionary<SpriteName, int> spriteTextureIDs = new Dictionary<SpriteName, int>();
         private readonly static Dictionary<SpriteName, String> spritePaths = new Dictionary<SpriteName, String>();
 
-        static SpriteManager()
+        static WallManager()
         {
             string currDirectory = Directory.GetCurrentDirectory() + @"\Sprites\";
             spritePaths.Add(SpriteName.Barrel, currDirectory + "barrel.png");

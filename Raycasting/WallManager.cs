@@ -1,57 +1,91 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using OpenTK;
+using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
+using System.Drawing;
 using MapLibrary;
+using System.Drawing.Imaging;
 
 namespace Raycasting
 {
     static class WallManager
     {
-        public static ushort totalCoins = 0;
-        public readonly static List<Sprite> sprites = new List<Sprite>();
-        private readonly static Dictionary<SpriteName, int> spriteTextureIDs = new Dictionary<SpriteName, int>();
-        private readonly static Dictionary<SpriteName, String> spritePaths = new Dictionary<SpriteName, String>();
+        public static readonly Dictionary<WallKind, Wall> textureDictionary;
 
         static WallManager()
         {
-            string currDirectory = Directory.GetCurrentDirectory() + @"\Sprites\";
-            spritePaths.Add(SpriteName.Barrel, currDirectory + "barrel.png");
-            spritePaths.Add(SpriteName.Pillar, currDirectory + "pillar.png");
-            spritePaths.Add(SpriteName.Portal, currDirectory + "portal.png");
-            spritePaths.Add(SpriteName.Portal_Inactive, currDirectory + "portal_inactive.png");
-            spritePaths.Add(SpriteName.Coin, currDirectory + "coin.png");
-            spritePaths.Add(SpriteName.Armor, currDirectory + "armor.png");
-            spritePaths.Add(SpriteName.Pillar_brown, currDirectory + "brown_pillar.png");
-            spritePaths.Add(SpriteName.Skeleton, currDirectory + "skeleton.png");
-            spritePaths.Add(SpriteName.Skull, currDirectory + "skull.png");
-            spritePaths.Add(SpriteName.Bone_Pile, currDirectory + "skulls.png");
-            spritePaths.Add(SpriteName.Well, currDirectory + "well.png");
-            spritePaths.Add(SpriteName.Well_blood, currDirectory + "well_blood.png");
-            spritePaths.Add(SpriteName.Dead_Tree, currDirectory + "dead_tree.png");
-        }
-        public static String getSpritePath(SpriteName name)
-        {
-            return spritePaths[name];
-        }
-
-        public static int getSpriteTextureID(SpriteName name)
-        {
-            return spriteTextureIDs[name];
-        }
-
-        public static void addSpriteTextureID(SpriteName name, int ID)
-        {
-            spriteTextureIDs[name] = ID;
-        }
-
-        public static void loadSpritesFromMap(Map map)
-        {
-            foreach (var sprite in map.sprites)
+            textureDictionary = new Dictionary<WallKind, Wall>();
+            foreach (WallKind texture in (WallKind[])Enum.GetValues(typeof(WallKind)))
             {
-                sprites.Add(new Sprite(new OpenTK.Vector2(sprite.position.Y, sprite.position.X), sprite.name == SpriteName.Portal ? SpriteName.Portal_Inactive : sprite.name));
-                if (sprite.name == SpriteName.Coin)
-                    totalCoins++;
+                if (texture == WallKind.None)
+                    continue;
+
+                textureDictionary.Add(texture, new Wall(texture, colorToVec4(Map.getColorFromGameTexture(texture))));
             }
+
+        }
+
+        public static void fillAllVAOs()
+        {
+            foreach (var texture in textureDictionary)
+            {
+                var currentTexture = texture.Value;
+                fillVAO(currentTexture);
+            }
+        }
+
+        public static void fillVAO(Texture text)
+        {
+            GL.BindVertexArray(text.VAO);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, text.VBO);
+            GL.BufferData(BufferTarget.ArrayBuffer, text.vertices.Count * Vector4.SizeInBytes, text.vertices.ToArray(), BufferUsageHint.DynamicDraw);
+            GL.VertexAttribPointer(0, 4, VertexAttribPointerType.Float, false, Vector4.SizeInBytes, 0);
+            GL.EnableVertexAttribArray(0);
+            GL.BindVertexArray(0);
+        }
+
+        public static void clearAllVAOs()
+        {
+            foreach (var texture in textureDictionary)
+            {
+                texture.Value.vertices.Clear();
+            }
+        }
+
+        public static Vector4 colorToVec4(Color color)
+        {
+            return new Vector4((float)color.R / 255, (float)color.G / 255, (float)color.B / 255, (float)color.A / 255);
+        }
+
+        public static Wall getTextureByGameTexture(WallKind texture)
+        {
+            return textureDictionary[(WallKind)texture];
+        }
+
+        public static int generateTexture(string texturePath)
+        {
+            int newTextureID = GL.GenTexture();
+            GL.BindTexture(TextureTarget.Texture2D, newTextureID);
+
+
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+
+            Bitmap bmp = new Bitmap(texturePath);
+            bmp.MakeTransparent(Color.FromArgb(255, 255, 0, 220));
+            bmp.RotateFlip(RotateFlipType.Rotate180FlipX);
+            BitmapData data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
+            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+
+            bmp.UnlockBits(data);
+
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+            return newTextureID;
         }
     }
 }

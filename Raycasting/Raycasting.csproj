@@ -59,9 +59,9 @@
     <Compile Include="Shader.cs" />
     <Compile Include="Sprite.cs" />
     <Compile Include="Texture.cs" />
-    <Compile Include="WallManager.cs" />
+    <Compile Include="SpriteManager.cs" />
     <Compile Include="Wall.cs" />
-    <Compile Include="GameTextureManager.cs" />
+    <Compile Include="WallManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

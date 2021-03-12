@@ -211,6 +211,7 @@ namespace Raycasting
                         player.collectedCoins++;
                         coinPlayer.Play();
                         coinProgress.updateProgress((float)player.collectedCoins / (float)WallManager.totalCoins);
+                        GameTextureManager.fillVAO(coinProgress);
                         break;
                     case SpriteName.Portal:
                         currSprite.hidden = true;
@@ -323,7 +324,6 @@ namespace Raycasting
             }
             #endregion
             GameTextureManager.fillAllVAOs();
-            GameTextureManager.fillVAO(coinProgress.VAO, coinProgress.VBO, coinProgress.vertices);
 
             base.OnUpdateFrame(e);
         }
@@ -354,6 +354,7 @@ namespace Raycasting
 
             stopwatch = new Stopwatch();
             stopwatch.Start();
+            GameTextureManager.fillVAO(coinProgress);
             base.OnLoad(e);
         }
 

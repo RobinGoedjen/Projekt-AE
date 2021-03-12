@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using OpenTK;
-using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 
 namespace Raycasting
 {
-    class ProgressBar
+    class ProgressBar : Texture
     {
-        public List<Vector4> vertices;
         private readonly Vector2 topLeft, bottomRight;
         public Color barColor;
-        public readonly int VBO, VAO;
         private readonly Vector2 topLeftScale, bottomRightScale;
         
         public ProgressBar(Vector2 topLeft, Vector2 bottomRight, Color barColor)
@@ -20,10 +17,6 @@ namespace Raycasting
             this.bottomRight = bottomRight;
             this.barColor = barColor;
             vertices = new List<Vector4>();
-            VAO = GL.GenVertexArray();
-            VBO = GL.GenBuffer();
-            //topLeftScale = new Vector2(1.10f, 0.975f);
-            //bottomRightScale = new Vector2(0.985f, 1.025f);
             topLeftScale = new Vector2((bottomRight.X - topLeft.X) * 0.005f, (topLeft.Y - bottomRight.Y) * -0.09f);
             bottomRightScale = new Vector2((bottomRight.X - topLeft.X) * -0.005f, (topLeft.Y - bottomRight.Y) * 0.09f);
 

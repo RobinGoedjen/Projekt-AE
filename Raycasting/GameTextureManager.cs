@@ -23,10 +23,8 @@ namespace Raycasting
             {
                 if (texture == WallKind.None)
                     continue;
-                int VAO = GL.GenVertexArray();
-                int VBO = GL.GenBuffer();
 
-                textureDictionary.Add(texture, new Wall(texture, colorToVec4(Map.getColorFromGameTexture(texture)), VAO, VBO));
+                textureDictionary.Add(texture, new Wall(texture, colorToVec4(Map.getColorFromGameTexture(texture))));
             }
 
         }
@@ -36,15 +34,15 @@ namespace Raycasting
             foreach (var texture in textureDictionary)
             {
                 var currentTexture = texture.Value;
-                fillVAO(currentTexture.VAO, currentTexture.VBO, currentTexture.vertices);
+                fillVAO(currentTexture);
             }
         }
 
-        public static void fillVAO(int VAO, int VBO, List<Vector4> vertices)
+        public static void fillVAO(Texture text)
         {
-            GL.BindVertexArray(VAO);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Count * Vector4.SizeInBytes, vertices.ToArray(), BufferUsageHint.DynamicDraw);
+            GL.BindVertexArray(text.VAO);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, text.VBO);
+            GL.BufferData(BufferTarget.ArrayBuffer, text.vertices.Count * Vector4.SizeInBytes, text.vertices.ToArray(), BufferUsageHint.DynamicDraw);
             GL.VertexAttribPointer(0, 4, VertexAttribPointerType.Float, false, Vector4.SizeInBytes, 0);
             GL.EnableVertexAttribArray(0);
             GL.BindVertexArray(0);

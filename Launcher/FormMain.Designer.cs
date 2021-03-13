@@ -36,14 +36,16 @@
             this.pictureBoxPreview = new System.Windows.Forms.PictureBox();
             this.btnDeleteMap = new System.Windows.Forms.Button();
             this.checkBoxUseWallTextures = new System.Windows.Forms.CheckBox();
+            this.btnRandomMap = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).BeginInit();
             this.SuspendLayout();
             // 
             // btnPlayGame
             // 
-            this.btnPlayGame.Location = new System.Drawing.Point(68, 189);
+            this.btnPlayGame.Location = new System.Drawing.Point(91, 233);
+            this.btnPlayGame.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnPlayGame.Name = "btnPlayGame";
-            this.btnPlayGame.Size = new System.Drawing.Size(160, 52);
+            this.btnPlayGame.Size = new System.Drawing.Size(213, 64);
             this.btnPlayGame.TabIndex = 0;
             this.btnPlayGame.Text = "Play Game";
             this.btnPlayGame.UseVisualStyleBackColor = true;
@@ -51,9 +53,10 @@
             // 
             // btnNewMap
             // 
-            this.btnNewMap.Location = new System.Drawing.Point(68, 261);
+            this.btnNewMap.Location = new System.Drawing.Point(91, 321);
+            this.btnNewMap.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnNewMap.Name = "btnNewMap";
-            this.btnNewMap.Size = new System.Drawing.Size(160, 50);
+            this.btnNewMap.Size = new System.Drawing.Size(213, 62);
             this.btnNewMap.TabIndex = 1;
             this.btnNewMap.Text = "New Map";
             this.btnNewMap.UseVisualStyleBackColor = true;
@@ -65,9 +68,10 @@
             this.lblLogo.BackColor = System.Drawing.Color.Black;
             this.lblLogo.Font = new System.Drawing.Font("Microsoft Sans Serif", 40F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblLogo.ForeColor = System.Drawing.Color.White;
-            this.lblLogo.Location = new System.Drawing.Point(57, 64);
+            this.lblLogo.Location = new System.Drawing.Point(76, 79);
+            this.lblLogo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblLogo.Name = "lblLogo";
-            this.lblLogo.Size = new System.Drawing.Size(338, 63);
+            this.lblLogo.Size = new System.Drawing.Size(420, 76);
             this.lblLogo.TabIndex = 2;
             this.lblLogo.Text = "Raycaster :D";
             // 
@@ -77,19 +81,21 @@
             this.listBoxMaps.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.listBoxMaps.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listBoxMaps.FormattingEnabled = true;
-            this.listBoxMaps.ItemHeight = 55;
-            this.listBoxMaps.Location = new System.Drawing.Point(540, 64);
+            this.listBoxMaps.ItemHeight = 69;
+            this.listBoxMaps.Location = new System.Drawing.Point(720, 79);
+            this.listBoxMaps.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.listBoxMaps.Name = "listBoxMaps";
             this.listBoxMaps.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.listBoxMaps.Size = new System.Drawing.Size(448, 279);
+            this.listBoxMaps.Size = new System.Drawing.Size(596, 280);
             this.listBoxMaps.TabIndex = 3;
             this.listBoxMaps.Click += new System.EventHandler(this.listBoxMaps_Click);
             // 
             // btnEditMap
             // 
-            this.btnEditMap.Location = new System.Drawing.Point(68, 327);
+            this.btnEditMap.Location = new System.Drawing.Point(91, 402);
+            this.btnEditMap.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnEditMap.Name = "btnEditMap";
-            this.btnEditMap.Size = new System.Drawing.Size(160, 50);
+            this.btnEditMap.Size = new System.Drawing.Size(213, 62);
             this.btnEditMap.TabIndex = 4;
             this.btnEditMap.Text = "Edit Map";
             this.btnEditMap.UseVisualStyleBackColor = true;
@@ -97,7 +103,8 @@
             // 
             // pictureBoxPreview
             // 
-            this.pictureBoxPreview.Location = new System.Drawing.Point(540, 374);
+            this.pictureBoxPreview.Location = new System.Drawing.Point(720, 460);
+            this.pictureBoxPreview.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pictureBoxPreview.Name = "pictureBoxPreview";
             this.pictureBoxPreview.Size = new System.Drawing.Size(448, 323);
             this.pictureBoxPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -107,9 +114,10 @@
             // 
             // btnDeleteMap
             // 
-            this.btnDeleteMap.Location = new System.Drawing.Point(68, 392);
+            this.btnDeleteMap.Location = new System.Drawing.Point(91, 482);
+            this.btnDeleteMap.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnDeleteMap.Name = "btnDeleteMap";
-            this.btnDeleteMap.Size = new System.Drawing.Size(160, 50);
+            this.btnDeleteMap.Size = new System.Drawing.Size(213, 62);
             this.btnDeleteMap.TabIndex = 6;
             this.btnDeleteMap.Text = "Delete Map";
             this.btnDeleteMap.UseVisualStyleBackColor = true;
@@ -119,19 +127,32 @@
             // 
             this.checkBoxUseWallTextures.AutoSize = true;
             this.checkBoxUseWallTextures.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBoxUseWallTextures.Location = new System.Drawing.Point(68, 468);
+            this.checkBoxUseWallTextures.Location = new System.Drawing.Point(91, 576);
+            this.checkBoxUseWallTextures.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.checkBoxUseWallTextures.Name = "checkBoxUseWallTextures";
-            this.checkBoxUseWallTextures.Size = new System.Drawing.Size(235, 22);
+            this.checkBoxUseWallTextures.Size = new System.Drawing.Size(296, 28);
             this.checkBoxUseWallTextures.TabIndex = 7;
             this.checkBoxUseWallTextures.Text = "Use Wall Textures (visual bugs)";
             this.checkBoxUseWallTextures.UseVisualStyleBackColor = true;
             // 
+            // btnRandomMap
+            // 
+            this.btnRandomMap.Location = new System.Drawing.Point(312, 233);
+            this.btnRandomMap.Margin = new System.Windows.Forms.Padding(4);
+            this.btnRandomMap.Name = "btnRandomMap";
+            this.btnRandomMap.Size = new System.Drawing.Size(164, 64);
+            this.btnRandomMap.TabIndex = 8;
+            this.btnRandomMap.Text = "Play Random Map";
+            this.btnRandomMap.UseVisualStyleBackColor = true;
+            this.btnRandomMap.Click += new System.EventHandler(this.btnRandomMap_Click);
+            // 
             // FormMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::Launcher.Properties.Resources.background;
-            this.ClientSize = new System.Drawing.Size(1066, 752);
+            this.ClientSize = new System.Drawing.Size(1421, 926);
+            this.Controls.Add(this.btnRandomMap);
             this.Controls.Add(this.checkBoxUseWallTextures);
             this.Controls.Add(this.btnDeleteMap);
             this.Controls.Add(this.pictureBoxPreview);
@@ -141,6 +162,7 @@
             this.Controls.Add(this.btnNewMap);
             this.Controls.Add(this.btnPlayGame);
             this.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Launcher";
@@ -160,6 +182,7 @@
         private System.Windows.Forms.PictureBox pictureBoxPreview;
         private System.Windows.Forms.Button btnDeleteMap;
         private System.Windows.Forms.CheckBox checkBoxUseWallTextures;
+        private System.Windows.Forms.Button btnRandomMap;
     }
 }
 

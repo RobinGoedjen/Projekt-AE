@@ -94,6 +94,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Backtracker.cs" />
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using Newtonsoft.Json;
 using MapLibrary;
+using Launcher;
 
 namespace MapEditor
 {
@@ -195,84 +196,6 @@ namespace MapEditor
         {
             currentMap.playerStartOrientation = (ushort)trackBarPlayerOrientation.Value;
             drawFromScratch();
-        }
-
-        private void btnRandom_Click(object sender, EventArgs e)
-        {
-            uint dimX = (uint)numericUpDownMapDimX.Value;
-            uint dimY = (uint)numericUpDownMapDimY.Value;
-            currentMap = new Map(dimX, dimY);
-            for (int i = 0; i < dimY; i++)
-            {
-                currentMap.worldMap.Add(new List<WallKind>());
-                for (int j = 0; j < dimX; j++)
-                {
-                    currentMap.worldMap[i].Add(WallKind.RedWall);
-                }
-            }
-            recursiveBacktracker(1, 1);
-            drawFromScratch();
-        }
-
-        private bool recursiveBacktracker(int x, int y)
-        {
-            if (pointIsValid(x, y))
-            {
-                currentMap.worldMap[x][y] = 0;
-                Point[] neighbours = getValidNeighbours(x, y);
-
-                if (neighbours == null || neighbours.Length == 0)
-                {
-                    return false;
-                }
-
-                Point point = neighbours[rand.Next(neighbours.Length)];
-
-                if (x < point.X) { currentMap.worldMap[x + 1][y] = 0; }
-                if (x > point.X) { currentMap.worldMap[x - 1][y] = 0; }
-                if (y < point.Y) { currentMap.worldMap[x][y + 1] = 0; }
-                if (y > point.Y) { currentMap.worldMap[x][y - 1] = 0; }
-
-                if (!recursiveBacktracker(point.X, point.Y))
-                {
-                    return recursiveBacktracker(x, y);
-                }
-
-                recursiveBacktracker(point.X, point.Y);
-            }
-            return false;
-        }
-
-        private bool pointIsValid(int x, int y)
-        {
-            if (x > 0 && y > 0 && x < (int)numericUpDownMapDimX.Value && y < (int)numericUpDownMapDimY.Value)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private Point[] getValidNeighbours(int x, int y)
-        {
-            List<Point> resultList = new List<Point>();
-
-            if (pointIsValid(x + 2, y) && currentMap.worldMap[x + 2][y] != 0)
-            {
-                resultList.Add(new Point(x + 2, y));
-            }
-            if (pointIsValid(x, y + 2) && currentMap.worldMap[x][y + 2] != 0)
-            {
-                resultList.Add(new Point(x, y + 2));
-            }
-            if (pointIsValid(x - 2, y) && currentMap.worldMap[x - 2][y] != 0)
-            {
-                resultList.Add(new Point(x - 2, y));
-            }
-            if (pointIsValid(x, y - 2) && currentMap.worldMap[x][y - 2] != 0)
-            {
-                resultList.Add(new Point(x, y - 2));
-            }
-            return resultList.ToArray();
         }
 
         private void listBoxSprite_DrawItem(object sender, DrawItemEventArgs e)

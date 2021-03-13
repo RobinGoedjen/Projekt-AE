@@ -12,6 +12,7 @@ using System.Diagnostics;
 using Newtonsoft.Json;
 using MapLibrary;
 using Newtonsoft.Json.Linq;
+using Launcher;
 
 namespace MapEditor
 {
@@ -22,7 +23,8 @@ namespace MapEditor
         public FormMain()
         {
             InitializeComponent();
-            loadMapsFromFolder();
+            removeRandomMap();
+            loadMapsFromFolder();     
         }
 
         private void btnPlayGame_Click(object sender, EventArgs e)
@@ -97,6 +99,47 @@ namespace MapEditor
             File.Delete(availableMaps[listBoxMaps.SelectedIndex]);
             pictureBoxPreview.Visible = false;
             loadMapsFromFolder();
+        }
+
+        private void btnRandomMap_Click(object sender, EventArgs e)
+        {
+            Backtracker backtracker = new Backtracker(11,11);
+            Map map = backtracker.getRandomMap();
+
+            map.name = "random";
+            String mapJson = JsonConvert.SerializeObject(map);
+            string projectDirectory = Environment.CurrentDirectory;
+
+            File.WriteAllText(projectDirectory + @"\Maps\" + map.name + ".json", mapJson);
+           
+            String randomMapDir = getRandomMapDir();
+
+            Process.Start(Directory.GetCurrentDirectory() + "/Raycasting.exe", '"' + randomMapDir + '"' + (checkBoxUseWallTextures.Checked ? " true" : ""));
+        }
+
+        private String getRandomMapDir()
+        {
+            String[] fileDirs = Directory.GetFiles(projectDirectory + @"\Maps");
+
+            foreach(String fileDir in fileDirs)
+            {
+                if(fileDir.Contains("random")) { return fileDir; };
+            }
+
+            return "";
+        }
+
+        private void removeRandomMap()
+        {
+            String[] fileDirs = Directory.GetFiles(projectDirectory + @"\Maps");
+
+            foreach (String fileDir in fileDirs)
+            {
+                if (fileDir.Contains("random"))
+                {
+                    File.Delete(fileDir); 
+                };
+            }
         }
     }
 }

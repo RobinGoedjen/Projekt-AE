@@ -48,7 +48,7 @@ namespace Raycasting
             GL.BindVertexArray(0);
         }
 
-        public static void clearAllVAOs()
+        public static void clearAllWalls()
         {
             foreach (var texture in textureDictionary)
             {

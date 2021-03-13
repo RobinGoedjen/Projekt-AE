@@ -18,7 +18,7 @@ namespace MapEditor
     public partial class FormMain : Form
     {
         string projectDirectory = Environment.CurrentDirectory;
-        String[] availableMaps;
+        string[] availableMaps;
         public FormMain()
         {
             InitializeComponent();
@@ -29,7 +29,7 @@ namespace MapEditor
         {
             if (availableMaps.Length == 0)
             {
-                //Show error Message
+                MessageBox.Show("There are no maps to load!", "Error");
                 return;
             }
             if (listBoxMaps.SelectedIndex == -1)
@@ -60,7 +60,7 @@ namespace MapEditor
         {
             if (availableMaps.Length == 0)
             {
-                //Show error Message
+                MessageBox.Show("There are no maps to edit!", "Error");
                 return;
             }
             if (listBoxMaps.SelectedIndex == -1)
@@ -89,7 +89,9 @@ namespace MapEditor
         {
             if (listBoxMaps.SelectedIndex == -1)
                 return;
-            //Abfrage: bist du sicher? TODO
+            var result = MessageBox.Show("Delete " + listBoxMaps.SelectedItem + "?", "Warning", MessageBoxButtons.YesNo);
+            if (result == DialogResult.No)
+                return;
             if (!File.Exists(availableMaps[listBoxMaps.SelectedIndex]))
                 return;
             File.Delete(availableMaps[listBoxMaps.SelectedIndex]);

@@ -16,10 +16,10 @@ namespace Raycasting
 {
     class Game : GameWindow
     {
-        Player player;
-        Map map;
-        SoundPlayer coinPlayer;
-        ProgressBar coinProgress;
+        private readonly Player player;
+        private readonly Map map;
+        private SoundPlayer coinPlayer;
+        private ProgressBar coinProgress;
 
         List<Vector2> verticesGroundPlane;
 
@@ -28,9 +28,13 @@ namespace Raycasting
         private Shader shader;
         private Stopwatch stopwatch;
 
+        //speed modifiers
+        private  float moveSpeed = Player.moveSpeed;
+        private float rotSpeed = Player.rotSpeed;
+
         //Fields for Sprites
-        List<float> ZBuffer = new List<float>();
-        DebugProc debugProc;
+        private readonly List<float> ZBuffer = new List<float>();
+        private readonly DebugProc debugProc;
 
         public Game(Player player, Map map) : base(500, 300, GraphicsMode.Default, "Raycasting", GameWindowFlags.Fullscreen)
         {
@@ -53,7 +57,7 @@ namespace Raycasting
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
-            WallManager.clearAllVAOs();
+            WallManager.clearAllWalls();
 
             Point lastHit = new Point(-100,0);
             float lastYScaled = 0;
@@ -68,20 +72,14 @@ namespace Raycasting
                 Vector2 rayDir = player.direction + player.plane * cameraX;
 
                 Point currentMapPosition = new Point((int)player.position.X, (int)player.position.Y);
-                Vector2 sideDistance;
-
                 float deltaDistX = (rayDir.Y == 0) ? 0 : ((rayDir.X == 0) ? 1 : Math.Abs(1 / rayDir.X));
                 float deltaDistY = (rayDir.X == 0) ? 0 : ((rayDir.Y == 0) ? 1 : Math.Abs(1 / rayDir.Y));
-                float perpWallDist;
 
                 //what direction to step in x or y-direction (either +1 or -1)
                 int stepX;
                 int stepY;
 
-                bool hit = false;
-                int side = 0;
-
-
+                Vector2 sideDistance;
                 if (rayDir.X < 0)
                 {
                     stepX = -1;
@@ -102,7 +100,10 @@ namespace Raycasting
                     stepY = 1;
                     sideDistance.Y = (currentMapPosition.Y + 1.0f - player.position.Y) * deltaDistY;
                 }
+
                 //perform DDA
+                bool hit = false;
+                int side = 0;
                 while (!hit)
                 {
                     if (sideDistance.X < sideDistance.Y)
@@ -118,8 +119,11 @@ namespace Raycasting
                         side = 1;
                     }
                     //Check if ray has hit a wall
-                    hit = map.worldMap[currentMapPosition.X][currentMapPosition.Y] > 0;
+                    hit = map.worldMap[currentMapPosition.X][currentMapPosition.Y] != WallKind.None;
                 }
+
+                //calculate distance to wall hit
+                float perpWallDist;
                 if (side == 0) 
                     perpWallDist = (currentMapPosition.X - player.position.X + (1 - stepX) / 2) / rayDir.X;
                 else 
@@ -194,7 +198,6 @@ namespace Raycasting
             #endregion
 
             #region Sprite-handling
-            //Sprite casting
             foreach (Sprite currSpirte in SpriteManager.sprites)
             {
                 currSpirte.updateDistanceToPlayer(player.position);
@@ -228,6 +231,7 @@ namespace Raycasting
                 }
             }
 
+            //Sprite casting
             foreach (Sprite currSprite in SpriteManager.sprites)
             {
                 if (currSprite.hidden)
@@ -286,11 +290,6 @@ namespace Raycasting
                 }
             }
 
-
-            //speed modifiers
-            float moveSpeed = Player.moveSpeed; 
-            float rotSpeed = Player.rotSpeed;
-
             #region Keyboard-input
             KeyboardState input = Keyboard.GetState();
             if (input.IsKeyDown(Key.Escape))
@@ -299,17 +298,17 @@ namespace Raycasting
             }
             if (input.IsKeyDown(Key.W))
             {
-                if (map.worldMap[(int)(player.position.X + player.direction.X * moveSpeed)][(int)player.position.Y] == 0)
+                if (map.worldMap[(int)(player.position.X + player.direction.X * moveSpeed)][(int)player.position.Y] == WallKind.None)
                     player.position += new Vector2(player.direction.X * moveSpeed, 0f);
-                if (map.worldMap[(int)player.position.X][(int)(player.position.Y + player.direction.Y * moveSpeed)] == 0)
+                if (map.worldMap[(int)player.position.X][(int)(player.position.Y + player.direction.Y * moveSpeed)] == WallKind.None)
                     player.position += new Vector2(0f, player.direction.Y * moveSpeed);
             }
 
             if (input.IsKeyDown(Key.S))
             {
-                if (map.worldMap[(int)(player.position.X - player.direction.X * moveSpeed)][(int)player.position.Y] == 0)
+                if (map.worldMap[(int)(player.position.X - player.direction.X * moveSpeed)][(int)player.position.Y] == WallKind.None)
                     player.position -= new Vector2(player.direction.X * moveSpeed, 0f);
-                if (map.worldMap[(int)player.position.X][(int)(player.position.Y - player.direction.Y * moveSpeed)] == 0)
+                if (map.worldMap[(int)player.position.X][(int)(player.position.Y - player.direction.Y * moveSpeed)] == WallKind.None)
                     player.position -= new Vector2(0f, player.direction.Y * moveSpeed);
             }
 
@@ -332,7 +331,7 @@ namespace Raycasting
         {
             verticesGroundPlane = new List<Vector2>();
 
-            GL.ClearColor(Color.FromArgb(1, 58, 72, 94));
+            GL.ClearColor(Color.FromArgb(255, 58, 72, 94));
 
             verticesGroundPlane.Add(new Vector2(-1f, 0));
             verticesGroundPlane.Add(new Vector2(1f, 0));
@@ -403,6 +402,7 @@ namespace Raycasting
             GL.BindTexture(TextureTarget.Texture2D, 0);
             GL.Enable(EnableCap.Blend);
 
+            //Draw Shadow
             var shadowTexture = WallManager.textureDictionary[WallKind.Shadow];
             GL.BindVertexArray(shadowTexture.VAO);
             GL.VertexAttrib4(1, WallManager.colorToVec4(Color.FromArgb(45, 0, 0, 0)));

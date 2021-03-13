@@ -22,10 +22,6 @@ namespace Launcher
             this.mapDimY = mapDimY;
         }
 
-        public Backtracker()
-        {
-        }
-
         public Map getRandomMap()
         {
             map = new Map(mapDimX, mapDimY);
@@ -68,8 +64,6 @@ namespace Launcher
                 {
                     return recursiveBacktracker(x, y);
                 }
-                //test.Add(new Point(x, y));
-                //recursiveBacktracker(point.X, point.Y);
             }
             return false;
         }
